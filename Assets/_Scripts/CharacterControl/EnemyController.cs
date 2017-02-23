@@ -79,10 +79,10 @@ public class EnemyController : MonoBehaviour
 
     void InitializeStats()
     {
-        enemy.CurrentHP = enemy.BaseHP;
+        enemy.CurrentHealth = enemy.BaseHealth;
         enemy.CurrentMP = enemy.BaseMP;
-        enemy.CurrentAttack = enemy.BaseAttack;
-        enemy.CurrentDefense = enemy.BaseDefense;
+        enemy.CurrentAttackPower = enemy.BaseAttackPower;
+        enemy.CurrentPhysicalDefense = enemy.BasePhysicalDefense;
     }
 
     void UpdateATB()
@@ -184,23 +184,23 @@ public class EnemyController : MonoBehaviour
 
     public void TakeDamage(float _damage)
     {
-        enemy.CurrentHP -= _damage;
+        enemy.CurrentHealth -= _damage;
 
         // Play hit animation
         int hits = 5;
         int hitNumber = Random.Range(0, hits);
         animator.SetTrigger("GetHit" + (hitNumber + 1).ToString() + "Trigger");
 
-        if (enemy.CurrentHP <= 0)
+        if (enemy.CurrentHealth <= 0)
         {
-            enemy.CurrentHP = 0;
+            enemy.CurrentHealth = 0;
             currentState = EnemyState.DEAD;
         }
     }
 
     void DoDamage()
     {
-        float calculatedDamage = enemy.CurrentAttack + battleControl.activeAgentList[0].chosenAttack.attackDamage;
+        float calculatedDamage = enemy.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
 
         enemyAttack.targetGO.GetComponent<HeroController>().TakeDamage(calculatedDamage);
     }

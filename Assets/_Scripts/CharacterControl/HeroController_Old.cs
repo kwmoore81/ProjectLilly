@@ -98,10 +98,10 @@ public class HeroController_Old : MonoBehaviour
 
     void InitializeStats()
     {
-        hero.CurrentHP = hero.BaseHP;
+        hero.CurrentHealth = hero.BaseHealth;
         hero.CurrentMP = hero.BaseMP;
-        hero.CurrentAttack = hero.BaseAttack;
-        hero.CurrentDefense = hero.BaseDefense;
+        hero.CurrentAttackPower = hero.BaseAttackPower;
+        hero.CurrentPhysicalDefense = hero.BasePhysicalDefense;
     }
 
     void UpdateATB()
@@ -219,16 +219,16 @@ public class HeroController_Old : MonoBehaviour
 
     public void TakeDamage(float _damage)
     {
-        hero.CurrentHP -= _damage;
+        hero.CurrentHealth -= _damage;
 
         // Play hit animation
         int hits = 5;
         int hitNumber = Random.Range(0, hits);
         animator.SetTrigger("GetHit" + (hitNumber + 1).ToString() + "Trigger");
 
-        if (hero.CurrentHP <= 0)
+        if (hero.CurrentHealth <= 0)
         {
-            hero.CurrentHP = 0;
+            hero.CurrentHealth = 0;
             currentState = HeroState.DEAD;
         }
 
@@ -237,7 +237,7 @@ public class HeroController_Old : MonoBehaviour
 
     void DoDamage()
     {
-        float calculatedDamage = hero.CurrentAttack + battleControl.activeAgentList[0].chosenAttack.attackDamage;
+        float calculatedDamage = hero.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
         enemyToAttack.GetComponent<EnemyController>().TakeDamage(calculatedDamage);
     }
 
@@ -294,7 +294,7 @@ public class HeroController_Old : MonoBehaviour
 
         // Add info to hero panel
         panelInfo.heroName.text = name;
-        panelInfo.heroHP.text = "HP: " + hero.CurrentHP + " / " + hero.BaseHP;
+        panelInfo.heroHP.text = "HP: " + hero.CurrentHealth + " / " + hero.BaseHealth;
         panelInfo.heroMP.text = "MP: " + hero.CurrentMP + " / " + hero.BaseMP;
 
         ATB_Bar = panelInfo.ATB_Bar;
@@ -306,9 +306,9 @@ public class HeroController_Old : MonoBehaviour
     void UpdateHeroPanel()
     {
         // Update HP bar and text
-        float HP_FillPercentage = hero.CurrentHP / hero.BaseHP;
+        float HP_FillPercentage = hero.CurrentHealth / hero.BaseHealth;
         HP_Bar.transform.localScale = new Vector3(Mathf.Clamp(HP_FillPercentage, 0, 1), ATB_Bar.transform.localScale.y, ATB_Bar.transform.localScale.z);
-        panelInfo.heroHP.text = "HP: " + hero.CurrentHP + " / " + hero.BaseHP;
+        panelInfo.heroHP.text = "HP: " + hero.CurrentHealth + " / " + hero.BaseHealth;
 
         // Update MP bar and text
         float MP_FillPercentage = hero.CurrentMP / hero.BaseMP;
