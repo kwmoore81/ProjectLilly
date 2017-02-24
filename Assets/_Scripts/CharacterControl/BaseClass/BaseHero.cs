@@ -26,5 +26,6 @@ public class BaseHero: BaseClass
         BaseMagicDefense = CurrentSpirit; //+ CombinedEquipment.MagicDefense
     }
 
+    public List<BaseAttack> attacks = new List<BaseAttack>();
     public List<BaseAttack> magicAttacks = new List<BaseAttack>();
 }
