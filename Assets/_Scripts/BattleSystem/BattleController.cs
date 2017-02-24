@@ -210,7 +210,7 @@ public class BattleController : MonoBehaviour
         }
         else if (agent.transform.tag == "Hero")
         {
-            if (agent.name == "Placeholder")
+            if (agent.name == "Arvandus")
             {
                 HunterController hunterControl = agent.GetComponent<HunterController>();
                 hunterControl.enemyToAttack = activeAgentList[0].targetGO;
@@ -294,17 +294,17 @@ public class BattleController : MonoBehaviour
         heroChoice.activeAgent = heroesToManage[0].name;
         heroChoice.agentGO = heroesToManage[0];
         heroChoice.chosenAttack = heroesToManage[0].GetComponent<HeroController>().hero.attacks[0];
-        enemySelectPanel.SetActive(true);
-        //animatorTargetPanel.SetBool("UI_TargetClose", false);
-        //animatorTargetPanel.SetBool("UI_TargetOpen", true);
+        //enemySelectPanel.SetActive(true);
+        animatorTargetPanel.SetBool("UI_TargetClose", false);
+        animatorTargetPanel.SetBool("UI_TargetOpen", true);
     }
 
     public void EnemySelectInput(GameObject chosenEnemy)
     {
         heroChoice.targetGO = chosenEnemy;
         heroInput = HeroUI.DONE;
-        //animatorTargetPanel.SetBool("UI_TargetOpen", false);
-        //animatorTargetPanel.SetBool("UI_TargetClose", true);
+        animatorTargetPanel.SetBool("UI_TargetOpen", false);
+        animatorTargetPanel.SetBool("UI_TargetClose", true);
     }
 
     void HeroInputDone()
@@ -319,12 +319,12 @@ public class BattleController : MonoBehaviour
 
     void ClearAttackPanel()
     {
-        enemySelectPanel.SetActive(false);
-        actionPanel.SetActive(false);
+        //enemySelectPanel.SetActive(false);
+        //actionPanel.SetActive(false);
         magicPanel.SetActive(false);
 
-        //animatorActionPanel.SetBool("UI_ActionOpen", false);
-        //animatorActionPanel.SetBool("UI_ActionClose", true);
+        animatorActionPanel.SetBool("UI_ActionOpen", false);
+        animatorActionPanel.SetBool("UI_ActionClose", true);
 
         foreach (GameObject attackButton in attackButtons)
         {

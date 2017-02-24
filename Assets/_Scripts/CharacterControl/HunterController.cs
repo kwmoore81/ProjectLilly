@@ -69,7 +69,7 @@ public class HunterController : MonoBehaviour
 
     [Tooltip("Weapon Numbers: 0 = Unarmed, 1 = 2H Sword, 2 = 2H Spear, 3 = 2H Axe, 4 = 2H Bow, 5 = 2H Crossbow, 6 = 2H Staff, 9 = R Sword, 11 = R Mace, 13 = R Dagger, 17 = R Pistol, 18 = Rifle")]
     public int rightWeaponType;
-    [Tooltip("Weapon Numbers: 7 = Shield, 8 = L Sword’ 10 = L Mace, 12 = L Dagger, 16 = L Pistol")]
+    [Tooltip("Weapon Numbers: 7 = Shield, 8 = L Sword 10 = L Mace, 12 = L Dagger, 16 = L Pistol")]
     public int leftWeaponType;
     int rightWeapon = 0;
     int leftWeapon = 0;

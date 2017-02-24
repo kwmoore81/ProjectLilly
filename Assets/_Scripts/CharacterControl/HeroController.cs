@@ -75,6 +75,7 @@ public class HeroController : MonoBehaviour
     int leftWeapon = 0;
 
     //Weapon Models
+    // TODO: Remove unnecessary weapon GameObject setup
     public GameObject twohandaxe;
     public GameObject twohandsword;
     public GameObject twohandspear;
@@ -112,7 +113,8 @@ public class HeroController : MonoBehaviour
 
         selector.SetActive(false);
 
-        //hide all weapons
+        // Hide all weapons
+        // TODO: Remove unnecessary weapon hiding
         if (twohandaxe != null)
         {
             twohandaxe.SetActive(false);
@@ -254,6 +256,8 @@ public class HeroController : MonoBehaviour
         }
         else
         {
+            // TODO: Add Speed stat to ATB fill rate
+            // TODO: Add ambush condition
             ATB_Timer += Time.deltaTime;
             float ATB_FillPercentage = ATB_Timer / ATB_MaxDelay;
             ATB_Bar.transform.localScale = new Vector3(Mathf.Clamp(ATB_FillPercentage, 0, 1), ATB_Bar.transform.localScale.y, ATB_Bar.transform.localScale.z);
@@ -308,7 +312,7 @@ public class HeroController : MonoBehaviour
         yield return new WaitForSeconds(0.85f);
         DoDamage();
 
-        WeaponEffect(false);
+        
 
         animator.SetInteger("Jumping", 1);
         animator.SetTrigger("JumpTrigger");
@@ -421,9 +425,8 @@ public class HeroController : MonoBehaviour
                 }
             }
 
-            // Change model color ... to be replaced by death animation
+            // Trigger death animation
             animator.SetTrigger("Death1Trigger");
-            //this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(105, 105, 105, 255);
 
             // Reset hero input
             battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
@@ -452,6 +455,7 @@ public class HeroController : MonoBehaviour
     {
         GameObject activeTrail;
 
+        // TODO: Remove unnecessary weapons
         if (twohandsword.activeSelf == true)
         {
             activeTrail = twohandsword.transform.FindChild("Trail").gameObject;
@@ -511,6 +515,7 @@ public class HeroController : MonoBehaviour
     }
 
     void UpdateHeroPanel()
+    // TODO: Modify to accomodate different class info
     {
         // Update HP bar and text
         float HP_FillPercentage = hero.CurrentHealth / hero.BaseHealth;
