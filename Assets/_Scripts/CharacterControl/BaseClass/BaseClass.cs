@@ -43,8 +43,6 @@ public class BaseClass
     private float baseMagicDefense;
     private float currentMagicDefense;
 
-    public List<BaseAttack> attacks = new List<BaseAttack>();
-
     // ******************************************************
     // temporary until other energy sources are added to code 
     private float baseMP;

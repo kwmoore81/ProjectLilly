@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 [System.Serializable]
-public class BaseEnemy : BaseClass
+public class BaseHunter: BaseClass
 {
-    public BaseEnemy()
+    public BaseHunter()
     {
         BaseStrength = 7;
         BaseAgility = 8;
@@ -27,17 +27,5 @@ public class BaseEnemy : BaseClass
     }
 
     public List<BaseAttack> attacks = new List<BaseAttack>();
-
-    public enum EnemyType
-    {
-        FIRE, ICE, EARTH, AIR
-    }
-
-    public enum SpawnType
-    {
-        COMMON, UNCOMMON, RARE, LEGEND
-    }
-
-    public EnemyType enemyType;
-    public SpawnType spawnType;
+    public List<BaseAttack> magicAttacks = new List<BaseAttack>();
 }
