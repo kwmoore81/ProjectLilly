@@ -50,6 +50,7 @@ public class RPGCharacterControllerFREE : MonoBehaviour
 	float moveSpeed;
 	public float runSpeed = 6f;
 	float rotationSpeed = 40f;
+    public float movementCounter = 0;
   
 	float x;
 	float z;
@@ -182,6 +183,11 @@ public class RPGCharacterControllerFREE : MonoBehaviour
 		{
 			isFalling = false;
 		}
+        if (Input.GetButton("Vertical") || Input.GetButton("Horizontal"))
+            {
+            movementCounter = movementCounter + 0.1f;
+            }
+
 	}
 
 	//get velocity of rigid body and pass the value to the animator to control the animations
@@ -255,18 +261,18 @@ public class RPGCharacterControllerFREE : MonoBehaviour
 			//reduce input for diagonal movement
 			if(motion.magnitude > 1)
 			{
-				motion.Normalize();
+				motion.Normalize();             
 			}
 			if(canMove && !isBlocking)
 			{
 				//set speed by walking / running
 				if(isStrafing)
 				{
-					newVelocity = motion * walkSpeed;
+					newVelocity = motion * walkSpeed;                  
 				}
 				else
 				{
-					newVelocity = motion * runSpeed;
+					newVelocity = motion * runSpeed;                    
 				}
 				//if rolling use rolling speed and direction
 				if(isRolling)

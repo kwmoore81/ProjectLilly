@@ -10,6 +10,9 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     public GameObject DataBankObj;
     private DataBank databank;
 
+    public GameObject activeCharacter;
+    RPGCharacterControllerFREE characterController;
+
     public int gabiCurrentHealth;
     public int gabiCurrentResolve;
 
@@ -22,10 +25,13 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     public int quinnCurrentWater;
 
     public int currentAreaCorruption;
+    public float characterMovementCounter;
 
     void Start()
     {
         databank = DataBankObj.GetComponent<DataBank>();
+        characterController = activeCharacter.GetComponent<RPGCharacterControllerFREE>();
+        
     }
 
     public void SceneChange()
@@ -52,8 +58,9 @@ public class OverworldSceneChanger1 : MonoBehaviour {
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (characterController.movementCounter >= 10)
         {
+            //if ()
             if (overworld2.gameObject.activeInHierarchy == false && overworld1.gameObject.activeInHierarchy == true)
             {
                 databank.UpdateBank(gabiCurrentHealth, gabiCurrentResolve, arvandusCurrentHealth, arvanusCurrentStamina, quinnCurrentHealth, quinnCurrentFire, quinnCurrentEarth, quinnCurrentWater, currentAreaCorruption);             
