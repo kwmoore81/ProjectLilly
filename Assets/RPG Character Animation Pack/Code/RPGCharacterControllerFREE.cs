@@ -51,8 +51,10 @@ public class RPGCharacterControllerFREE : MonoBehaviour
 	public float runSpeed = 6f;
 	float rotationSpeed = 40f;
     public float movementCounter = 0;
-  
-	float x;
+    public float maxMovmentCounter = 0;
+    public bool isMoving;
+
+    float x;
 	float z;
 	float dv;
 	float dh;
@@ -72,7 +74,7 @@ public class RPGCharacterControllerFREE : MonoBehaviour
 	bool isBlocking = false;
 	public float knockbackMultiplier = 1f;
 	bool isKnockback;
-
+    
 	#endregion
 
 	#region Initialization
@@ -183,12 +185,12 @@ public class RPGCharacterControllerFREE : MonoBehaviour
 		{
 			isFalling = false;
 		}
-        if (Input.GetButton("Vertical") || Input.GetButton("Horizontal"))
-            {
-            movementCounter = movementCounter + 0.1f;
-            }
+        //if (Input.GetButton("Vertical") || Input.GetButton("Horizontal"))
+        //{
+        //    movementCounter = movementCounter + 0.1f;
+        //}
 
-	}
+    }
 
 	//get velocity of rigid body and pass the value to the animator to control the animations
 	void LateUpdate()
@@ -202,15 +204,19 @@ public class RPGCharacterControllerFREE : MonoBehaviour
 		//if character is alive and can move, set our animator
 		if(!isDead && canMove)
 		{
+            
 			if(moveSpeed > 0)
 			{
 				animator.SetBool("Moving", true);
+                isMoving = true;
 			}
 			else
 			{
 				animator.SetBool("Moving", false);
+                isMoving = false;
 			}
-		}
+            
+        }
 	}
 	
 	#endregion
@@ -242,14 +248,20 @@ public class RPGCharacterControllerFREE : MonoBehaviour
 		z = inputVertical;
 		inputVec = x * right + z * forward;
 	}
-
+    
 	//rotate character towards direction moved
 	void RotateTowardsMovementDir()
 	{
 		if(inputVec != Vector3.zero && !isStrafing && !isRolling && !isBlocking)
 		{
 			transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(inputVec), Time.deltaTime * rotationSpeed);
-		}
+            //isMoving = true;
+            //maxMovmentCounter = maxMovmentCounter + 0.1f;
+        }
+        //else
+        //{
+        //    isMoving = false;
+        //}
 	}
 
 	float UpdateMovement()
