@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class OverworldSceneChanger1 : MonoBehaviour {
 
-    public GameObject overworld1;
-    public GameObject overworld2;
-   
+    public GameObject overworldScene;
+    public GameObject battleScene;
+
+    public GameObject battleMaster;
+    private OverWorldSceneChanger2 overWorldSceneChanger2;
+
     public GameObject DataBase;
     private CharacterStatsDB characterStatsDB;
 
@@ -37,12 +40,14 @@ public class OverworldSceneChanger1 : MonoBehaviour {
         characterStatsDB = DataBase.GetComponent<CharacterStatsDB>();
         characterController = activeCharacter.GetComponent<RPGCharacterControllerFREE>();
         animator = activeCharacter.GetComponentInChildren<Animator>();
+        overWorldSceneChanger2 = battleMaster.GetComponent<OverWorldSceneChanger2>();
     }
 
     public void SceneChange()
-    {             
-            overworld2.gameObject.SetActive(true);
-            overworld1.gameObject.SetActive(false);   
+    {
+            battleScene.gameObject.SetActive(true);
+            overWorldSceneChanger2.UpdateFromBank();
+            overworldScene.gameObject.SetActive(false);   
     }
 
     public void UpdateFromBank()
@@ -75,17 +80,17 @@ public class OverworldSceneChanger1 : MonoBehaviour {
                 randValue = Random.value;
                 if (randValue < encounterChance)
                 {
-                    if (overworld2.gameObject.activeInHierarchy == false && overworld1.gameObject.activeInHierarchy == true)
+                    if (battleScene.gameObject.activeInHierarchy == false && overworldScene.gameObject.activeInHierarchy == true)
                     {
-                        characterStatsDB.SendData();
+                        characterStatsDB.SendData1();
                         SceneChange();
                     }
                 }
                 else if (characterController.maxMovmentCounter >= maxTimeBeforeEncounter)
                 {
-                    if (overworld2.gameObject.activeInHierarchy == false && overworld1.gameObject.activeInHierarchy == true)
+                    if (battleScene.gameObject.activeInHierarchy == false && overworldScene.gameObject.activeInHierarchy == true)
                     {
-                        characterStatsDB.SendData();
+                        characterStatsDB.SendData1();
                         SceneChange();
                     }
                 }
