@@ -2,12 +2,13 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class HeroController_Old : MonoBehaviour
+public class HeroController : MonoBehaviour
 {
-    protected Animator animator;
     protected CameraController cameraControl;
     private BattleController battleControl;
     public BaseHero hero;
+
+    IHeroActionControl heroActionControl;
 
     // Hero state machine
     public enum HeroState
@@ -24,17 +25,12 @@ public class HeroController_Old : MonoBehaviour
     // Variables for handling ATB bar
     private float ATB_Timer = 0;
     private float ATB_MaxDelay = 5;
-    private Image ATB_Bar;
+    private Image ATB_Bar; 
     private Image HP_Bar;
     private Image MP_Bar;
 
     public GameObject selector;
     public GameObject enemyToAttack;
-
-    // Variables for performing timed actions
-    private Vector3 startPosition;
-    private float moveSpeed = 20;
-    private bool actionStarted = false;
 
     private bool isAlive = true;
 
@@ -45,29 +41,31 @@ public class HeroController_Old : MonoBehaviour
 
     private bool battleCameraSet = false;
 
-    void Start ()
+    void Awake()
     {
         InitializeStats();
-
-        animator = GetComponentInChildren<Animator>();
 
         // Create panel and add info
         heroPanelSpacer = GameObject.Find("BattleCanvas").transform.FindChild("HeroPanel").transform.FindChild("HeroPanelSpacer");
         CreateHeroPanel();
 
-        startPosition = transform.position;
         ATB_Timer = Random.Range(0, 2.5f);
         currentState = HeroState.WAITING;
         battleControl = GameObject.Find("BattleManager").GetComponent<BattleController>();
-        cameraControl = GameObject.Find("Main Camera").GetComponent<CameraController>();
+        cameraControl = GameObject.Find("MainCamera").GetComponent<CameraController>();
 
         selector.SetActive(false);
-	}
-	
-	void Update ()
+        heroActionControl = gameObject.GetComponent<IHeroActionControl>();
+
+        heroActionControl.HeroAwake();
+    }
+
+    void Update()
     {
-        if (battleControl.startBattle)  CheckState();
-	}
+        if (battleControl.startBattle) CheckState();
+
+        heroActionControl.DrawWeapon();
+    }
 
     void CheckState()
     {
@@ -88,7 +86,7 @@ public class HeroController_Old : MonoBehaviour
 
                 break;
             case (HeroState.ACTION):
-                StartCoroutine(PerformAction());
+                PerformAction();
                 break;
             case (HeroState.DEAD):
                 HeroDeath();
@@ -112,6 +110,8 @@ public class HeroController_Old : MonoBehaviour
         }
         else
         {
+            // TODO: Add Speed stat to ATB fill rate
+            // TODO: Add ambush condition
             ATB_Timer += Time.deltaTime;
             float ATB_FillPercentage = ATB_Timer / ATB_MaxDelay;
             ATB_Bar.transform.localScale = new Vector3(Mathf.Clamp(ATB_FillPercentage, 0, 1), ATB_Bar.transform.localScale.y, ATB_Bar.transform.localScale.z);
@@ -124,15 +124,8 @@ public class HeroController_Old : MonoBehaviour
         currentState = HeroState.IDLE;
     }
 
-    private IEnumerator PerformAction()
+    private void PerformAction()
     {
-        if (actionStarted)
-        {
-            yield break;
-        }
-
-        actionStarted = true;
-
         // Set battle camera type
         if (!battleCameraSet)
         {
@@ -140,52 +133,14 @@ public class HeroController_Old : MonoBehaviour
             battleCameraSet = true;
         }
 
-        // Move enemy to target
+        // Perform attack animation
         Vector3 targetPosition = new Vector3(enemyToAttack.transform.position.x - 2f, transform.position.y, enemyToAttack.transform.position.z);
-        while (MoveTowardTarget(targetPosition))
-        {
-            animator.SetBool("Moving", true);
-            animator.SetFloat("Velocity Z", moveSpeed);
+        heroActionControl.AttackInput(0, targetPosition);
+    }
 
-            yield return null;
-        }
-
-        animator.SetBool("Moving", false);
-
-        // Wait for set time, then do damage
-        int kickSide = Random.Range(0, 2);
-        if (kickSide == 1)
-        {
-            animator.SetTrigger("AttackKick1Trigger");
-        }
-        else
-        {
-            animator.SetTrigger("AttackKick2Trigger");
-        }
-        yield return new WaitForSeconds(0.85f);
-        DoDamage();
-
-        animator.SetInteger("Jumping", 1);
-        animator.SetTrigger("JumpTrigger");
-
-        // Move enemy back to starting position
-        while (MoveTowardStart(startPosition))
-        {
-            //animator.SetBool("Moving", true);
-            //animator.SetFloat("Velocity Z", -moveSpeed);
-
-            // Setup jump animation
-            animator.SetInteger("Jumping", 2);
-            animator.SetTrigger("JumpTrigger");
-
-            yield return null;
-        }
-
-        animator.SetInteger("Jumping", 0);
-
-        //animator.SetBool("Moving", false);
-
-        // Remove enemy from the active agent list
+    public void EndAction()
+    {
+        // Remove from the active agent list
         battleControl.activeAgentList.RemoveAt(0);
 
         if (battleControl.actionState != BattleController.ActionState.WIN && battleControl.actionState != BattleController.ActionState.LOSE)
@@ -204,17 +159,6 @@ public class HeroController_Old : MonoBehaviour
 
         cameraControl.BattleCamReset();
         battleCameraSet = false;
-        actionStarted = false;
-    }
-
-    private bool MoveTowardTarget(Vector3 target)
-    {
-        return target != (transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime));
-    }
-
-    private bool MoveTowardStart(Vector3 target)
-    {
-        return target != (transform.position = Vector3.MoveTowards(transform.position, target, (moveSpeed * 1.25f) * Time.deltaTime));
     }
 
     public void TakeDamage(float _damage)
@@ -222,9 +166,7 @@ public class HeroController_Old : MonoBehaviour
         hero.CurrentHealth -= _damage;
 
         // Play hit animation
-        int hits = 5;
-        int hitNumber = Random.Range(0, hits);
-        animator.SetTrigger("GetHit" + (hitNumber + 1).ToString() + "Trigger");
+        heroActionControl.HitReaction();
 
         if (hero.CurrentHealth <= 0)
         {
@@ -235,7 +177,7 @@ public class HeroController_Old : MonoBehaviour
         UpdateHeroPanel();
     }
 
-    void DoDamage()
+    public void DoDamage()
     {
         float calculatedDamage = hero.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
         enemyToAttack.GetComponent<EnemyController>().TakeDamage(calculatedDamage);
@@ -276,9 +218,8 @@ public class HeroController_Old : MonoBehaviour
                 }
             }
 
-            // Change model color ... to be replaced by death animation
-            animator.SetTrigger("Death1Trigger");
-            //this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(105, 105, 105, 255);
+            // Trigger death animation
+            heroActionControl.DeathReaction();
 
             // Reset hero input
             battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
@@ -287,6 +228,7 @@ public class HeroController_Old : MonoBehaviour
         }
     }
 
+    // TODO: Need to setup bar for each class.  Maybe move it to class controllers.
     void CreateHeroPanel()
     {
         heroPanel = Instantiate(heroPanel) as GameObject;
@@ -304,6 +246,7 @@ public class HeroController_Old : MonoBehaviour
     }
 
     void UpdateHeroPanel()
+    // TODO: Modify to accomodate different class info
     {
         // Update HP bar and text
         float HP_FillPercentage = hero.CurrentHealth / hero.BaseHealth;

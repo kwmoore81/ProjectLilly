@@ -1,34 +1,15 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
-public class EnemyController : MonoBehaviour
+public class ElementalistController : MonoBehaviour, IHeroActionControl
 {
     protected Animator animator;
-    private BattleController battleControl;
-    public BaseEnemy enemy;
-
-    // Enemy state machine
-    public enum EnemyState
-    {
-        WAITING,        // Waiting for ATB bar to fill
-        CHOOSEACTION,   // Choose enemy action
-        IDLE,           // Make enemy idle in between actions
-        ACTION,         // Process enemy actions
-        DEAD            // Enemy is dead, waiting for things to happen
-    }
-    public EnemyState currentState;
+    HeroController heroControl;
 
     // Variables for weapon draw delay
     private float weaponDrawTimer = 0.0f;
     private float weaponDrawDelay = .75f;
-
-    public GameObject selector;
-
-    // Variables for handling ATB
-    private float ATB_Timer = 0;
-    private float ATB_MaxDelay = 10;
-
-    TurnOrderHandler enemyAttack;
 
     // Variables for performing timed actions
     private Vector3 startPosition;
@@ -55,209 +36,94 @@ public class EnemyController : MonoBehaviour
     //Weapon and Shield
     public Weapon weapon;
 
-    [Tooltip("Weapon Numbers: 0 = Unarmed, 1 = 2H Sword, 2 = 2H Spear, 3 = 2H Axe, 4 = 2H Bow, 5 = 2H Crossbow, 6 = 2H Staff, 9 = R Sword, 11 = R Mace, 13 = R Dagger, 17 = R Pistol, 18 = Rifle")]
-    public int rightWeaponType;
-    [Tooltip("Weapon Numbers: 7 = Shield, 8 = L Sword’ 10 = L Mace, 12 = L Dagger, 16 = L Pistol")]
-    public int leftWeaponType;
+    private int rightWeaponType = 6;
+    private int leftWeaponType = 0;
     int rightWeapon = 0;
     int leftWeapon = 0;
 
-    //Weapon Models
-    // TODO: Remove unnecessary weapon GameObject setup
-    public GameObject twohandaxe;
-    public GameObject twohandsword;
-    public GameObject twohandspear;
-    public GameObject twohandbow;
-    public GameObject twohandcrossbow;
+    //Weapon Model
     public GameObject staff;
-    public GameObject swordL;
-    public GameObject swordR;
-    public GameObject maceL;
-    public GameObject maceR;
-    public GameObject daggerL;
-    public GameObject daggerR;
-    public GameObject itemL;
-    public GameObject itemR;
-    public GameObject shield;
-    public GameObject pistolL;
-    public GameObject pistolR;
-    public GameObject rifle;
 
-    void Start ()
+    public void HeroAwake()
     {
-        InitializeStats();
-
         animator = GetComponentInChildren<Animator>();
-
+        heroControl = GetComponent<HeroController>();
         startPosition = transform.position;
-        ATB_Timer = Random.Range(0, 2.5f);
-        currentState = EnemyState.WAITING;
-        battleControl = GameObject.Find("BattleManager").GetComponent<BattleController>();
 
-        selector.SetActive(false);
-
-        // Hide all weapons
-        // TODO: Remove unnecessary weapon hiding
-        if (twohandaxe != null)
-        {
-            twohandaxe.SetActive(false);
-        }
-        if (twohandbow != null)
-        {
-            twohandbow.SetActive(false);
-        }
-        if (twohandcrossbow != null)
-        {
-            twohandcrossbow.SetActive(false);
-        }
-        if (twohandspear != null)
-        {
-            twohandspear.SetActive(false);
-        }
-        if (twohandsword != null)
-        {
-            twohandsword.SetActive(false);
-        }
+        // Hide Weapon
         if (staff != null)
         {
             staff.SetActive(false);
         }
-        if (swordL != null)
-        {
-            swordL.SetActive(false);
-        }
-        if (swordR != null)
-        {
-            swordR.SetActive(false);
-        }
-        if (maceL != null)
-        {
-            maceL.SetActive(false);
-        }
-        if (maceR != null)
-        {
-            maceR.SetActive(false);
-        }
-        if (daggerL != null)
-        {
-            daggerL.SetActive(false);
-        }
-        if (daggerR != null)
-        {
-            daggerR.SetActive(false);
-        }
-        if (itemL != null)
-        {
-            itemL.SetActive(false);
-        }
-        if (itemR != null)
-        {
-            itemR.SetActive(false);
-        }
-        if (shield != null)
-        {
-            shield.SetActive(false);
-        }
-        if (pistolL != null)
-        {
-            pistolL.SetActive(false);
-        }
-        if (pistolR != null)
-        {
-            pistolR.SetActive(false);
-        }
-        if (rifle != null)
-        {
-            rifle.SetActive(false);
-        }
     }
 
-    void Update()
+    public void DrawWeapon()
     {
-        if (battleControl.startBattle) CheckState();
-
-        if (weaponDrawTimer >= weaponDrawDelay)
-        {
-            if ((rightWeaponType > 7 && rightWeaponType < 17))
-                if (leftWeapon != leftWeaponType)
-                {
-                    StartCoroutine(_SwitchWeapon(leftWeaponType));
-                    leftWeapon = leftWeaponType;
-                }
-            if (rightWeapon != rightWeaponType)
+        if ((rightWeaponType > 7 && rightWeaponType < 17))
+            if (leftWeapon != leftWeaponType)
             {
-                StartCoroutine(_SwitchWeapon(rightWeaponType));
-                rightWeapon = rightWeaponType;
+                StartCoroutine(_SwitchWeapon(leftWeaponType));
+                leftWeapon = leftWeaponType;
             }
-        }
-        else
+        if (rightWeapon != rightWeaponType)
         {
-            weaponDrawTimer += Time.deltaTime;
+            StartCoroutine(_SwitchWeapon(rightWeaponType));
+            rightWeapon = rightWeaponType;
         }
     }
 
-    void CheckState()
+    void WeaponEffect(bool _trailOn)
     {
-        //Debug.Log(currentState);
+        GameObject activeTrail;
 
-        switch (currentState)
+        if (staff.activeSelf == true)
         {
-            case (EnemyState.WAITING):
-                UpdateATB();
-                break;
-            case (EnemyState.CHOOSEACTION):
-                ChooseAction();
-                currentState = EnemyState.IDLE;
-                break;
-            case (EnemyState.IDLE):
-
-                break;
-            case (EnemyState.ACTION):
-                StartCoroutine(PerformAction());
-                break;
-            case (EnemyState.DEAD):
-                EnemyDeath();
-                break;
+            activeTrail = staff.transform.FindChild("Trail").gameObject;
+            if (_trailOn)
+                activeTrail.SetActive(true);
+            else
+                activeTrail.SetActive(false);
         }
     }
 
-    void InitializeStats()
+    // TODO: Setup RecieveAttack() function
+    public void AttackInput(int _attackID, Vector3 _targetPosition)
     {
-        enemy.CurrentHealth = enemy.BaseHealth;
-        enemy.CurrentMP = enemy.BaseMP;
-        enemy.CurrentAttackPower = enemy.BaseAttackPower;
-        enemy.CurrentPhysicalDefense = enemy.BasePhysicalDefense;
+        StartCoroutine(PerformAttack(_targetPosition));
     }
 
-    void UpdateATB()
+    // TODO: Setup ReceiveStance() function
+    public void StanceInput(int _stanceID)
     {
-        if (ATB_Timer >= ATB_MaxDelay)
-        {
-            currentState = EnemyState.CHOOSEACTION;
-        }
-        else
-        {
-            ATB_Timer += Time.deltaTime;
-        }
+
     }
 
-    void ChooseAction()
+    // TODO: Setup RecieveItemUse() function
+    public void ItemUseInput(int _itemID)
     {
-        // Create an enemy attack and assign necessary info
-        enemyAttack = new TurnOrderHandler();
-        enemyAttack.activeAgent = name;
-        enemyAttack.agentGO = this.gameObject;
-        enemyAttack.targetGO = battleControl.heroesInBattle[Random.Range(0, battleControl.heroesInBattle.Count)];
 
-        // Pass enemy attack to the active agent list
-        int randomChoice = Random.Range(0, enemy.attacks.Count);
-        enemyAttack.chosenAttack = enemy.attacks[randomChoice];
-        Debug.Log(this.gameObject.name + " has chosen " + enemyAttack.chosenAttack.attackName + " and does " + enemyAttack.chosenAttack.attackDamage + " damage.");
-
-        battleControl.ActionCollector(enemyAttack);
     }
 
-    private IEnumerator PerformAction()
+    // TODO: Setup Defend() function
+    public void DefendInput()
+    {
+        
+    }
+
+    public void HitReaction()
+    {
+        // TODO: Add variable hit reaction based on damage done and defend state
+        int hits = 5;
+        int hitNumber = Random.Range(0, hits);
+        animator.SetTrigger("GetHit" + (hitNumber + 1).ToString() + "Trigger");
+    }
+
+    public void DeathReaction()
+    {
+        animator.SetTrigger("Death1Trigger");
+    }
+
+    private IEnumerator PerformAttack(Vector3 _targetPosition)
     {
         if (actionStarted)
         {
@@ -266,56 +132,23 @@ public class EnemyController : MonoBehaviour
 
         actionStarted = true;
 
-        // Move enemy to target
-        Vector3 targetPosition = new Vector3(enemyAttack.targetGO.transform.position.x + 2f, enemyAttack.targetGO.transform.position.y, enemyAttack.targetGO.transform.position.z);
-        while (MoveTowardTarget(targetPosition))
-        {
-            animator.SetBool("Moving", true);
-            animator.SetFloat("Velocity Z", moveSpeed);
-
-            yield return null;
-        }
-
-        animator.SetBool("Moving", false);
-
         // Wait for set time, then do damage
         int attackRand = Random.Range(0, 3);
 
-        WeaponEffect(true);
         if (attackRand == 0)
-            animator.SetTrigger("Attack4Trigger");
+            animator.SetTrigger("CastAttack1Trigger");
         if (attackRand == 1)
-            animator.SetTrigger("Attack5Trigger");
+            animator.SetTrigger("CastAttack2Trigger");
         if (attackRand == 2)
-            animator.SetTrigger("Attack6Trigger");
+            animator.SetTrigger("CastAttack3Trigger");
 
-        yield return new WaitForSeconds(0.5f);
-        DoDamage();
+        yield return new WaitForSeconds(0.85f);
 
-        WeaponEffect(false);
-
-        // Move enemy back to starting position
-        while (MoveTowardStart(startPosition))
-        {
-            animator.SetBool("Moving", true);
-            animator.SetFloat("Velocity Z", -moveSpeed);
-
-            yield return null;
-        }
-
-        animator.SetBool("Moving", false);
-
-        // Remove enemy from the active agent list
-        battleControl.activeAgentList.RemoveAt(0);
-
-        // Reset the battle controller to WAIT
-        battleControl.actionState = BattleController.ActionState.WAITING;
-
-        // Reset enemy state
-        ATB_Timer = 0;
-        currentState = EnemyState.WAITING;
+        // TODO: Pass damage to HeroController DoDamage() function
+        heroControl.DoDamage();
 
         actionStarted = false;
+        heroControl.EndAction();
     }
 
     private bool MoveTowardTarget(Vector3 target)
@@ -325,140 +158,57 @@ public class EnemyController : MonoBehaviour
 
     private bool MoveTowardStart(Vector3 target)
     {
-        return target != (transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime));
+        return target != (transform.position = Vector3.MoveTowards(transform.position, target, (moveSpeed * 1.25f) * Time.deltaTime));
     }
 
-    public void TakeDamage(float _damage)
+
+    // TODO: Setup melee animation function
+    private void MeleeAnim()
     {
-        enemy.CurrentHealth -= _damage;
 
-        // Play hit animation
-        int hits = 5;
-        int hitNumber = Random.Range(0, hits);
-        animator.SetTrigger("GetHit" + (hitNumber + 1).ToString() + "Trigger");
-
-        if (enemy.CurrentHealth <= 0)
-        {
-            enemy.CurrentHealth = 0;
-            currentState = EnemyState.DEAD;
-        }
     }
 
-    void DoDamage()
+    // TODO: Setup attack animation function
+    private void SpellcastingAnim()
     {
-        float calculatedDamage = enemy.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
+        int attackRand = Random.Range(0, 3);
 
-        enemyAttack.targetGO.GetComponent<HeroController>().TakeDamage(calculatedDamage);
+        if (attackRand == 0)
+            animator.SetTrigger("CastAttack1Trigger");
+        if (attackRand == 1)
+            animator.SetTrigger("CastAttack2Trigger");
+        if (attackRand == 2)
+            animator.SetTrigger("CastAttack3Trigger");
     }
 
-    void EnemyDeath()
+    // TODO: Setup stance animation function
+    private void UtilityAnim()
     {
-        if (!isAlive)
-        {
-            return;
-        }
-        else
-        {
-            // Change tag and remove gameObject enemiesInBattle list
-            this.gameObject.tag = "DeadEnemy";
-            battleControl.enemiesInBattle.Remove(this.gameObject);
 
-            // Disable enemy selector
-            selector.SetActive(false);
-
-            // Remove from active agent list
-            if (battleControl.enemiesInBattle.Count > 0)
-            {
-                for (int i = 0; i < battleControl.activeAgentList.Count; i++)
-                {
-                    if (battleControl.activeAgentList[i].agentGO == this.gameObject)
-                    {
-                        battleControl.activeAgentList.Remove(battleControl.activeAgentList[i]);
-                    }
-
-                    if (battleControl.activeAgentList[i].targetGO == this.gameObject)
-                    {
-                        battleControl.activeAgentList[i].targetGO = battleControl.enemiesInBattle[Random.Range(0, battleControl.enemiesInBattle.Count)];
-                    }
-                }
-            }
-
-            // Play death animation
-            animator.SetTrigger("Death1Trigger");
-           
-            // Check if all enemies are dead and set isAlive to false;
-            battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
-            isAlive = false;
-
-            // Reset enemy buttons and check if battle has been won or lost
-            battleControl.EnemySelectionButtons();
-            battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
-        }
     }
 
-    void WeaponEffect(bool _trailOn)
+    // TODO: Setup item use animation function
+    private void ItemUseAnim()
     {
-        GameObject activeTrail;
 
-        // TODO: Remove unnecessary weapons
-        if (twohandsword.activeSelf == true)
-        {
-            activeTrail = twohandsword.transform.FindChild("Trail").gameObject;
-            if (_trailOn)
-                activeTrail.SetActive(true);
-            else
-                activeTrail.SetActive(false);
-        }
-        else if (twohandaxe.activeSelf == true)
-        {
-            activeTrail = twohandaxe.transform.FindChild("Trail").gameObject;
-            if (_trailOn)
-                activeTrail.SetActive(true);
-            else
-                activeTrail.SetActive(false);
-        }
-        else if (twohandspear.activeSelf == true)
-        {
-            activeTrail = twohandspear.transform.FindChild("Trail").gameObject;
-            if (_trailOn)
-                activeTrail.SetActive(true);
-            else
-                activeTrail.SetActive(false);
-        }
-        else if (staff.activeSelf == true)
-        {
-            activeTrail = staff.transform.FindChild("Trail").gameObject;
-            if (_trailOn)
-                activeTrail.SetActive(true);
-            else
-                activeTrail.SetActive(false);
-        }
-        else if (swordR.activeSelf == true)
-        {
-            activeTrail = swordR.transform.FindChild("Trail").gameObject;
-            if (_trailOn)
-                activeTrail.SetActive(true);
-            else
-                activeTrail.SetActive(false);
-        }
-        else if (maceR.activeSelf == true)
-        {
-            activeTrail = maceR.transform.FindChild("Trail").gameObject;
-            if (_trailOn)
-                activeTrail.SetActive(true);
-            else
-                activeTrail.SetActive(false);
-        }
-        else if (daggerR.activeSelf == true)
-        {
-            activeTrail = daggerR.transform.FindChild("Trail").gameObject;
-            if (_trailOn)
-                activeTrail.SetActive(true);
-            else
-                activeTrail.SetActive(false);
-        }
     }
 
+    // TODO: Setup hit animation function
+    private void HitReactionAnim()
+    {
+
+    }
+
+    // TODO: Setup defend animation function
+    private void DefendAnim()
+    {
+
+    }
+
+    public void HeroDeathAnim()
+    {
+        animator.SetTrigger("Death1Trigger");
+    }
 
     #region _Coroutines
 
@@ -828,78 +578,12 @@ public class EnemyController : MonoBehaviour
     public IEnumerator _WeaponVisibility(int weaponNumber, float delayTime, bool visible)
     {
         yield return new WaitForSeconds(delayTime);
-        if (weaponNumber == 1)
-        {
-            twohandsword.SetActive(visible);
-        }
-        if (weaponNumber == 2)
-        {
-            twohandspear.SetActive(visible);
-        }
-        if (weaponNumber == 3)
-        {
-            twohandaxe.SetActive(visible);
-        }
-        if (weaponNumber == 4)
-        {
-            twohandbow.SetActive(visible);
-        }
-        if (weaponNumber == 5)
-        {
-            twohandcrossbow.SetActive(visible);
-        }
+
         if (weaponNumber == 6)
         {
             staff.SetActive(visible);
         }
-        if (weaponNumber == 7)
-        {
-            shield.SetActive(visible);
-        }
-        if (weaponNumber == 8)
-        {
-            swordL.SetActive(visible);
-        }
-        if (weaponNumber == 9)
-        {
-            swordR.SetActive(visible);
-        }
-        if (weaponNumber == 10)
-        {
-            maceL.SetActive(visible);
-        }
-        if (weaponNumber == 11)
-        {
-            maceR.SetActive(visible);
-        }
-        if (weaponNumber == 12)
-        {
-            daggerL.SetActive(visible);
-        }
-        if (weaponNumber == 13)
-        {
-            daggerR.SetActive(visible);
-        }
-        if (weaponNumber == 14)
-        {
-            itemL.SetActive(visible);
-        }
-        if (weaponNumber == 15)
-        {
-            itemR.SetActive(visible);
-        }
-        if (weaponNumber == 16)
-        {
-            pistolL.SetActive(visible);
-        }
-        if (weaponNumber == 17)
-        {
-            pistolR.SetActive(visible);
-        }
-        if (weaponNumber == 18)
-        {
-            rifle.SetActive(visible);
-        }
+
         yield return null;
     }
 

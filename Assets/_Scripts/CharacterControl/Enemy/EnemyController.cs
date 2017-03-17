@@ -1,39 +1,34 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
 
-public class HeroController : MonoBehaviour
+public class EnemyController : MonoBehaviour
 {
     protected Animator animator;
-    protected CameraController cameraControl;
     private BattleController battleControl;
-    public BaseHero hero;
+    public BaseEnemy enemy;
 
-    // Hero state machine
-    public enum HeroState
+    // Enemy state machine
+    public enum EnemyState
     {
-        WAITING,    // Waiting for ATB bar to fill
-        ACTIONLIST,  // Add hero to list
-        IDLE,       // Make hero idle in between actions
-        SELECT,     // Hero is choosing action
-        ACTION,     // Process hero actions
-        DEAD        // Hero is dead, waiting for things to happen
+        WAITING,        // Waiting for ATB bar to fill
+        CHOOSEACTION,   // Choose enemy action
+        IDLE,           // Make enemy idle in between actions
+        ACTION,         // Process enemy actions
+        DEAD            // Enemy is dead, waiting for things to happen
     }
-    public HeroState currentState;
+    public EnemyState currentState;
 
     // Variables for weapon draw delay
     private float weaponDrawTimer = 0.0f;
     private float weaponDrawDelay = .75f;
 
-    // Variables for handling ATB bar
-    private float ATB_Timer = 0;
-    private float ATB_MaxDelay = 5;
-    private Image ATB_Bar;
-    private Image HP_Bar;
-    private Image MP_Bar;
-
     public GameObject selector;
-    public GameObject enemyToAttack;
+
+    // Variables for handling ATB
+    private float ATB_Timer = 0;
+    private float ATB_MaxDelay = 10;
+
+    TurnOrderHandler enemyAttack;
 
     // Variables for performing timed actions
     private Vector3 startPosition;
@@ -41,13 +36,6 @@ public class HeroController : MonoBehaviour
     private bool actionStarted = false;
 
     private bool isAlive = true;
-
-    // Hero panel variables
-    private HeroPanelInfo panelInfo;
-    public GameObject heroPanel;
-    private Transform heroPanelSpacer;
-
-    private bool battleCameraSet = false;
 
     // Weapon Select
     public enum Weapon
@@ -95,21 +83,16 @@ public class HeroController : MonoBehaviour
     public GameObject pistolR;
     public GameObject rifle;
 
-    void Awake ()
+    void Start ()
     {
         InitializeStats();
 
         animator = GetComponentInChildren<Animator>();
 
-        // Create panel and add info
-        heroPanelSpacer = GameObject.Find("BattleCanvas").transform.FindChild("HeroPanel").transform.FindChild("HeroPanelSpacer");
-        CreateHeroPanel();
-
         startPosition = transform.position;
         ATB_Timer = Random.Range(0, 2.5f);
-        currentState = HeroState.WAITING;
+        currentState = EnemyState.WAITING;
         battleControl = GameObject.Find("BattleManager").GetComponent<BattleController>();
-        cameraControl = GameObject.Find("MainCamera").GetComponent<CameraController>();
 
         selector.SetActive(false);
 
@@ -188,10 +171,10 @@ public class HeroController : MonoBehaviour
             rifle.SetActive(false);
         }
     }
-	
-	void Update ()
+
+    void Update()
     {
-        if (battleControl.startBattle)  CheckState();
+        if (battleControl.startBattle) CheckState();
 
         if (weaponDrawTimer >= weaponDrawDelay)
         {
@@ -219,55 +202,59 @@ public class HeroController : MonoBehaviour
 
         switch (currentState)
         {
-            case (HeroState.WAITING):
+            case (EnemyState.WAITING):
                 UpdateATB();
                 break;
-            case (HeroState.ACTIONLIST):
-                AddToActionList();
+            case (EnemyState.CHOOSEACTION):
+                ChooseAction();
+                currentState = EnemyState.IDLE;
                 break;
-            case (HeroState.IDLE):
-                // Idle
-                break;
-            case (HeroState.SELECT):
+            case (EnemyState.IDLE):
 
                 break;
-            case (HeroState.ACTION):
+            case (EnemyState.ACTION):
                 StartCoroutine(PerformAction());
                 break;
-            case (HeroState.DEAD):
-                HeroDeath();
+            case (EnemyState.DEAD):
+                EnemyDeath();
                 break;
         }
     }
 
     void InitializeStats()
     {
-        hero.CurrentHealth = hero.BaseHealth;
-        hero.CurrentMP = hero.BaseMP;
-        hero.CurrentAttackPower = hero.BaseAttackPower;
-        hero.CurrentPhysicalDefense = hero.BasePhysicalDefense;
+        enemy.CurrentHealth = enemy.BaseHealth;
+        enemy.CurrentMP = enemy.BaseMP;
+        enemy.CurrentAttackPower = enemy.BaseAttackPower;
+        enemy.CurrentPhysicalDefense = enemy.BasePhysicalDefense;
     }
 
     void UpdateATB()
     {
         if (ATB_Timer >= ATB_MaxDelay)
         {
-            currentState = HeroState.ACTIONLIST;
+            currentState = EnemyState.CHOOSEACTION;
         }
         else
         {
-            // TODO: Add Speed stat to ATB fill rate
-            // TODO: Add ambush condition
             ATB_Timer += Time.deltaTime;
-            float ATB_FillPercentage = ATB_Timer / ATB_MaxDelay;
-            ATB_Bar.transform.localScale = new Vector3(Mathf.Clamp(ATB_FillPercentage, 0, 1), ATB_Bar.transform.localScale.y, ATB_Bar.transform.localScale.z);
         }
     }
 
-    void AddToActionList()
+    void ChooseAction()
     {
-        battleControl.heroesToManage.Add(this.gameObject);
-        currentState = HeroState.IDLE;
+        // Create an enemy attack and assign necessary info
+        enemyAttack = new TurnOrderHandler();
+        enemyAttack.activeAgent = name;
+        enemyAttack.agentGO = this.gameObject;
+        enemyAttack.targetGO = battleControl.heroesInBattle[Random.Range(0, battleControl.heroesInBattle.Count)];
+
+        // Pass enemy attack to the active agent list
+        int randomChoice = Random.Range(0, enemy.attacks.Count);
+        enemyAttack.chosenAttack = enemy.attacks[randomChoice];
+        Debug.Log(this.gameObject.name + " has chosen " + enemyAttack.chosenAttack.attackName + " and does " + enemyAttack.chosenAttack.attackDamage + " damage.");
+
+        battleControl.ActionCollector(enemyAttack);
     }
 
     private IEnumerator PerformAction()
@@ -279,15 +266,8 @@ public class HeroController : MonoBehaviour
 
         actionStarted = true;
 
-        // Set battle camera type
-        if (!battleCameraSet)
-        {
-            cameraControl.BattleCamInput(transform, enemyToAttack.transform, 1);
-            battleCameraSet = true;
-        }
-
         // Move enemy to target
-        Vector3 targetPosition = new Vector3(enemyToAttack.transform.position.x - 2f, transform.position.y, enemyToAttack.transform.position.z);
+        Vector3 targetPosition = new Vector3(enemyAttack.targetGO.transform.position.x + 2f, enemyAttack.targetGO.transform.position.y, enemyAttack.targetGO.transform.position.z);
         while (MoveTowardTarget(targetPosition))
         {
             animator.SetBool("Moving", true);
@@ -309,50 +289,32 @@ public class HeroController : MonoBehaviour
         if (attackRand == 2)
             animator.SetTrigger("Attack6Trigger");
 
-        yield return new WaitForSeconds(0.85f);
+        yield return new WaitForSeconds(0.5f);
         DoDamage();
 
-        
-
-        animator.SetInteger("Jumping", 1);
-        animator.SetTrigger("JumpTrigger");
+        WeaponEffect(false);
 
         // Move enemy back to starting position
         while (MoveTowardStart(startPosition))
         {
-            //animator.SetBool("Moving", true);
-            //animator.SetFloat("Velocity Z", -moveSpeed);
-
-            // Setup jump animation
-            animator.SetInteger("Jumping", 2);
-            animator.SetTrigger("JumpTrigger");
+            animator.SetBool("Moving", true);
+            animator.SetFloat("Velocity Z", -moveSpeed);
 
             yield return null;
         }
 
-        animator.SetInteger("Jumping", 0);
-
-        //animator.SetBool("Moving", false);
+        animator.SetBool("Moving", false);
 
         // Remove enemy from the active agent list
         battleControl.activeAgentList.RemoveAt(0);
 
-        if (battleControl.actionState != BattleController.ActionState.WIN && battleControl.actionState != BattleController.ActionState.LOSE)
-        {
-            // Reset the battle controller to WAIT
-            battleControl.actionState = BattleController.ActionState.WAITING;
+        // Reset the battle controller to WAIT
+        battleControl.actionState = BattleController.ActionState.WAITING;
 
-            // Reset hero state
-            ATB_Timer = 0;
-            currentState = HeroState.WAITING;
-        }
-        else
-        {
-            currentState = HeroState.IDLE;
-        }
+        // Reset enemy state
+        ATB_Timer = 0;
+        currentState = EnemyState.WAITING;
 
-        cameraControl.BattleCamReset();
-        battleCameraSet = false;
         actionStarted = false;
     }
 
@@ -363,34 +325,33 @@ public class HeroController : MonoBehaviour
 
     private bool MoveTowardStart(Vector3 target)
     {
-        return target != (transform.position = Vector3.MoveTowards(transform.position, target, (moveSpeed * 1.25f) * Time.deltaTime));
+        return target != (transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime));
     }
 
     public void TakeDamage(float _damage)
     {
-        hero.CurrentHealth -= _damage;
+        enemy.CurrentHealth -= _damage;
 
         // Play hit animation
         int hits = 5;
         int hitNumber = Random.Range(0, hits);
         animator.SetTrigger("GetHit" + (hitNumber + 1).ToString() + "Trigger");
 
-        if (hero.CurrentHealth <= 0)
+        if (enemy.CurrentHealth <= 0)
         {
-            hero.CurrentHealth = 0;
-            currentState = HeroState.DEAD;
+            enemy.CurrentHealth = 0;
+            currentState = EnemyState.DEAD;
         }
-
-        UpdateHeroPanel();
     }
 
     void DoDamage()
     {
-        float calculatedDamage = hero.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
-        enemyToAttack.GetComponent<EnemyController>().TakeDamage(calculatedDamage);
+        float calculatedDamage = enemy.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
+
+        enemyAttack.targetGO.GetComponent<HeroController>().TakeDamage(calculatedDamage);
     }
 
-    void HeroDeath()
+    void EnemyDeath()
     {
         if (!isAlive)
         {
@@ -398,18 +359,15 @@ public class HeroController : MonoBehaviour
         }
         else
         {
-            // Change tag and remove gameObject from appropriate lists
-            this.gameObject.tag = "DeadHero";
-            battleControl.heroesInBattle.Remove(this.gameObject);
-            battleControl.heroesToManage.Remove(this.gameObject);
+            //// Change tag and remove gameObject enemiesInBattle list
+            this.gameObject.tag = "DeadEnemy";
+            battleControl.enemiesInBattle.Remove(this.gameObject);
 
-            // Set selector, action panel, and enemy select panel to inactive
+            // Disable enemy selector
             selector.SetActive(false);
-            battleControl.actionPanel.SetActive(false);
-            battleControl.enemySelectPanel.SetActive(false);
 
             // Remove from active agent list
-            if (battleControl.heroesInBattle.Count > 0)
+            if (battleControl.enemiesInBattle.Count > 0)
             {
                 for (int i = 0; i < battleControl.activeAgentList.Count; i++)
                 {
@@ -420,35 +378,22 @@ public class HeroController : MonoBehaviour
 
                     if (battleControl.activeAgentList[i].targetGO == this.gameObject)
                     {
-                        battleControl.activeAgentList[i].targetGO = battleControl.heroesInBattle[Random.Range(0, battleControl.heroesInBattle.Count)];
+                        battleControl.activeAgentList[i].targetGO = battleControl.enemiesInBattle[Random.Range(0, battleControl.enemiesInBattle.Count)];
                     }
                 }
             }
 
-            // Trigger death animation
+            // Play death animation
             animator.SetTrigger("Death1Trigger");
-
-            // Reset hero input
+           
+            // Check if all enemies are dead and set isAlive to false;
             battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
-
             isAlive = false;
+
+            // Reset enemy buttons and check if battle has been won or lost
+            battleControl.EnemySelectionButtons();
+            battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
         }
-    }
-
-    void CreateHeroPanel()
-    {
-        heroPanel = Instantiate(heroPanel) as GameObject;
-        panelInfo = heroPanel.GetComponent<HeroPanelInfo>();
-
-        // Add info to hero panel
-        panelInfo.heroName.text = name;
-        panelInfo.heroHP.text = "HP: " + hero.CurrentHealth + " / " + hero.BaseHealth;
-        panelInfo.heroMP.text = "MP: " + hero.CurrentMP + " / " + hero.BaseMP;
-
-        ATB_Bar = panelInfo.ATB_Bar;
-        HP_Bar = panelInfo.HP_Bar;
-        MP_Bar = panelInfo.MP_Bar;
-        heroPanel.transform.SetParent(heroPanelSpacer, false);
     }
 
     void WeaponEffect(bool _trailOn)
@@ -514,19 +459,6 @@ public class HeroController : MonoBehaviour
         }
     }
 
-    void UpdateHeroPanel()
-    // TODO: Modify to accomodate different class info
-    {
-        // Update HP bar and text
-        float HP_FillPercentage = hero.CurrentHealth / hero.BaseHealth;
-        HP_Bar.transform.localScale = new Vector3(Mathf.Clamp(HP_FillPercentage, 0, 1), ATB_Bar.transform.localScale.y, ATB_Bar.transform.localScale.z);
-        panelInfo.heroHP.text = "HP: " + hero.CurrentHealth + " / " + hero.BaseHealth;
-
-        // Update MP bar and text
-        float MP_FillPercentage = hero.CurrentMP / hero.BaseMP;
-        MP_Bar.transform.localScale = new Vector3(Mathf.Clamp(MP_FillPercentage, 0, 1), ATB_Bar.transform.localScale.y, ATB_Bar.transform.localScale.z);
-        panelInfo.heroMP.text = "MP: " + hero.CurrentMP + " / " + hero.BaseMP;
-    }
 
     #region _Coroutines
 
