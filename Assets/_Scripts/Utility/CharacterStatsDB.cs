@@ -8,6 +8,8 @@ using Mono.Data.Sqlite;
 
 public class CharacterStatsDB : MonoBehaviour
 {
+    public GameObject overWorldMaster;
+    private OverworldSceneChanger1 overWorldSceneChanger1;
 
     public int gabiCurrentHealth;
     public int gabiCurrentResolve;
@@ -25,6 +27,7 @@ public class CharacterStatsDB : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        overWorldSceneChanger1 = overWorldMaster.GetComponent<OverworldSceneChanger1>();
         connectionString = "URI=file:" + Application.dataPath + "/DataBase/CharacterStatsDB.sqlite";
         GetData();
     }
@@ -40,9 +43,10 @@ public class CharacterStatsDB : MonoBehaviour
         using (IDbConnection dbConnection = new SqliteConnection(connectionString))
         {
             dbConnection.Open();
-
+            
             using (IDbCommand dbCmd = dbConnection.CreateCommand())
             {
+                //Update Gabi From Database
                 string sqlQueryGabi = "SELECT * FROM CharacterStatsDB WHERE Name = 'Gabi'";
 
                 dbCmd.CommandText = sqlQueryGabi;
@@ -58,6 +62,7 @@ public class CharacterStatsDB : MonoBehaviour
                     readerGabi.Close();
                 }
 
+                //Update Arvandus From DataBase
                 string sqlQueryArvandus = "SELECT * FROM CharacterStatsDB WHERE Name = 'Arvandus'";
 
                 dbCmd.CommandText = sqlQueryArvandus;
@@ -76,6 +81,7 @@ public class CharacterStatsDB : MonoBehaviour
                     readerArvandus.Close();
                 }
 
+                //Update Quinn From Database
                 string sqlQueryQuinn = "SELECT * FROM CharacterStatsDB WHERE Name = 'Quinn'";
 
                 dbCmd.CommandText = sqlQueryQuinn;
@@ -99,7 +105,59 @@ public class CharacterStatsDB : MonoBehaviour
 
                 }
 
+            }
+        }
+    }
 
+    public void SendData()
+    {
+
+        //Grabbing Current Character Vitals
+        gabiCurrentHealth = overWorldSceneChanger1.gabiCurrentHealth;
+        gabiCurrentResolve = overWorldSceneChanger1.gabiCurrentResolve;
+
+        arvandusCurrentHealth = overWorldSceneChanger1.arvandusCurrentHealth;
+        arvandusCurrentStamina = overWorldSceneChanger1.arvanusCurrentStamina;
+
+        quinnCurrentHealth = overWorldSceneChanger1.quinnCurrentHealth;
+        quinnCurrentFire = overWorldSceneChanger1.quinnCurrentFire;
+        quinnCurrentEarth = overWorldSceneChanger1.quinnCurrentEarth;
+        quinnCurrentWater = overWorldSceneChanger1.quinnCurrentWater;
+
+
+        using (SqliteConnection dbConnection = new SqliteConnection(connectionString))
+        {
+            dbConnection.Open();
+
+            using (IDbCommand dbCmd = dbConnection.CreateCommand())
+            {
+                //Update Gabi's DataBase
+                string sqlQueryGabi = "Update CharacterStatsDB Set Health = @health, Resource = @resource WHERE Name = 'Gabi'";
+
+                dbCmd.CommandText = sqlQueryGabi;
+                dbCmd.Connection = dbConnection;
+                dbCmd.Parameters.Add(new SqliteParameter("@health", gabiCurrentHealth));
+                dbCmd.Parameters.Add(new SqliteParameter("@resource", gabiCurrentResolve));
+
+                //Update Arvandus' DataBase
+                string sqlQueryArvandus = "Update CharacterStatsDB Set Health = @health, Resource = @resource WHERE Name = 'Arvandus'";
+
+                dbCmd.CommandText = sqlQueryArvandus;
+                dbCmd.Connection = dbConnection;
+                dbCmd.Parameters.Add(new SqliteParameter("@health", arvandusCurrentHealth));
+                dbCmd.Parameters.Add(new SqliteParameter("@resource", arvandusCurrentStamina));
+                
+                //Update Quinn's DataBase
+                string sqlQueryQuinn = "Update CharacterStatsDB Set Health = @health, FireCharges = @fireCharges, EarthCharges = @earthCharges, WaterCharges = @waterCharges WHERE Name = 'Quinn'";
+
+                dbCmd.CommandText = sqlQueryQuinn;
+                dbCmd.Connection = dbConnection;
+                dbCmd.Parameters.Add(new SqliteParameter("@health", quinnCurrentHealth));
+                dbCmd.Parameters.Add(new SqliteParameter("@fireCharges", quinnCurrentFire));
+                dbCmd.Parameters.Add(new SqliteParameter("@earthCharges", quinnCurrentEarth));
+                dbCmd.Parameters.Add(new SqliteParameter("@waterCharges", quinnCurrentWater));
+
+                dbConnection.Close();              
 
             }
         }

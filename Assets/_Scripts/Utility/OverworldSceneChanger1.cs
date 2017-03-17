@@ -77,7 +77,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
                 {
                     if (overworld2.gameObject.activeInHierarchy == false && overworld1.gameObject.activeInHierarchy == true)
                     {
-                        //databank.UpdateBank(gabiCurrentHealth, gabiCurrentResolve, arvandusCurrentHealth, arvanusCurrentStamina, quinnCurrentHealth, quinnCurrentFire, quinnCurrentEarth, quinnCurrentWater, currentAreaCorruption);
+                        characterStatsDB.SendData();
                         SceneChange();
                     }
                 }
@@ -85,7 +85,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
                 {
                     if (overworld2.gameObject.activeInHierarchy == false && overworld1.gameObject.activeInHierarchy == true)
                     {
-                        //databank.UpdateBank(gabiCurrentHealth, gabiCurrentResolve, arvandusCurrentHealth, arvanusCurrentStamina, quinnCurrentHealth, quinnCurrentFire, quinnCurrentEarth, quinnCurrentWater, currentAreaCorruption);
+                        characterStatsDB.SendData();
                         SceneChange();
                     }
                 }
