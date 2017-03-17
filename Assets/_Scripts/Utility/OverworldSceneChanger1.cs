@@ -7,8 +7,8 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     public GameObject overworld1;
     public GameObject overworld2;
    
-    public GameObject DataBankObj;
-    private DataBank databank;
+    public GameObject DataBase;
+    private CharacterStatsDB characterStatsDB;
 
     public GameObject activeCharacter;
     RPGCharacterControllerFREE characterController;
@@ -34,7 +34,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
 
     void Start()
     {
-        databank = DataBankObj.GetComponent<DataBank>();
+        characterStatsDB = DataBase.GetComponent<CharacterStatsDB>();
         characterController = activeCharacter.GetComponent<RPGCharacterControllerFREE>();
         animator = activeCharacter.GetComponentInChildren<Animator>();
     }
@@ -47,18 +47,18 @@ public class OverworldSceneChanger1 : MonoBehaviour {
 
     public void UpdateFromBank()
     {
-        gabiCurrentHealth = databank.gabiCurrentHealth;
-        gabiCurrentResolve = databank.gabiCurrentResolve;
+        gabiCurrentHealth = characterStatsDB.gabiCurrentHealth;
+        gabiCurrentResolve = characterStatsDB.gabiCurrentResolve;
 
-        arvandusCurrentHealth = databank.arvandusCurrentHealth;
-        arvanusCurrentStamina = databank.arvanusCurrentStamina;
+        arvandusCurrentHealth = characterStatsDB.arvandusCurrentHealth;
+        arvanusCurrentStamina = characterStatsDB.arvandusCurrentStamina;
 
-        quinnCurrentHealth = databank.quinnCurrentHealth;
-        quinnCurrentFire = databank.quinnCurrentFire;
-        quinnCurrentEarth = databank.quinnCurrentEarth;
-        quinnCurrentWater = databank.quinnCurrentWater;
+        quinnCurrentHealth = characterStatsDB.quinnCurrentHealth;
+        quinnCurrentFire = characterStatsDB.quinnCurrentFire;
+        quinnCurrentEarth = characterStatsDB.quinnCurrentEarth;
+        quinnCurrentWater = characterStatsDB.quinnCurrentWater;
 
-        currentAreaCorruption = databank.currentAreaCorruption;             
+        //currentAreaCorruption = databank.currentAreaCorruption;             
     }
 
     void Update()
@@ -77,7 +77,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
                 {
                     if (overworld2.gameObject.activeInHierarchy == false && overworld1.gameObject.activeInHierarchy == true)
                     {
-                        databank.UpdateBank(gabiCurrentHealth, gabiCurrentResolve, arvandusCurrentHealth, arvanusCurrentStamina, quinnCurrentHealth, quinnCurrentFire, quinnCurrentEarth, quinnCurrentWater, currentAreaCorruption);
+                        //databank.UpdateBank(gabiCurrentHealth, gabiCurrentResolve, arvandusCurrentHealth, arvanusCurrentStamina, quinnCurrentHealth, quinnCurrentFire, quinnCurrentEarth, quinnCurrentWater, currentAreaCorruption);
                         SceneChange();
                     }
                 }
@@ -85,7 +85,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
                 {
                     if (overworld2.gameObject.activeInHierarchy == false && overworld1.gameObject.activeInHierarchy == true)
                     {
-                        databank.UpdateBank(gabiCurrentHealth, gabiCurrentResolve, arvandusCurrentHealth, arvanusCurrentStamina, quinnCurrentHealth, quinnCurrentFire, quinnCurrentEarth, quinnCurrentWater, currentAreaCorruption);
+                        //databank.UpdateBank(gabiCurrentHealth, gabiCurrentResolve, arvandusCurrentHealth, arvanusCurrentStamina, quinnCurrentHealth, quinnCurrentFire, quinnCurrentEarth, quinnCurrentWater, currentAreaCorruption);
                         SceneChange();
                     }
                 }
