@@ -240,6 +240,7 @@ public class BattleController : MonoBehaviour
         {
             ClearAttackPanel();
             heroInput = HeroUI.ACTIVATE;
+            actionState = ActionState.WAITING;
         }
     }
 

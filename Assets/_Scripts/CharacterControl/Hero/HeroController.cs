@@ -25,7 +25,7 @@ public class HeroController : MonoBehaviour
     // Variables for handling ATB bar
     private float ATB_Timer = 0;
     private float ATB_MaxDelay = 5;
-    private Image ATB_Bar; 
+    private Image ATB_Bar;
     private Image HP_Bar;
     private Image MP_Bar;
 
