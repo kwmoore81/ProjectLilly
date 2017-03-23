@@ -285,6 +285,7 @@ public class HumanRangedController : MonoBehaviour, IEnemyActionControl
         enemyControl.DoDamage();
 
         actionStarted = false;
+        enemyControl.EndAction();
     }
 
     private bool MoveTowardTarget(Vector3 target)

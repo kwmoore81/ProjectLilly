@@ -235,6 +235,9 @@ public class HumanCasterController : MonoBehaviour, IEnemyActionControl
 
         // TODO: Pass damage to HeroController DoDamage() function
         enemyControl.DoDamage();
+
+        actionStarted = false;
+        enemyControl.EndAction();
     }
 
     private bool MoveTowardTarget(Vector3 target)

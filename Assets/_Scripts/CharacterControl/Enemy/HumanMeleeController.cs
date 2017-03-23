@@ -267,6 +267,7 @@ public class HumanMeleeController : MonoBehaviour, IEnemyActionControl
         //animator.SetBool("Moving", false);
 
         actionStarted = false;
+        enemyControl.EndAction();
     }
 
     private bool MoveTowardTarget(Vector3 target)

@@ -43,6 +43,8 @@ public class EnemyController : MonoBehaviour
 
         selector.SetActive(false);
 
+        enemyActionControl = gameObject.GetComponent<IEnemyActionControl>();
+
         enemyActionControl.EnemyAwake();
     }
 
@@ -124,8 +126,31 @@ public class EnemyController : MonoBehaviour
         //}
 
         // Perform attack animation
-        Vector3 targetPosition = new Vector3(enemyAttack.targetGO.transform.position.x - 2f, transform.position.y, enemyAttack.targetGO.transform.position.z);
+        Vector3 targetPosition = new Vector3(enemyAttack.targetGO.transform.position.x + 2f, transform.position.y, enemyAttack.targetGO.transform.position.z);
         enemyActionControl.AttackInput(0, targetPosition);
+    }
+
+    public void EndAction()
+    {
+        // Remove from the active agent list
+        battleControl.activeAgentList.RemoveAt(0);
+
+        if (battleControl.actionState != BattleController.ActionState.WIN && battleControl.actionState != BattleController.ActionState.LOSE)
+        {
+            // Reset the battle controller to WAIT
+            battleControl.actionState = BattleController.ActionState.WAITING;
+
+            // Reset hero state
+            ATB_Timer = 0;
+            currentState = EnemyState.WAITING;
+        }
+        else
+        {
+            currentState = EnemyState.IDLE;
+        }
+
+        //cameraControl.BattleCamReset();
+        //battleCameraSet = false;
     }
 
     public void TakeDamage(float _damage)
