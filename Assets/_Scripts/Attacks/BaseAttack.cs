@@ -4,14 +4,27 @@ using System.Collections;
 [System.Serializable]
 public class BaseAttack : MonoBehaviour
 {
+    public GameObject projectile;
+
+    public enum AttackType
+    {
+        MELEE, RANGED, SPELL
+    }
+
+    public enum DamageType
+    {
+        NORMAL, FIRE, ICE, EARTH, AIR
+    }
+
     public string attackName;
     public string attackDescription;
 
     public float attackDamage;
     public float attackCost;
 
-    public enum damageType
-    {
-        NORMAL, FIRE, ICE, EARTH, AIR
-    }
+    public float attackWaitTime;
+    public string attackAnimation;
+
+    //public AttackType attackType;
+    //public DamageType damageType;
 }
