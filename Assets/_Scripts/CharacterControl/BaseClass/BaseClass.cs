@@ -11,22 +11,56 @@ public class BaseClass
     private int currentStrength;
     private int baseAgility;
     private int currentAgility;
-    private int baseEndurance;
-    private int currentEndurance;
-    private int baseIntellect;
-    private int currentIntellect;
+    private int baseResilience;
+    private int currentResilience;
+    private int baseMind;
+    private int currentMind;
+    private int baseSpirit;
+    private int currentSpirit;
 
-    private float baseHP;
-    private float currentHP;
-    private float baseMP;       // Remove this later once fleshed out in classes
-    private float currentMP;    // Remove this later once fleshed out in classes
+    private float baseHealth;
+    private float currentHealth;
+    // Speed = Agility
+    private float baseSpeed;
+    private float currentSpeed;
+    // Accuracy = Agility + Mind
+    private float baseAccuracy;
+    private float currentAccuracy;
+    // Evasion = Agility + (Resilience or Spirit?)
+    private float baseEvasion;
+    private float currentEvasion;
 
-    private float baseAttack;
-    private float currentAttack;
-    private float baseDefense;
-    private float currentDefense;
+    // Attack Power = Strength + Weapon Base Physical Power
+    private float baseAttackPower;
+    private float currentAttackPower;
+    // Magic Power = Mind + Weapon Base Magic Power
+    private float baseMagicPower;
+    private float currentMagicPower;
+    // Physical Defense = Resilience + Combined Armor Base Physical Defense
+    private float basePhysicalDefense;
+    private float currentPhysicalDefense;
+    // Magic Defense = Spirit + Combined Armor Base Magic Defense
+    private float baseMagicDefense;
+    private float currentMagicDefense;
 
-    public List<BaseAttack> attacks = new List<BaseAttack>();
+    // ******************************************************
+    // temporary until other energy sources are added to code 
+    private float baseMP;
+    private float currentMP;
+
+    public float BaseMP
+    {
+        get { return baseMP; }
+        set { baseMP = value; }
+    }
+
+    public float CurrentMP
+    {
+        get { return currentMP; }
+        set { currentMP = value; }
+    }
+    // End of temporary section
+    // ******************************************************
 
     // Name and description
     public string CharacterName
@@ -66,76 +100,137 @@ public class BaseClass
         set { currentAgility = value; }
     }
 
-    public int BaseEndurance
+    public int BaseResilience
     {
-        get { return baseEndurance; }
-        set { baseEndurance = value; }
+        get { return baseResilience; }
+        set { baseResilience = value; }
     }
 
-    public int CurrentEndurance
+    public int CurrentResilience
     {
-        get { return currentEndurance; }
-        set { currentEndurance = value; }
+        get { return currentResilience; }
+        set { currentResilience = value; }
     }
     
-    public int BaseIntellect
+    public int BaseMind
     {
-        get { return baseIntellect; }
-        set { baseIntellect = value; }
+        get { return baseMind; }
+        set { baseMind = value; }
     }
 
-    public int CurrentIntellect
+    public int CurrentMind
     {
-        get { return currentIntellect; }
-        set { currentIntellect = value; }
+        get { return currentMind; }
+        set { currentMind = value; }
+    }
+
+    public int BaseSpirit
+    {
+        get { return baseSpirit; }
+        set { baseSpirit = value; }
+    }
+
+    public int CurrentSpirit
+    {
+        get { return currentSpirit; }
+        set { currentSpirit = value; }
+    }
+
+    // Speed, accuracy, and evasion
+    public float BaseSpeed
+    {
+        get { return baseSpeed; }
+        set { baseSpeed = value; }
+    }
+
+    public float CurrentSpeed
+    {
+        get { return currentSpeed; }
+        set { currentSpeed = value; }
+    }
+
+    public float BaseAccuracy
+    {
+        get { return baseAccuracy; }
+        set { baseAccuracy = value; }
+    }
+
+    public float CurrentAccuracy
+    {
+        get { return currentAccuracy; }
+        set { currentAccuracy = value; }
+    }
+
+    public float BaseEvasion
+    {
+        get { return baseEvasion; }
+        set { baseEvasion = value; }
+    }
+
+    public float CurrentEvasion
+    {
+        get { return currentEvasion; }
+        set { currentEvasion = value; }
     }
 
     // Health, attack and defense
-    public float BaseHP
+    public float BaseHealth
     {
-        get { return baseHP; }
-        set { baseHP = value; }
+        get { return baseHealth; }
+        set { baseHealth = value; }
     }
 
-    public float CurrentHP
+    public float CurrentHealth
     {
-        get { return currentHP; }
-        set { currentHP = value; }
+        get { return currentHealth; }
+        set { currentHealth = value; }
     }
 
-    public float BaseMP
+    public float BaseMagicPower
     {
-        get { return baseMP; }
-        set { baseMP = value; }
+        get { return baseMagicPower; }
+        set { baseMagicPower = value; }
     }
 
-    public float CurrentMP
+    public float CurrentMagicPower
     {
-        get { return currentMP; }
-        set { currentMP = value; }
+        get { return currentMagicPower; }
+        set { currentMagicPower = value; }
     }
 
-    public float BaseAttack
+    public float BaseAttackPower
     {
-        get { return baseAttack; }
-        set { baseAttack = value; }
+        get { return baseAttackPower; }
+        set { baseAttackPower = value; }
     }
 
-    public float CurrentAttack
+    public float CurrentAttackPower
     {
-        get { return currentAttack; }
-        set { currentAttack = value; }
+        get { return currentAttackPower; }
+        set { currentAttackPower = value; }
     }
 
-    public float BaseDefense
+    public float BasePhysicalDefense
     {
-        get { return baseDefense; }
-        set { baseDefense = value; }
+        get { return basePhysicalDefense; }
+        set { basePhysicalDefense = value; }
     }
 
-    public float CurrentDefense
+    public float CurrentPhysicalDefense
     {
-        get { return currentDefense; }
-        set { currentDefense = value; }
+        get { return currentPhysicalDefense; }
+        set { currentPhysicalDefense = value; }
+    }
+
+    public float BaseMagicDefense
+    {
+        get { return baseMagicDefense; }
+        set { baseMagicDefense = value; }
+    }
+
+    public float CurrentMagicDefense
+    {
+        get { return currentMagicDefense; }
+        set { currentMagicDefense = value; }
     }
 }
