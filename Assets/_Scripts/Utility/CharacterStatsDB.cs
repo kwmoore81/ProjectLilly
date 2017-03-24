@@ -14,6 +14,8 @@ public class CharacterStatsDB : MonoBehaviour
     public GameObject battleMaster;
     private OverWorldSceneChanger2 overWorldSceneChanger2;
 
+    public PauseGame pauseGame;
+
     public int gabiCurrentHealth;
     public int gabiCurrentResolve;
 
@@ -32,14 +34,19 @@ public class CharacterStatsDB : MonoBehaviour
     {
         overWorldSceneChanger1 = overWorldMaster.GetComponent<OverworldSceneChanger1>();
         overWorldSceneChanger2 = battleMaster.GetComponent<OverWorldSceneChanger2>();
+        pauseGame = GetComponent<PauseGame>();
         connectionString = "URI=file:" + Application.dataPath + "/DataBase/CharacterStatsDB.sqlite";
         GetData();
+
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            pauseGame.pause();
+        }
     }
 
     private void GetData()
