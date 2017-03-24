@@ -25,6 +25,6 @@ public class BaseAttack : MonoBehaviour
     public float attackWaitTime;
     public string attackAnimation;
 
-    //public AttackType attackType;
-    //public DamageType damageType;
+    public AttackType attackType;
+    public DamageType damageType;
 }

@@ -133,16 +133,6 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
 
         actionStarted = true;
 
-        // Move enemy to target
-        if (_chosenAttack.attackType == _chosenAttack.attackType.MELEE)
-        while (MoveTowardTarget(_targetPosition))
-        {
-            animator.SetBool("Moving", true);
-            animator.SetFloat("Velocity Z", moveSpeed);
-
-            yield return null;
-        }
-
         animator.SetTrigger(_chosenAttack.attackAnimation);
 
         yield return new WaitForSeconds(_chosenAttack.attackWaitTime);
