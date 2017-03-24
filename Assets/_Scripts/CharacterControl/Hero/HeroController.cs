@@ -32,7 +32,7 @@ public class HeroController : MonoBehaviour
     public GameObject selector;
     public GameObject enemyToAttack;
 
-    private bool isAlive = true;
+    public bool isAlive = true;
 
     // Hero panel variables
     private HeroPanelInfo panelInfo;
