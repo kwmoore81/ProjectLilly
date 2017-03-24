@@ -82,6 +82,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
                 {
                     if (battleScene.gameObject.activeInHierarchy == false && overworldScene.gameObject.activeInHierarchy == true)
                     {
+                        characterController.maxMovmentCounter = 0;
                         characterStatsDB.SendData1();
                         SceneChange();
                     }
@@ -90,6 +91,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
                 {
                     if (battleScene.gameObject.activeInHierarchy == false && overworldScene.gameObject.activeInHierarchy == true)
                     {
+                        characterController.maxMovmentCounter = 0;
                         characterStatsDB.SendData1();
                         SceneChange();
                     }

@@ -9,7 +9,7 @@ namespace Invector.CharacterController
         {
             if (animator == null || !animator.enabled) return;
 
-            animator.SetBool("Strafing", isStrafing);
+            animator.SetBool("IsStrafing", isStrafing);
             animator.SetBool("IsGrounded", isGrounded);
             animator.SetFloat("GroundDistance", groundDistance);
 
