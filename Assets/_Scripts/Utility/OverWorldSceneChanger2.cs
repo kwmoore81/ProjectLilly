@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class OverWorldSceneChanger2 : MonoBehaviour {
 
-    public GameObject overworld1;
-    public GameObject overworld2;
-    
-    public GameObject DataBankObj;
-    private DataBank databank;
+    public GameObject overworldScene;
+    public GameObject battleScene;
+
+    public GameObject overworldMaster;
+    private OverworldSceneChanger1 overWorldSceneChanger1;
+
+    public GameObject DataBase;
+    private CharacterStatsDB characterStatsDB;
 
     public int gabiCurrentHealth;
     public int gabiCurrentResolve;
@@ -25,38 +28,40 @@ public class OverWorldSceneChanger2 : MonoBehaviour {
 
     void Start()
     {
-        databank = DataBankObj.GetComponent<DataBank>();                 
+        characterStatsDB = DataBase.GetComponent<CharacterStatsDB>();
+        overWorldSceneChanger1 = overworldMaster.GetComponent<OverworldSceneChanger1>();
     }
 
     public void SceneChange()
-    {     
-            overworld1.gameObject.SetActive(true);
-            overworld2.gameObject.SetActive(false);              
+    {
+            overworldScene.gameObject.SetActive(true);
+            overWorldSceneChanger1.UpdateFromBank();
+            battleScene.gameObject.SetActive(false);              
     }
 
     public void UpdateFromBank()
     {
-        gabiCurrentHealth = databank.gabiCurrentHealth;
-        gabiCurrentResolve = databank.gabiCurrentResolve;
+        gabiCurrentHealth = characterStatsDB.gabiCurrentHealth;
+        gabiCurrentResolve = characterStatsDB.gabiCurrentResolve;
 
-        arvandusCurrentHealth = databank.arvandusCurrentHealth;
-        arvanusCurrentStamina = databank.arvanusCurrentStamina;
+        arvandusCurrentHealth = characterStatsDB.arvandusCurrentHealth;
+        arvanusCurrentStamina = characterStatsDB.arvandusCurrentStamina;
 
-        quinnCurrentHealth = databank.quinnCurrentHealth;
-        quinnCurrentFire = databank.quinnCurrentFire;
-        quinnCurrentEarth = databank.quinnCurrentEarth;
-        quinnCurrentWater = databank.quinnCurrentWater;
+        quinnCurrentHealth = characterStatsDB.quinnCurrentHealth;
+        quinnCurrentFire = characterStatsDB.quinnCurrentFire;
+        quinnCurrentEarth = characterStatsDB.quinnCurrentEarth;
+        quinnCurrentWater = characterStatsDB.quinnCurrentWater;
 
-        currentAreaCorruption = databank.currentAreaCorruption;
+        //currentAreaCorruption = databank.currentAreaCorruption;
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
-            if (overworld2.gameObject.activeInHierarchy == true && overworld1.gameObject.activeInHierarchy == false)
+            if (battleScene.gameObject.activeInHierarchy == true && overworldScene.gameObject.activeInHierarchy == false)
             {
-                databank.UpdateBank(gabiCurrentHealth, gabiCurrentResolve, arvandusCurrentHealth, arvanusCurrentStamina, quinnCurrentHealth, quinnCurrentFire, quinnCurrentEarth, quinnCurrentWater, currentAreaCorruption);              
+                characterStatsDB.SendData2();
                 SceneChange();
             }
         }

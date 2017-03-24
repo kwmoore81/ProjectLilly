@@ -4,11 +4,18 @@ using UnityEngine;
 
 public class OverworldSceneChanger1 : MonoBehaviour {
 
-    public GameObject overworld1;
-    public GameObject overworld2;
-   
-    public GameObject DataBankObj;
-    private DataBank databank;
+    public GameObject overworldScene;
+    public GameObject battleScene;
+
+    public GameObject battleMaster;
+    private OverWorldSceneChanger2 overWorldSceneChanger2;
+
+    public GameObject DataBase;
+    private CharacterStatsDB characterStatsDB;
+
+    public GameObject activeCharacter;
+    RPGCharacterControllerFREE characterController;
+    Animator animator;
 
     public int gabiCurrentHealth;
     public int gabiCurrentResolve;
@@ -22,43 +29,72 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     public int quinnCurrentWater;
 
     public int currentAreaCorruption;
+    public float characterMovementCounter;
+    float randValue;
+    public float encounterChance = 0.60f;
+    public float encounterBuffer;
+    public float maxTimeBeforeEncounter;
 
     void Start()
     {
-        databank = DataBankObj.GetComponent<DataBank>();
+        characterStatsDB = DataBase.GetComponent<CharacterStatsDB>();
+        characterController = activeCharacter.GetComponent<RPGCharacterControllerFREE>();
+        animator = activeCharacter.GetComponentInChildren<Animator>();
+        overWorldSceneChanger2 = battleMaster.GetComponent<OverWorldSceneChanger2>();
     }
 
     public void SceneChange()
-    {             
-            overworld2.gameObject.SetActive(true);
-            overworld1.gameObject.SetActive(false);   
+    {
+            battleScene.gameObject.SetActive(true);
+            overWorldSceneChanger2.UpdateFromBank();
+            overworldScene.gameObject.SetActive(false);   
     }
 
     public void UpdateFromBank()
     {
-        gabiCurrentHealth = databank.gabiCurrentHealth;
-        gabiCurrentResolve = databank.gabiCurrentResolve;
+        gabiCurrentHealth = characterStatsDB.gabiCurrentHealth;
+        gabiCurrentResolve = characterStatsDB.gabiCurrentResolve;
 
-        arvandusCurrentHealth = databank.arvandusCurrentHealth;
-        arvanusCurrentStamina = databank.arvanusCurrentStamina;
+        arvandusCurrentHealth = characterStatsDB.arvandusCurrentHealth;
+        arvanusCurrentStamina = characterStatsDB.arvandusCurrentStamina;
 
-        quinnCurrentHealth = databank.quinnCurrentHealth;
-        quinnCurrentFire = databank.quinnCurrentFire;
-        quinnCurrentEarth = databank.quinnCurrentEarth;
-        quinnCurrentWater = databank.quinnCurrentWater;
+        quinnCurrentHealth = characterStatsDB.quinnCurrentHealth;
+        quinnCurrentFire = characterStatsDB.quinnCurrentFire;
+        quinnCurrentEarth = characterStatsDB.quinnCurrentEarth;
+        quinnCurrentWater = characterStatsDB.quinnCurrentWater;
 
-        currentAreaCorruption = databank.currentAreaCorruption;             
+        //currentAreaCorruption = databank.currentAreaCorruption;             
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            if (overworld2.gameObject.activeInHierarchy == false && overworld1.gameObject.activeInHierarchy == true)
+        if (animator.GetBool("Moving"))
+        { 
+
+        characterController.movementCounter += Time.deltaTime;
+        characterController.maxMovmentCounter += Time.deltaTime;
+
+            if (characterController.movementCounter >= encounterBuffer)
             {
-                databank.UpdateBank(gabiCurrentHealth, gabiCurrentResolve, arvandusCurrentHealth, arvanusCurrentStamina, quinnCurrentHealth, quinnCurrentFire, quinnCurrentEarth, quinnCurrentWater, currentAreaCorruption);             
-                SceneChange();
-            }
+                characterController.movementCounter = 0;
+                randValue = Random.value;
+                if (randValue < encounterChance)
+                {
+                    if (battleScene.gameObject.activeInHierarchy == false && overworldScene.gameObject.activeInHierarchy == true)
+                    {
+                        characterStatsDB.SendData1();
+                        SceneChange();
+                    }
+                }
+                else if (characterController.maxMovmentCounter >= maxTimeBeforeEncounter)
+                {
+                    if (battleScene.gameObject.activeInHierarchy == false && overworldScene.gameObject.activeInHierarchy == true)
+                    {
+                        characterStatsDB.SendData1();
+                        SceneChange();
+                    }
+                }
+            }           
         }
     }
 
