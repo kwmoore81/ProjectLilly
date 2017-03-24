@@ -41,8 +41,9 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
     int rightWeapon = 0;
     int leftWeapon = 0;
 
-    //Weapon Model
+    //Weapon model and spell spawn point
     public GameObject staff;
+    public GameObject spellSpawn;
 
     public void HeroAwake()
     {
@@ -87,9 +88,9 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
     }
 
     // TODO: Setup RecieveAttack() function
-    public void AttackInput(int _attackID, Vector3 _targetPosition)
+    public void AttackInput(BaseAttack _chosenAttack, Vector3 _targetPosition)
     {
-        StartCoroutine(PerformAttack(_targetPosition));
+        StartCoroutine(PerformAttack(_chosenAttack, _targetPosition));
     }
 
     // TODO: Setup ReceiveStance() function
@@ -123,7 +124,7 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         animator.SetTrigger("Death1Trigger");
     }
 
-    private IEnumerator PerformAttack(Vector3 _targetPosition)
+    private IEnumerator PerformAttack(BaseAttack _chosenAttack, Vector3 _targetPosition)
     {
         if (actionStarted)
         {
@@ -132,17 +133,24 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
 
         actionStarted = true;
 
-        // Wait for set time, then do damage
-        int attackRand = Random.Range(0, 3);
+        // Move enemy to target
+        if (_chosenAttack.attackType == _chosenAttack.attackType.MELEE)
+        while (MoveTowardTarget(_targetPosition))
+        {
+            animator.SetBool("Moving", true);
+            animator.SetFloat("Velocity Z", moveSpeed);
 
-        if (attackRand == 0)
-            animator.SetTrigger("CastAttack1Trigger");
-        if (attackRand == 1)
-            animator.SetTrigger("CastAttack2Trigger");
-        if (attackRand == 2)
-            animator.SetTrigger("CastAttack3Trigger");
+            yield return null;
+        }
 
-        yield return new WaitForSeconds(0.85f);
+        animator.SetTrigger(_chosenAttack.attackAnimation);
+
+        yield return new WaitForSeconds(_chosenAttack.attackWaitTime);
+
+        // Fire arrow
+        Vector3 relativePosition = _targetPosition - transform.position;
+        Quaternion spellRotation = Quaternion.LookRotation(relativePosition);
+        GameObject tempSpell = Instantiate(_chosenAttack.projectile, spellSpawn.transform.position, spellRotation) as GameObject;
 
         // TODO: Pass damage to HeroController DoDamage() function
         heroControl.DoDamage();

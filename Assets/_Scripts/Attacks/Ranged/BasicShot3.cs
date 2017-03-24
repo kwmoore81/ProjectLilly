@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BasicShot : BaseAttack
+public class BasicShot3 : BaseAttack
 {
-    public BasicShot()
+    public BasicShot3()
     {
-        attackName = "Basic Shot";
+        attackName = "Basic Shot 3";
         attackDescription = "Normal arrow shot";
         attackDamage = 10f;
         attackCost = 10f;

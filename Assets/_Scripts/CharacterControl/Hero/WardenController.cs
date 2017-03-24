@@ -86,9 +86,9 @@ public class WardenController : MonoBehaviour, IHeroActionControl
     }
 
     // TODO: Setup RecieveAttack() function
-    public void AttackInput(int _attackID, Vector3 _targetPosition)
+    public void AttackInput(BaseAttack _chosenAttack, Vector3 _targetPosition)
     {
-        StartCoroutine(PerformAttack(_targetPosition));
+        StartCoroutine(PerformAttack(_chosenAttack, _targetPosition));
     }
 
     // TODO: Setup ReceiveStance() function
@@ -122,7 +122,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         animator.SetTrigger("Death1Trigger");
     }
 
-    private IEnumerator PerformAttack(Vector3 _targetPosition)
+    private IEnumerator PerformAttack(BaseAttack _chosenAttack, Vector3 _targetPosition)
     {
         if (actionStarted)
         {
@@ -143,14 +143,16 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         animator.SetBool("Moving", false);
 
         // Wait for set time, then do damage
-        int attackRand = Random.Range(0, 3);
+        //int attackRand = Random.Range(0, 3);
 
-        if (attackRand == 0)
-            animator.SetTrigger("Attack4Trigger");
-        if (attackRand == 1)
-            animator.SetTrigger("Attack5Trigger");
-        if (attackRand == 2)
-            animator.SetTrigger("Attack6Trigger");
+        //if (attackRand == 0)
+        //    animator.SetTrigger("Attack4Trigger");
+        //if (attackRand == 1)
+        //    animator.SetTrigger("Attack5Trigger");
+        //if (attackRand == 2)
+        //    animator.SetTrigger("Attack6Trigger");
+
+        animator.SetTrigger(_chosenAttack.attackAnimation);
 
         yield return new WaitForSeconds(0.85f);
 

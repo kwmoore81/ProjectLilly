@@ -40,13 +40,15 @@ public class HunterController : MonoBehaviour, IHeroActionControl
     int rightWeapon = 0;
     int leftWeapon = 0;
 
-    //Weapon Model
+    //Weapon model and arrow spawn point
     public GameObject twohandbow;
+    public GameObject arrowSpawn;
 
     public void HeroAwake()
     {
         animator = GetComponentInChildren<Animator>();
         heroControl = GetComponent<HeroController>();
+
         startPosition = transform.position;
 
         // Hide weapon
@@ -79,9 +81,9 @@ public class HunterController : MonoBehaviour, IHeroActionControl
     }
 
     // TODO: Setup RecieveAttack() function
-    public void AttackInput(int _attackID, Vector3 _targetPosition)
+    public void AttackInput(BaseAttack _chosenAttack, Vector3 _targetPosition)
     {
-        StartCoroutine(PerformAttack(_targetPosition));
+        StartCoroutine(PerformAttack(_chosenAttack, _targetPosition));
     }
 
     // TODO: Setup ReceiveStance() function
@@ -115,7 +117,7 @@ public class HunterController : MonoBehaviour, IHeroActionControl
         animator.SetTrigger("Death1Trigger");
     }
 
-    private IEnumerator PerformAttack(Vector3 _targetPosition)
+    private IEnumerator PerformAttack(BaseAttack _chosenAttack, Vector3 _targetPosition)
     {
         if (actionStarted)
         {
@@ -124,20 +126,21 @@ public class HunterController : MonoBehaviour, IHeroActionControl
 
         actionStarted = true;
 
-        // Wait for set time, then do damage
-        int attackRand = Random.Range(0, 3);
+        animator.SetTrigger(_chosenAttack.attackAnimation);
 
-        if (attackRand == 0)
-            animator.SetTrigger("Attack4Trigger");
-        if (attackRand == 1)
-            animator.SetTrigger("Attack5Trigger");
-        if (attackRand == 2)
-            animator.SetTrigger("Attack6Trigger");
 
-        yield return new WaitForSeconds(0.85f);
+        yield return new WaitForSeconds(_chosenAttack.attackWaitTime);
 
-        // TODO: Pass damage to HeroController DoDamage() function
-        heroControl.DoDamage();
+        // Fire arrow
+        Vector3 relativePosition = _targetPosition - transform.position;
+        Quaternion arrowRotation = Quaternion.LookRotation(relativePosition);
+        GameObject tempArrow = Instantiate(_chosenAttack.projectile, arrowSpawn.transform.position, arrowRotation) as GameObject;
+
+        if (Vector3.Distance(arrowSpawn.transform.position, _targetPosition) < 5f)
+        {
+            Destroy(arrowSpawn);
+            heroControl.DoDamage();
+        }
 
         actionStarted = false;
         heroControl.EndAction();

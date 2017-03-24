@@ -135,7 +135,7 @@ public class HeroController : MonoBehaviour
 
         // Perform attack animation
         Vector3 targetPosition = new Vector3(enemyToAttack.transform.position.x - 2f, transform.position.y, enemyToAttack.transform.position.z);
-        heroActionControl.AttackInput(0, targetPosition);
+        heroActionControl.AttackInput(battleControl.activeAgentList[0].chosenAttack, targetPosition);
     }
 
     public void EndAction()
