@@ -142,8 +142,12 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         Quaternion spellRotation = Quaternion.LookRotation(relativePosition);
         GameObject tempSpell = Instantiate(_chosenAttack.projectile, spellSpawn.transform.position, spellRotation) as GameObject;
 
-        // TODO: Pass damage to HeroController DoDamage() function
+        yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
+
+        Destroy(tempSpell);
         heroControl.DoDamage();
+
+        yield return new WaitForSeconds(.5f);
 
         actionStarted = false;
         heroControl.EndAction();

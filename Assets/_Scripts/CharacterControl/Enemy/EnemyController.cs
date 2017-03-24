@@ -31,7 +31,7 @@ public class EnemyController : MonoBehaviour
 
     TurnOrderHandler enemyAttack;
 
-    private bool isAlive = true;
+    public bool isAlive = true;
 
     void Awake()
     {
@@ -206,7 +206,7 @@ public class EnemyController : MonoBehaviour
             }
 
             // Play death animation
-            enemyActionControl.DefendInput();
+            enemyActionControl.DeathReaction();
            
             // Check if all enemies are dead and set isAlive to false;
             battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
