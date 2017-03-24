@@ -128,7 +128,6 @@ public class HunterController : MonoBehaviour, IHeroActionControl
 
         animator.SetTrigger(_chosenAttack.attackAnimation);
 
-
         yield return new WaitForSeconds(_chosenAttack.attackWaitTime);
 
         // Fire arrow
@@ -136,11 +135,12 @@ public class HunterController : MonoBehaviour, IHeroActionControl
         Quaternion arrowRotation = Quaternion.LookRotation(relativePosition);
         GameObject tempArrow = Instantiate(_chosenAttack.projectile, arrowSpawn.transform.position, arrowRotation) as GameObject;
 
-        if (Vector3.Distance(arrowSpawn.transform.position, _targetPosition) < 5f)
-        {
-            Destroy(arrowSpawn);
-            heroControl.DoDamage();
-        }
+        yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
+
+        Destroy(tempArrow);
+        heroControl.DoDamage();
+
+        yield return new WaitForSeconds(.5f);
 
         actionStarted = false;
         heroControl.EndAction();
