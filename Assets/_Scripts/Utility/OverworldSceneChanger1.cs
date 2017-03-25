@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class OverworldSceneChanger1 : MonoBehaviour {
-
+    
     public GameObject overworldScene;
     public GameObject battleScene;
 
@@ -13,10 +13,11 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     public GameObject DataBase;
     private CharacterStatsDB characterStatsDB;
 
-    public GameObject activeCharacter;
-    RPGCharacterControllerFREE characterController;
+    public GameObject thirdPersonControllerOBJ;
+    private vThirdPersonController thirdPersonController;
     Animator animator;
-
+    //private vThirdPersonAnimator thirdPersonAnimator;
+    
     public int gabiCurrentHealth;
     public int gabiCurrentResolve;
 
@@ -35,12 +36,26 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     public float encounterBuffer;
     public float maxTimeBeforeEncounter;
 
+    
+    public Vector3 playerLastPos;
+    public Vector3 playerCurrentPos;
+    float _time = 0;
+    public float movementCounter = 0;
+    public float maxMovmentCounter = 0;
+
+    void Awake()
+    {
+        playerLastPos = thirdPersonControllerOBJ.transform.position;
+    }
     void Start()
     {
         characterStatsDB = DataBase.GetComponent<CharacterStatsDB>();
-        characterController = activeCharacter.GetComponent<RPGCharacterControllerFREE>();
-        animator = activeCharacter.GetComponentInChildren<Animator>();
+        thirdPersonController = thirdPersonControllerOBJ.GetComponent<vThirdPersonController>();
+        //thirdPersonAnimator = GetComponent<vThirdPersonAnimator>(); 
+        animator = thirdPersonControllerOBJ.GetComponent<Animator>();
         overWorldSceneChanger2 = battleMaster.GetComponent<OverWorldSceneChanger2>();
+        //playerPos = thirdPersonControllerOBJ.transform.position;
+        //playerTempPos = playerPos;
     }
 
     public void SceneChange()
@@ -68,36 +83,49 @@ public class OverworldSceneChanger1 : MonoBehaviour {
 
     void Update()
     {
-        if (animator.GetBool("Moving"))
-        { 
+        
+        if (playerCurrentPos.z < playerLastPos.z || playerCurrentPos.x < playerLastPos.x)
+        {
 
-        characterController.movementCounter += Time.deltaTime;
-        characterController.maxMovmentCounter += Time.deltaTime;
+            movementCounter += Time.deltaTime;
+            maxMovmentCounter += Time.deltaTime;
 
-            if (characterController.movementCounter >= encounterBuffer)
+            if (movementCounter >= encounterBuffer)
             {
-                characterController.movementCounter = 0;
+                movementCounter = 0;
                 randValue = Random.value;
                 if (randValue < encounterChance)
                 {
                     if (battleScene.gameObject.activeInHierarchy == false && overworldScene.gameObject.activeInHierarchy == true)
                     {
-                        characterController.maxMovmentCounter = 0;
+                        maxMovmentCounter = 0;
                         characterStatsDB.SendData1();
                         SceneChange();
                     }
                 }
-                else if (characterController.maxMovmentCounter >= maxTimeBeforeEncounter)
+                else if (maxMovmentCounter >= maxTimeBeforeEncounter)
                 {
                     if (battleScene.gameObject.activeInHierarchy == false && overworldScene.gameObject.activeInHierarchy == true)
                     {
-                        characterController.maxMovmentCounter = 0;
+                        maxMovmentCounter = 0;
                         characterStatsDB.SendData1();
                         SceneChange();
                     }
                 }
             }           
         }
+        else if (_time < 2f)
+        {
+
+            _time = 0;
+        }
+        else if (_time < 2f)
+        {
+            _time += Time.deltaTime;
+        }
+
+        playerLastPos = playerCurrentPos;
+        
     }
 
 }

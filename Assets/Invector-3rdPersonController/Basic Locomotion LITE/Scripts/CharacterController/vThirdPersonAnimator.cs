@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Invector.CharacterController
-{
+//namespace Invector.CharacterController
+//{
     public abstract class vThirdPersonAnimator : vThirdPersonMotor
     {
         public virtual void UpdateAnimator()
@@ -61,4 +61,4 @@ namespace Invector.CharacterController
             }
         }
     }
-}
+//}
