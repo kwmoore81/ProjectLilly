@@ -217,4 +217,9 @@ public class EnemyController : MonoBehaviour
             battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
         }
     }
+
+    public void EnemyRevive()
+    {
+        enemyActionControl.Revive();
+    }
 }
