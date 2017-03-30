@@ -30,12 +30,15 @@ public class OverWorldSceneChanger2 : MonoBehaviour {
     {
         characterStatsDB = DataBase.GetComponent<CharacterStatsDB>();
         overWorldSceneChanger1 = overworldMaster.GetComponent<OverworldSceneChanger1>();
+        Cursor.visible = true;
     }
 
     public void SceneChange()
     {
             overworldScene.gameObject.SetActive(true);
             overWorldSceneChanger1.UpdateFromBank();
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
             battleScene.gameObject.SetActive(false);              
     }
 

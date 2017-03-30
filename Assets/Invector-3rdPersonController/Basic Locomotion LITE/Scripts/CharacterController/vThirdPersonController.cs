@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Invector.CharacterController
-{
+//namespace Invector.CharacterController
+//{
     public class vThirdPersonController : vThirdPersonAnimator
     {
-        protected virtual void Start()
+    
+
+    protected virtual void Start()
         {
 #if !UNITY_EDITOR
                 Cursor.visible = false;
@@ -49,5 +51,7 @@ namespace Invector.CharacterController
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(newRotation), strafeRotationSpeed * Time.fixedDeltaTime);
             targetRotation = transform.rotation;
         }
+
+    
     }
-}
+//}

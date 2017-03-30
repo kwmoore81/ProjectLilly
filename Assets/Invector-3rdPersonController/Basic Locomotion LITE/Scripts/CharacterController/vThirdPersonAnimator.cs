@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Invector.CharacterController
-{
+//namespace Invector.CharacterController
+//{
     public abstract class vThirdPersonAnimator : vThirdPersonMotor
     {
         public virtual void UpdateAnimator()
         {
             if (animator == null || !animator.enabled) return;
 
-            animator.SetBool("Strafing", isStrafing);
+            animator.SetBool("IsStrafing", isStrafing);
             animator.SetBool("IsGrounded", isGrounded);
             animator.SetFloat("GroundDistance", groundDistance);
 
@@ -61,4 +61,4 @@ namespace Invector.CharacterController
             }
         }
     }
-}
+//}

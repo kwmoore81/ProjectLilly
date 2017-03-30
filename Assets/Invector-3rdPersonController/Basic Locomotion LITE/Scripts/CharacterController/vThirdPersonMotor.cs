@@ -5,8 +5,8 @@ using System.Collections;
 using Invector;
 using UnityEngine.EventSystems;
 
-namespace Invector.CharacterController
-{
+//namespace Invector.CharacterController
+//{
     public abstract class vThirdPersonMotor : MonoBehaviour
     {
         #region Variables        
@@ -20,11 +20,12 @@ namespace Invector.CharacterController
         protected float groundMinDistance = 0.2f;
         [SerializeField]
         protected float groundMaxDistance = 0.5f;
-        #endregion
+        
+    #endregion
 
-        #region Character Variables
+    #region Character Variables
 
-        public enum LocomotionType
+    public enum LocomotionType
         {
             FreeWithStrafe,
             OnlyStrafe,
@@ -234,6 +235,7 @@ namespace Invector.CharacterController
             direction = _direction;
             if (isSprinting) speed += 0.5f;
             if (direction >= 0.7 || direction <= -0.7 || speed <= 0.1) isSprinting = false;
+           
             if (stopMove) speed = 0f;
         }
 
@@ -545,5 +547,6 @@ namespace Invector.CharacterController
 
         #endregion
 
+
     }
-}
+//}
