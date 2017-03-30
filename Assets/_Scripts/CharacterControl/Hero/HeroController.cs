@@ -96,8 +96,7 @@ public class HeroController : MonoBehaviour
 
     void InitializeStats()
     {
-        hero.CurrentHealth = hero.BaseHealth;
-        hero.CurrentMP = hero.BaseMP;
+        hero.CurrentHealth = hero.baseHealth;
         hero.CurrentAttackPower = hero.BaseAttackPower;
         hero.CurrentPhysicalDefense = hero.BasePhysicalDefense;
     }
@@ -236,8 +235,8 @@ public class HeroController : MonoBehaviour
 
         // Add info to hero panel
         panelInfo.heroName.text = name;
-        panelInfo.heroHP.text = "HP: " + hero.CurrentHealth + " / " + hero.BaseHealth;
-        panelInfo.heroMP.text = "MP: " + hero.CurrentMP + " / " + hero.BaseMP;
+        panelInfo.heroHP.text = "HP: " + hero.CurrentHealth + " / " + hero.baseHealth;
+        //panelInfo.heroMP.text = "MP: " + hero.CurrentMP + " / " + hero.BaseMP;
 
         ATB_Bar = panelInfo.ATB_Bar;
         HP_Bar = panelInfo.HP_Bar;
@@ -249,13 +248,13 @@ public class HeroController : MonoBehaviour
     // TODO: Modify to accomodate different class info
     {
         // Update HP bar and text
-        float HP_FillPercentage = hero.CurrentHealth / hero.BaseHealth;
+        float HP_FillPercentage = hero.CurrentHealth / hero.baseHealth;
         HP_Bar.transform.localScale = new Vector3(Mathf.Clamp(HP_FillPercentage, 0, 1), ATB_Bar.transform.localScale.y, ATB_Bar.transform.localScale.z);
-        panelInfo.heroHP.text = "HP: " + hero.CurrentHealth + " / " + hero.BaseHealth;
+        panelInfo.heroHP.text = "HP: " + hero.CurrentHealth + " / " + hero.baseHealth;
 
         // Update MP bar and text
-        float MP_FillPercentage = hero.CurrentMP / hero.BaseMP;
-        MP_Bar.transform.localScale = new Vector3(Mathf.Clamp(MP_FillPercentage, 0, 1), ATB_Bar.transform.localScale.y, ATB_Bar.transform.localScale.z);
-        panelInfo.heroMP.text = "MP: " + hero.CurrentMP + " / " + hero.BaseMP;
+        //float MP_FillPercentage = hero.CurrentMP / hero.BaseMP;
+        //MP_Bar.transform.localScale = new Vector3(Mathf.Clamp(MP_FillPercentage, 0, 1), ATB_Bar.transform.localScale.y, ATB_Bar.transform.localScale.z);
+        //panelInfo.heroMP.text = "MP: " + hero.CurrentMP + " / " + hero.BaseMP;
     }
 }

@@ -142,16 +142,6 @@ public class WardenController : MonoBehaviour, IHeroActionControl
 
         animator.SetBool("Moving", false);
 
-        // Wait for set time, then do damage
-        //int attackRand = Random.Range(0, 3);
-
-        //if (attackRand == 0)
-        //    animator.SetTrigger("Attack4Trigger");
-        //if (attackRand == 1)
-        //    animator.SetTrigger("Attack5Trigger");
-        //if (attackRand == 2)
-        //    animator.SetTrigger("Attack6Trigger");
-
         animator.SetTrigger(_chosenAttack.attackAnimation);
 
         yield return new WaitForSeconds(0.85f);

@@ -7,14 +7,12 @@ public class BaseEnemy : BaseClass
 {
     public BaseEnemy()
     {
-        BaseStrength = 7;
-        BaseAgility = 8;
-        BaseResilience = 8;
-        BaseMind = 6;
-        BaseSpirit = 5;
-        BaseHealth = 100;
-
-        BaseMP = 50;  // temporary until other energy sources are added to code
+        baseStrength = 7;
+        baseAgility = 8;
+        baseResilience = 8;
+        baseMind = 6;
+        baseSpirit = 5;
+        baseHealth = 100;
 
         BaseSpeed = CurrentAgility;
         BaseAccuracy = CurrentAgility + CurrentMind;
