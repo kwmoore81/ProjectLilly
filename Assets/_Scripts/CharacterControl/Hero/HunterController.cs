@@ -80,7 +80,11 @@ public class HunterController : MonoBehaviour, IHeroActionControl
         // TODO: Add arrow trail
     }
 
-    // TODO: Setup RecieveAttack() function
+    public void SetIdleAnimation()
+    {
+        animator.SetTrigger("RelaxTrigger");
+    }
+
     public void AttackInput(BaseAttack _chosenAttack, Vector3 _targetPosition)
     {
         StartCoroutine(PerformAttack(_chosenAttack, _targetPosition));

@@ -245,7 +245,7 @@ public class HeroController : MonoBehaviour
         heroPanel.transform.SetParent(heroPanelSpacer, false);
     }
 
-    void UpdateHeroPanel()
+    public void UpdateHeroPanel()
     // TODO: Modify to accomodate different class info
     {
         // Update HP bar and text
