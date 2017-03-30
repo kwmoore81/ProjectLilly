@@ -151,10 +151,11 @@ public class WardenController : MonoBehaviour, IHeroActionControl
 
         animator.SetTrigger(_chosenAttack.attackAnimation);
 
-        yield return new WaitForSeconds(0.85f);
+        yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
 
-        // TODO: Pass damage to HeroController DoDamage() function
         heroControl.DoDamage();
+
+        yield return new WaitForSeconds(.5f);
 
         animator.SetInteger("Jumping", 1);
         animator.SetTrigger("JumpTrigger");
