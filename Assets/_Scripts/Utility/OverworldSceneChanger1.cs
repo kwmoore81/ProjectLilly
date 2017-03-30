@@ -62,6 +62,8 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     {
             battleScene.gameObject.SetActive(true);
             overWorldSceneChanger2.UpdateFromBank();
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
             overworldScene.gameObject.SetActive(false);   
     }
 
@@ -84,7 +86,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     void Update()
     {
         
-        if (playerCurrentPos.z < playerLastPos.z || playerCurrentPos.x < playerLastPos.x)
+        if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") !=0)
         {
 
             movementCounter += Time.deltaTime;
