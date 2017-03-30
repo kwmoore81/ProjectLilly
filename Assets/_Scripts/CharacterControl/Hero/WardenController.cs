@@ -7,6 +7,13 @@ public class WardenController : MonoBehaviour, IHeroActionControl
     protected Animator animator;
     HeroController heroControl;
 
+    // Warden stance
+    public enum Stance
+    {
+        FIRE, WATER, EARTH, WOOD, METAL
+    }
+    public Stance stance;
+
     // Variables for weapon draw delay
     private float weaponDrawTimer = 0.0f;
     private float weaponDrawDelay = .75f;

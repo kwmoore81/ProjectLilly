@@ -230,7 +230,7 @@ public class HeroController : MonoBehaviour
     // TODO: Need to setup bar for each class.  Maybe move it to class controllers.
     void CreateHeroPanel()
     {
-        heroPanel = Instantiate(heroPanel) as GameObject;
+        //heroPanel = Instantiate(heroPanel) as GameObject;
         panelInfo = heroPanel.GetComponent<HeroPanelInfo>();
 
         // Add info to hero panel
@@ -240,8 +240,8 @@ public class HeroController : MonoBehaviour
 
         ATB_Bar = panelInfo.ATB_Bar;
         HP_Bar = panelInfo.HP_Bar;
-        MP_Bar = panelInfo.MP_Bar;
-        heroPanel.transform.SetParent(heroPanelSpacer, false);
+        //MP_Bar = panelInfo.Resource_Bar;
+        //heroPanel.transform.SetParent(heroPanelSpacer, false);
     }
 
     public void UpdateHeroPanel()
