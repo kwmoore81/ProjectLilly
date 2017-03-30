@@ -7,6 +7,13 @@ public class WardenController : MonoBehaviour, IHeroActionControl
     protected Animator animator;
     HeroController heroControl;
 
+    // Warden stance
+    public enum Stance
+    {
+        FIRE, WATER, EARTH, WOOD, METAL
+    }
+    public Stance stance;
+
     // Variables for weapon draw delay
     private float weaponDrawTimer = 0.0f;
     private float weaponDrawDelay = .75f;
@@ -141,16 +148,6 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         }
 
         animator.SetBool("Moving", false);
-
-        // Wait for set time, then do damage
-        //int attackRand = Random.Range(0, 3);
-
-        //if (attackRand == 0)
-        //    animator.SetTrigger("Attack4Trigger");
-        //if (attackRand == 1)
-        //    animator.SetTrigger("Attack5Trigger");
-        //if (attackRand == 2)
-        //    animator.SetTrigger("Attack6Trigger");
 
         animator.SetTrigger(_chosenAttack.attackAnimation);
 
