@@ -7,6 +7,13 @@ public class HunterController : MonoBehaviour, IHeroActionControl
     protected Animator animator;
     HeroController heroControl;
 
+    // Hunter arrow types
+    public enum ArrowType
+    {
+        NORMAL, FIRE, WATER
+    }
+    public ArrowType arrowType;
+
     // Variables for weapon draw delay
     private float weaponDrawTimer = 0.0f;
     private float weaponDrawDelay = .75f;

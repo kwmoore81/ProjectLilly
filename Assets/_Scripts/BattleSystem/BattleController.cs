@@ -526,7 +526,7 @@ public class BattleController : MonoBehaviour
         for (int i = 0; i < heroesInBattle.Count; i++)
         {
             HeroController tempHero = heroesInBattle[i].GetComponent<HeroController>();
-            tempHero.hero.CurrentHealth = tempHero.hero.BaseHealth;
+            tempHero.hero.CurrentHealth = tempHero.hero.baseHealth;
             tempHero.UpdateHeroPanel();
             tempHero.currentState = HeroController.HeroState.WAITING;
         }
@@ -534,7 +534,7 @@ public class BattleController : MonoBehaviour
         for (int i = 0; i < enemiesInBattle.Count; i++)
         {
             EnemyController tempEnemy = enemiesInBattle[i].GetComponent<EnemyController>();
-            tempEnemy.enemy.CurrentHealth = tempEnemy.enemy.BaseHealth;
+            tempEnemy.enemy.CurrentHealth = tempEnemy.enemy.baseHealth;
             tempEnemy.currentState = EnemyController.EnemyState.WAITING;
         }
 

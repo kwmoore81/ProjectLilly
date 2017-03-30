@@ -4,22 +4,39 @@ using System.Collections.Generic;
 
 public class BaseClass
 {
-    private string characterName;
-    private string characterDescription;
+    // Character info (public)
+    public string characterName;
+    public string characterDescription;
 
-    private int baseStrength;
+    // Basic Attributes (public)
+    public int baseStrength;
+    public int baseAgility;
+    public int baseResilience;
+    public int baseMind;
+    public int baseSpirit;
+
+    // Basic Attributes (private)
     private int currentStrength;
-    private int baseAgility;
     private int currentAgility;
-    private int baseResilience;
     private int currentResilience;
-    private int baseMind;
     private int currentMind;
-    private int baseSpirit;
     private int currentSpirit;
 
-    private float baseHealth;
+    // Resources (public)
+    public float baseHealth;
+    public float baseEnergy;
+    public float maxFireCharges;
+    public float maxWaterCharges;
+    public float maxEarthCharges;
+
+    // Resources (private)
     private float currentHealth;
+    private float currentEnergy;
+    private float currentFireCharges;
+    private float currentWaterCharges;
+    private float currentEarthCharges;
+
+    // Secondary Attributes (private)
     // Speed = Agility
     private float baseSpeed;
     private float currentSpeed;
@@ -29,7 +46,6 @@ public class BaseClass
     // Evasion = Agility + (Resilience or Spirit?)
     private float baseEvasion;
     private float currentEvasion;
-
     // Attack Power = Strength + Weapon Base Physical Power
     private float baseAttackPower;
     private float currentAttackPower;
@@ -43,44 +59,25 @@ public class BaseClass
     private float baseMagicDefense;
     private float currentMagicDefense;
 
-    // ******************************************************
-    // temporary until other energy sources are added to code 
-    private float baseMP;
-    private float currentMP;
+    //// Name and description
+    //public string CharacterName
+    //{
+    //    get { return characterName; }
+    //    set { characterName = value; }
+    //}
 
-    public float BaseMP
-    {
-        get { return baseMP; }
-        set { baseMP = value; }
-    }
+    //public string CharacterDescription
+    //{
+    //    get { return characterDescription; }
+    //    set { characterDescription = value; }
+    //}
 
-    public float CurrentMP
-    {
-        get { return currentMP; }
-        set { currentMP = value; }
-    }
-    // End of temporary section
-    // ******************************************************
-
-    // Name and description
-    public string CharacterName
-    {
-        get { return characterName; }
-        set { characterName = value; }
-    }
-
-    public string CharacterDescription
-    {
-        get { return characterDescription; }
-        set { characterDescription = value; }
-    }
-
-    // Basic attributes
-    public int BaseStrength
-    {
-        get { return baseStrength; }
-        set { baseStrength = value; }
-    }
+    // Basic attributes (private)
+    //public int BaseStrength
+    //{
+    //    get { return baseStrength; }
+    //    set { baseStrength = value; }
+    //}
 
     public int CurrentStrength
     {
@@ -88,11 +85,11 @@ public class BaseClass
         set { currentStrength = value; }
     }
 
-    public int BaseAgility
-    {
-        get { return baseAgility; }
-        set { baseAgility = value; }
-    }
+    //public int BaseAgility
+    //{
+    //    get { return baseAgility; }
+    //    set { baseAgility = value; }
+    //}
 
     public int CurrentAgility
     {
@@ -100,11 +97,11 @@ public class BaseClass
         set { currentAgility = value; }
     }
 
-    public int BaseResilience
-    {
-        get { return baseResilience; }
-        set { baseResilience = value; }
-    }
+    //public int BaseResilience
+    //{
+    //    get { return baseResilience; }
+    //    set { baseResilience = value; }
+    //}
 
     public int CurrentResilience
     {
@@ -112,11 +109,11 @@ public class BaseClass
         set { currentResilience = value; }
     }
     
-    public int BaseMind
-    {
-        get { return baseMind; }
-        set { baseMind = value; }
-    }
+    //public int BaseMind
+    //{
+    //    get { return baseMind; }
+    //    set { baseMind = value; }
+    //}
 
     public int CurrentMind
     {
@@ -124,16 +121,77 @@ public class BaseClass
         set { currentMind = value; }
     }
 
-    public int BaseSpirit
-    {
-        get { return baseSpirit; }
-        set { baseSpirit = value; }
-    }
+    //public int BaseSpirit
+    //{
+    //    get { return baseSpirit; }
+    //    set { baseSpirit = value; }
+    //}
 
     public int CurrentSpirit
     {
         get { return currentSpirit; }
         set { currentSpirit = value; }
+    }
+
+    // Resources (private)
+    //public float BaseHealth
+    //{
+    //    get { return baseHealth; }
+    //    set { baseHealth = value; }
+    //}
+
+    public float CurrentHealth
+    {
+        get { return currentHealth; }
+        set { currentHealth = value; }
+    }
+
+    //public float BaseEnergy
+    //{
+    //    get { return baseEnergy; }
+    //    set { baseEnergy = value; }
+    //}
+
+    public float CurrentEnergy
+    {
+        get { return currentEnergy; }
+        set { currentEnergy = value; }
+    }
+
+    //public float MaxFireCharges
+    //{
+    //    get { return maxFireCharges; }
+    //    set { maxFireCharges = value; }
+    //}
+
+    public float CurrentFireCharges
+    {
+        get { return currentFireCharges; }
+        set { currentFireCharges = value; }
+    }
+
+    //public float MaxWaterCharges
+    //{
+    //    get { return maxWaterCharges; }
+    //    set { maxWaterCharges = value; }
+    //}
+
+    public float CurrentWaterCharges
+    {
+        get { return currentWaterCharges; }
+        set { currentWaterCharges = value; }
+    }
+
+    //public float MaxEarthCharges
+    //{
+    //    get { return maxEarthCharges; }
+    //    set { maxEarthCharges = value; }
+    //}
+
+    public float CurrentEarthCharges
+    {
+        get { return currentEarthCharges; }
+        set { currentEarthCharges = value; }
     }
 
     // Speed, accuracy, and evasion
@@ -173,19 +231,7 @@ public class BaseClass
         set { currentEvasion = value; }
     }
 
-    // Health, attack and defense
-    public float BaseHealth
-    {
-        get { return baseHealth; }
-        set { baseHealth = value; }
-    }
-
-    public float CurrentHealth
-    {
-        get { return currentHealth; }
-        set { currentHealth = value; }
-    }
-
+    // Attack and Defense
     public float BaseMagicPower
     {
         get { return baseMagicPower; }

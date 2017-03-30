@@ -82,8 +82,7 @@ public class EnemyController : MonoBehaviour
 
     void InitializeStats()
     {
-        enemy.CurrentHealth = enemy.BaseHealth;
-        enemy.CurrentMP = enemy.BaseMP;
+        enemy.CurrentHealth = enemy.baseHealth;
         enemy.CurrentAttackPower = enemy.BaseAttackPower;
         enemy.CurrentPhysicalDefense = enemy.BasePhysicalDefense;
     }
