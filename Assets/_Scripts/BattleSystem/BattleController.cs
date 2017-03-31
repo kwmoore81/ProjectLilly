@@ -48,6 +48,7 @@ public class BattleController : MonoBehaviour
     public GameObject attackPanel;
     public GameObject utilityPanel;
     public GameObject enemySelectPanel;
+    public GameObject corruptionMeter;
 
     // Hero attack variables
     public Transform actionSpacer;
