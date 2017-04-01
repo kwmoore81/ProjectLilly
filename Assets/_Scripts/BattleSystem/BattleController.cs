@@ -358,19 +358,67 @@ public class BattleController : MonoBehaviour
             attackButtons.Add(attackButton);
         }
 
-        // Create magic buttons
-        if (heroesToManage[0].GetComponent<HeroController>().hero.magicAttacks.Count > 1)
+        // Create fire spell buttons
+        if (heroesToManage[0].GetComponent<HeroController>().hero.fireSpells.Count > 1)
         {
             // Magic Button
             GameObject magicButton = Instantiate(actionButton) as GameObject;
             Text magicButtonText = magicButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
-            magicButtonText.text = "Magic";
+            magicButtonText.text = "Fire Spells";
             magicButton.GetComponent<Button>().onClick.AddListener(() => MagicInput());
             magicButton.transform.SetParent(actionSpacer, false);
             attackButtons.Add(magicButton);
 
             // Spell Buttons
-            foreach (BaseAttack magicAttack in heroesToManage[0].GetComponent<HeroController>().hero.magicAttacks)
+            foreach (BaseAttack magicAttack in heroesToManage[0].GetComponent<HeroController>().hero.fireSpells)
+            {
+                GameObject spellBtn = Instantiate(spellButton) as GameObject;
+                Text spellButtonText = spellBtn.transform.FindChild("Text").gameObject.GetComponent<Text>();
+                spellButtonText.text = magicAttack.attackName;
+                SpellCastButton spellCastButton = spellBtn.GetComponent<SpellCastButton>();
+                spellCastButton.spellToCast = magicAttack;
+                spellBtn.transform.SetParent(magicSpacer, false);
+                attackButtons.Add(spellBtn);
+            }
+        }
+
+        // Create water spell buttons
+        if (heroesToManage[0].GetComponent<HeroController>().hero.waterSpells.Count > 1)
+        {
+            // Magic Button
+            GameObject magicButton = Instantiate(actionButton) as GameObject;
+            Text magicButtonText = magicButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
+            magicButtonText.text = "Water Spells";
+            magicButton.GetComponent<Button>().onClick.AddListener(() => MagicInput());
+            magicButton.transform.SetParent(actionSpacer, false);
+            attackButtons.Add(magicButton);
+
+            // Spell Buttons
+            foreach (BaseAttack magicAttack in heroesToManage[0].GetComponent<HeroController>().hero.waterSpells)
+            {
+                GameObject spellBtn = Instantiate(spellButton) as GameObject;
+                Text spellButtonText = spellBtn.transform.FindChild("Text").gameObject.GetComponent<Text>();
+                spellButtonText.text = magicAttack.attackName;
+                SpellCastButton spellCastButton = spellBtn.GetComponent<SpellCastButton>();
+                spellCastButton.spellToCast = magicAttack;
+                spellBtn.transform.SetParent(magicSpacer, false);
+                attackButtons.Add(spellBtn);
+            }
+        }
+
+        // Create earth spell buttons
+        if (heroesToManage[0].GetComponent<HeroController>().hero.earthSpells.Count > 1)
+        {
+            // Magic Button
+            GameObject magicButton = Instantiate(actionButton) as GameObject;
+            Text magicButtonText = magicButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
+            magicButtonText.text = "Earth Spells";
+            magicButton.GetComponent<Button>().onClick.AddListener(() => MagicInput());
+            magicButton.transform.SetParent(actionSpacer, false);
+            attackButtons.Add(magicButton);
+
+            // Spell Buttons
+            foreach (BaseAttack magicAttack in heroesToManage[0].GetComponent<HeroController>().hero.earthSpells)
             {
                 GameObject spellBtn = Instantiate(spellButton) as GameObject;
                 Text spellButtonText = spellBtn.transform.FindChild("Text").gameObject.GetComponent<Text>();

@@ -600,8 +600,6 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         {
             twohandsword.SetActive(visible);
         }
-
-        yield return null;
     }
 
     #endregion

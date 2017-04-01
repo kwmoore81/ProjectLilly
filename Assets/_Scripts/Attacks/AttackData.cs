@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[System.Serializable]
-public class BaseAttack : MonoBehaviour
+public class AttackData : MonoBehaviour
 {
     public GameObject projectile;
 

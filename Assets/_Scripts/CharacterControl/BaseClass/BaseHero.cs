@@ -26,4 +26,7 @@ public class BaseHero: BaseClass
 
     public List<BaseAttack> attacks = new List<BaseAttack>();
     public List<BaseAttack> magicAttacks = new List<BaseAttack>();
+    public List<BaseAttack> fireSpells = new List<BaseAttack>();
+    public List<BaseAttack> waterSpells = new List<BaseAttack>();
+    public List<BaseAttack> earthSpells = new List<BaseAttack>();
 }
