@@ -6,6 +6,8 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     
     public GameObject overworldScene;
     public GameObject battleScene;
+    public GameObject battleSceneTemp;
+    public GameObject ForestBattlePrefab;
 
     public GameObject battleMaster;
     private OverWorldSceneChanger2 overWorldSceneChanger2;
@@ -15,8 +17,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
 
     public GameObject thirdPersonControllerOBJ;
     private vThirdPersonController thirdPersonController;
-    Animator animator;
-    //private vThirdPersonAnimator thirdPersonAnimator;
+    Animator animator;  
     
     public int gabiCurrentHealth;
     public int gabiCurrentResolve;
@@ -51,16 +52,13 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     {
         characterStatsDB = DataBase.GetComponent<CharacterStatsDB>();
         thirdPersonController = thirdPersonControllerOBJ.GetComponent<vThirdPersonController>();
-        //thirdPersonAnimator = GetComponent<vThirdPersonAnimator>(); 
         animator = thirdPersonControllerOBJ.GetComponent<Animator>();
         overWorldSceneChanger2 = battleMaster.GetComponent<OverWorldSceneChanger2>();
-        //playerPos = thirdPersonControllerOBJ.transform.position;
-        //playerTempPos = playerPos;
     }
 
     public void SceneChange()
-    {
-            battleScene.gameObject.SetActive(true);
+    {           
+            battleSceneTemp = Object.Instantiate(ForestBattlePrefab, battleScene.transform);
             overWorldSceneChanger2.UpdateFromBank();
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
@@ -97,22 +95,16 @@ public class OverworldSceneChanger1 : MonoBehaviour {
                 movementCounter = 0;
                 randValue = Random.value;
                 if (randValue < encounterChance)
-                {
-                    if (battleScene.gameObject.activeInHierarchy == false && overworldScene.gameObject.activeInHierarchy == true)
-                    {
+                {                   
                         maxMovmentCounter = 0;
                         characterStatsDB.SendData1();
-                        SceneChange();
-                    }
+                        SceneChange();                 
                 }
                 else if (maxMovmentCounter >= maxTimeBeforeEncounter)
-                {
-                    if (battleScene.gameObject.activeInHierarchy == false && overworldScene.gameObject.activeInHierarchy == true)
-                    {
+                {                   
                         maxMovmentCounter = 0;
                         characterStatsDB.SendData1();
-                        SceneChange();
-                    }
+                        SceneChange();                   
                 }
             }           
         }

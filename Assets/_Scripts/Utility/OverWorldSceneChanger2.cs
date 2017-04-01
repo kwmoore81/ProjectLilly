@@ -39,7 +39,7 @@ public class OverWorldSceneChanger2 : MonoBehaviour {
             overWorldSceneChanger1.UpdateFromBank();
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
-            battleScene.gameObject.SetActive(false);              
+            Destroy(overWorldSceneChanger1.battleSceneTemp);                      
     }
 
     public void UpdateFromBank()
