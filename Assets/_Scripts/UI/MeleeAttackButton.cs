@@ -3,7 +3,7 @@ using System.Collections;
 
 public class MeleeAttackButton : MonoBehaviour
 {
-    public BaseAttack meleeAttack;
+    public AttackData meleeAttack;
 
     public void doMeleeAttack()
     {

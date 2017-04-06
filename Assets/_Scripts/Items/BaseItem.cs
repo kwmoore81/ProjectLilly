@@ -1,43 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BaseItem
+public class BaseItem : MonoBehaviour
 {
-    private string itemName;
-    private string itemDescription;
-    private int itemID;
+    public string itemName;
+    public string itemDescription;
+    public string itemID;
+
+    public int strengthBonus;
+    public int agilityBonus;
+    public int resilienceBonus;
+    public int mindBonus;
+    public int spiritBonus;
 
     public enum ItemTypes
     {
         ARMOR,
         WEAPON,
-        ARROW,
         POTION
     }
 
-    private ItemTypes itemType;
-
-    public string ItemName
-    {
-        get { return itemName; }
-        set { itemName = value; }
-    }
-
-    public string ItemDescription
-    {
-        get { return itemDescription; }
-        set { itemDescription = value; }
-    }
-
-    public int ItemID
-    {
-        get { return itemID; }
-        set { itemID = value; }
-    }
-
-    public ItemTypes ItemType
-    {
-        get { return itemType; }
-        set { itemType = value; }
-    }
+    public ItemTypes itemType;
 }
