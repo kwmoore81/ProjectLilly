@@ -93,7 +93,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
     }
 
     // TODO: Setup RecieveAttack() function
-    public void AttackInput(BaseAttack _chosenAttack, Vector3 _targetPosition)
+    public void AttackInput(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         StartCoroutine(PerformAttack(_chosenAttack, _targetPosition));
     }
@@ -129,7 +129,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         animator.SetTrigger("Death1Trigger");
     }
 
-    private IEnumerator PerformAttack(BaseAttack _chosenAttack, Vector3 _targetPosition)
+    private IEnumerator PerformAttack(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         if (actionStarted)
         {
@@ -600,8 +600,6 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         {
             twohandsword.SetActive(visible);
         }
-
-        yield return null;
     }
 
     #endregion

@@ -694,6 +694,74 @@ public class HumanMeleeController : MonoBehaviour, IEnemyActionControl
         {
             twohandsword.SetActive(visible);
         }
+        if (weaponNumber == 2)
+        {
+            twohandspear.SetActive(visible);
+        }
+        if (weaponNumber == 3)
+        {
+            twohandaxe.SetActive(visible);
+        }
+        if (weaponNumber == 4)
+        {
+            twohandbow.SetActive(visible);
+        }
+        if (weaponNumber == 5)
+        {
+            twohandcrossbow.SetActive(visible);
+        }
+        if (weaponNumber == 6)
+        {
+            staff.SetActive(visible);
+        }
+        if (weaponNumber == 7)
+        {
+            shield.SetActive(visible);
+        }
+        if (weaponNumber == 8)
+        {
+            swordL.SetActive(visible);
+        }
+        if (weaponNumber == 9)
+        {
+            swordR.SetActive(visible);
+        }
+        if (weaponNumber == 10)
+        {
+            maceL.SetActive(visible);
+        }
+        if (weaponNumber == 11)
+        {
+            maceR.SetActive(visible);
+        }
+        if (weaponNumber == 12)
+        {
+            daggerL.SetActive(visible);
+        }
+        if (weaponNumber == 13)
+        {
+            daggerR.SetActive(visible);
+        }
+        if (weaponNumber == 14)
+        {
+            itemL.SetActive(visible);
+        }
+        if (weaponNumber == 15)
+        {
+            itemR.SetActive(visible);
+        }
+        if (weaponNumber == 16)
+        {
+            pistolL.SetActive(visible);
+        }
+        if (weaponNumber == 17)
+        {
+            pistolR.SetActive(visible);
+        }
+        if (weaponNumber == 18)
+        {
+            rifle.SetActive(visible);
+        }
 
         yield return null;
     }

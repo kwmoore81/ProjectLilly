@@ -24,7 +24,7 @@ public class BaseEnemy : BaseClass
         BaseMagicDefense = CurrentSpirit; //+ CombinedEquipment.MagicDefense
     }
 
-    public List<BaseAttack> attacks = new List<BaseAttack>();
+    public List<AttackData> attacks = new List<AttackData>();
 
     public enum EnemyType
     {

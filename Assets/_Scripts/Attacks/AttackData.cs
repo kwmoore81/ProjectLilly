@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[System.Serializable]
-public class BaseAttack : MonoBehaviour
+public class AttackData : MonoBehaviour
 {
     public GameObject projectile;
 
@@ -20,7 +19,8 @@ public class BaseAttack : MonoBehaviour
     public string attackDescription;
 
     public float attackDamage;
-    public float attackCost;
+    public float resouceCost;
+    public float chargeCost;
 
     public float attackWaitTime;
     public float damageWaitTime;

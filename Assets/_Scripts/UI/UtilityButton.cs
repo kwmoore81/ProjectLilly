@@ -3,7 +3,7 @@ using System.Collections;
 
 public class UtilityButton : MonoBehaviour
 {
-    public BaseAttack utility;
+    public AttackData utility;
 
     public void doUtility()
     {

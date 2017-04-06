@@ -48,6 +48,7 @@ public class HeroController : MonoBehaviour
         // Create panel and add info
         heroPanelSpacer = GameObject.Find("BattleCanvas").transform.FindChild("HeroPanel").transform.FindChild("HeroPanelSpacer");
         CreateHeroPanel();
+        UpdateHeroPanel();
 
         ATB_Timer = Random.Range(0, 2.5f);
         currentState = HeroState.WAITING;
@@ -99,6 +100,12 @@ public class HeroController : MonoBehaviour
         hero.CurrentHealth = hero.baseHealth;
         hero.CurrentAttackPower = hero.BaseAttackPower;
         hero.CurrentPhysicalDefense = hero.BasePhysicalDefense;
+
+
+        // Initialize elemental charges (Remove after database is integerated)
+        hero.CurrentFireCharges = hero.maxFireCharges;
+        hero.CurrentWaterCharges = hero.maxWaterCharges;
+        hero.CurrentEarthCharges = hero.maxEarthCharges;
     }
 
     void UpdateATB()
@@ -139,6 +146,9 @@ public class HeroController : MonoBehaviour
 
     public void EndAction()
     {
+        // Handle resource management
+        ApplyActionCost();
+
         // Remove from the active agent list
         battleControl.activeAgentList.RemoveAt(0);
 
@@ -158,6 +168,31 @@ public class HeroController : MonoBehaviour
 
         cameraControl.BattleCamReset();
         battleCameraSet = false;
+    }
+
+    public void ApplyActionCost()
+    {
+        if (battleControl.activeAgentList[0].chosenAttack.chargeCost > 0)
+        {
+            if (battleControl.activeAgentList[0].chosenAttack.damageType == AttackData.DamageType.FIRE)
+            {
+                hero.CurrentFireCharges -= battleControl.activeAgentList[0].chosenAttack.chargeCost;
+            }
+            else if (battleControl.activeAgentList[0].chosenAttack.damageType == AttackData.DamageType.WATER)
+            {
+                hero.CurrentWaterCharges -= battleControl.activeAgentList[0].chosenAttack.chargeCost;
+            }
+            else if (battleControl.activeAgentList[0].chosenAttack.damageType == AttackData.DamageType.EARTH)
+            {
+                hero.CurrentEarthCharges -= battleControl.activeAgentList[0].chosenAttack.chargeCost;
+            }
+        }
+        else
+        {
+
+        }
+
+        UpdateHeroPanel();
     }
 
     public void TakeDamage(float _damage)
@@ -252,9 +287,17 @@ public class HeroController : MonoBehaviour
         HP_Bar.transform.localScale = new Vector3(Mathf.Clamp(HP_FillPercentage, 0, 1), ATB_Bar.transform.localScale.y, ATB_Bar.transform.localScale.z);
         panelInfo.heroHP.text = "HP: " + hero.CurrentHealth + " / " + hero.baseHealth;
 
-        // Update MP bar and text
+        // Update energy bar and text
         //float MP_FillPercentage = hero.CurrentMP / hero.BaseMP;
         //MP_Bar.transform.localScale = new Vector3(Mathf.Clamp(MP_FillPercentage, 0, 1), ATB_Bar.transform.localScale.y, ATB_Bar.transform.localScale.z);
         //panelInfo.heroMP.text = "MP: " + hero.CurrentMP + " / " + hero.BaseMP;
+
+        // Update elemental charges
+        if (hero.maxEarthCharges > 0)
+        {
+            panelInfo.heroFireCharges.text = "Fire: " + hero.CurrentFireCharges + " / " + hero.maxFireCharges;
+            panelInfo.heroWaterCharges.text = "Water: " + hero.CurrentWaterCharges + " / " + hero.maxWaterCharges;
+            panelInfo.heroEarthCharges.text = "Earth: " + hero.CurrentEarthCharges + " / " + hero.maxEarthCharges;
+        }
     }
 }
