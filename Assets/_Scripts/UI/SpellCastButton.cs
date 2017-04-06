@@ -3,7 +3,7 @@ using System.Collections;
 
 public class SpellCastButton : MonoBehaviour
 {
-    public BaseAttack spellToCast;
+    public AttackData spellToCast;
 
     public void castSpell()
     {

@@ -8,5 +8,5 @@ public class TurnOrderHandler
     public GameObject agentGO;  // Game object of active agent
     public GameObject targetGO; // Game obejct of target being attacked
 
-    public BaseAttack chosenAttack;
+    public AttackData chosenAttack;
 }
