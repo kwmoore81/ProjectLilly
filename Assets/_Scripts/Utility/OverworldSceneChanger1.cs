@@ -44,10 +44,6 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     public float movementCounter = 0;
     public float maxMovmentCounter = 0;
 
-    void Awake()
-    {
-        playerLastPos = thirdPersonControllerOBJ.transform.position;
-    }
     void Start()
     {
         characterStatsDB = DataBase.GetComponent<CharacterStatsDB>();
@@ -62,7 +58,8 @@ public class OverworldSceneChanger1 : MonoBehaviour {
             overWorldSceneChanger2.UpdateFromBank();
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
-            overworldScene.gameObject.SetActive(false);   
+            overworldScene.gameObject.SetActive(false);
+               
     }
 
     public void UpdateFromBank()
