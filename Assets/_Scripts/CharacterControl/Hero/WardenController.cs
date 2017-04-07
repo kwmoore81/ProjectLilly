@@ -113,7 +113,8 @@ public class WardenController : MonoBehaviour, IHeroActionControl
     // TODO: Setup Defend() function
     public void DefendInput()
     {
-        
+        animator.SetTrigger("BlockTrigger");
+        heroControl.EndSimpleAction();
     }
 
     public void HitReaction()

@@ -33,6 +33,7 @@ public class HeroController : MonoBehaviour
     public GameObject enemyToAttack;
 
     public bool isAlive = true;
+    public bool canDefend;
     public bool isBlocking = false;
 
     // Hero panel variables
@@ -67,6 +68,8 @@ public class HeroController : MonoBehaviour
         if (battleControl.startBattle) CheckState();
 
         heroActionControl.DrawWeapon();
+
+        if (isBlocking) heroActionControl.DefendInput();
     }
 
     void CheckState()
@@ -82,7 +85,7 @@ public class HeroController : MonoBehaviour
                 AddToActionList();
                 break;
             case (HeroState.IDLE):
-                // Idle
+                
                 break;
             case (HeroState.SELECT):
 
@@ -134,11 +137,11 @@ public class HeroController : MonoBehaviour
     private void PerformAction()
     {
         // Set battle camera type
-        if (!battleCameraSet)
-        {
-            cameraControl.BattleCamInput(transform, enemyToAttack.transform, 1);
-            battleCameraSet = true;
-        }
+        //if (!battleCameraSet)
+        //{
+        //    cameraControl.BattleCamInput(transform, enemyToAttack.transform, 1);
+        //    battleCameraSet = true;
+        //}
 
         // Perform attack animation
         Vector3 targetPosition = new Vector3(enemyToAttack.transform.position.x - 2f, transform.position.y, enemyToAttack.transform.position.z);
@@ -169,6 +172,14 @@ public class HeroController : MonoBehaviour
 
         cameraControl.BattleCamReset();
         battleCameraSet = false;
+    }
+
+    public void EndSimpleAction()
+    {
+        battleControl.HeroInputDone();
+
+        // Reset the battle controller to WAIT
+        battleControl.actionState = BattleController.ActionState.WAITING;
     }
 
     public void ApplyActionCost()
@@ -266,18 +277,14 @@ public class HeroController : MonoBehaviour
     // TODO: Need to setup bar for each class.  Maybe move it to class controllers.
     void CreateHeroPanel()
     {
-        //heroPanel = Instantiate(heroPanel) as GameObject;
         panelInfo = heroPanel.GetComponent<HeroPanelInfo>();
 
         // Add info to hero panel
         panelInfo.heroName.text = name;
         panelInfo.heroHP.text = "HP: " + hero.CurrentHealth + " / " + hero.baseHealth;
-        //panelInfo.heroMP.text = "MP: " + hero.CurrentMP + " / " + hero.BaseMP;
 
         ATB_Bar = panelInfo.ATB_Bar;
         HP_Bar = panelInfo.HP_Bar;
-        //MP_Bar = panelInfo.Resource_Bar;
-        //heroPanel.transform.SetParent(heroPanelSpacer, false);
     }
 
     public void UpdateHeroPanel()

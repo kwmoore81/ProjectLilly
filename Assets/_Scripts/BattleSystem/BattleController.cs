@@ -304,7 +304,7 @@ public class BattleController : MonoBehaviour
         heroInput = HeroUI.DONE;
     }
 
-    void HeroInputDone()
+    public void HeroInputDone()
     {
         activeAgentList.Add(heroChoice);
         ClearAttackPanel();
@@ -444,14 +444,16 @@ public class BattleController : MonoBehaviour
         // Create item buttons
 
 
-        // Create defend button
-        // Magic Button
-        //GameObject defendButton = Instantiate(actionButton) as GameObject;
-        //Text defendButtonText = defendButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
-        //defendButtonText.text = "Defend";
-        //defendButton.GetComponent<Button>().onClick.AddListener(() => DefendInput());
-        //defendButton.transform.SetParent(actionSpacer, false);
-        //attackButtons.Add(defendButton);
+        //Create defend button
+        //if (heroesToManage[0].GetComponent<HeroController>().canDefend)
+        //{
+        //    GameObject defendButton = Instantiate(actionButton) as GameObject;
+        //    Text defendButtonText = defendButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
+        //    defendButtonText.text = "Defend";
+        //    defendButton.GetComponent<Button>().onClick.AddListener(() => DefendInput());
+        //    defendButton.transform.SetParent(actionSpacer, false);
+        //    attackButtons.Add(defendButton);
+        //}
     }
 
     public void AttackInput()
@@ -516,11 +518,7 @@ public class BattleController : MonoBehaviour
     {
         heroChoice.activeAgent = heroesToManage[0].name;
         heroChoice.agentGO = heroesToManage[0];
-        // TODO: Change this from attack (placeholder) to defense
-        heroChoice.chosenAttack = heroesToManage[0].GetComponent<HeroController>().hero.attacks[0];
-
-        Debug.Log(heroesToManage[0].name + " defends.");
-        enemySelectPanel.SetActive(true);
+        heroChoice.agentGO.GetComponent<HeroController>().isBlocking = true;
     }
 
     void WinBattle()
@@ -533,7 +531,6 @@ public class BattleController : MonoBehaviour
         if (endDelayTimer < 0)
         {
             pauseBattle = true;
-            BattleReset();
         }
         else
         {
@@ -556,64 +553,5 @@ public class BattleController : MonoBehaviour
         {
             endDelayTimer -= Time.deltaTime;
         }
-    }
-
-    void BattleReset()
-    {
-        Debug.Log("Reset battle");
-
-        startBattle = false;
-
-        deadHeroes.AddRange(GameObject.FindGameObjectsWithTag("DeadHero"));
-        deadEnemies.AddRange(GameObject.FindGameObjectsWithTag("DeadEnemy"));
-
-        // Reset dead character tags and health
-        for (int i = 0; i < deadHeroes.Count; i++)
-        {
-            HeroController heroReset = deadHeroes[i].GetComponent<HeroController>();
-            //heroesInBattle.Add(deadHeroes[i]);
-            heroReset.isAlive = true;
-            heroReset.tag = "Hero";
-        }
-        deadHeroes.Clear();
-
-        for (int i = 0; i < deadEnemies.Count; i++)
-        {
-            EnemyController enemyReset = deadEnemies[i].GetComponent<EnemyController>();
-            //enemiesInBattle.Add(deadEnemies[i]);
-            enemyReset.isAlive = true;
-            enemyReset.tag = "Enemy";
-            enemyReset.EnemyRevive();
-        }
-        deadEnemies.Clear();
-
-        // Reset hero and enemy states to IDLE
-        actionState = ActionState.WAITING;
-        heroInput = HeroUI.ACTIVATE;
-        enemiesInBattle.AddRange(GameObject.FindGameObjectsWithTag("Enemy"));
-        heroesInBattle.AddRange(GameObject.FindGameObjectsWithTag("Hero"));
-
-        for (int i = 0; i < heroesInBattle.Count; i++)
-        {
-            HeroController tempHero = heroesInBattle[i].GetComponent<HeroController>();
-            tempHero.hero.CurrentHealth = tempHero.hero.baseHealth;
-            tempHero.UpdateHeroPanel();
-            tempHero.currentState = HeroController.HeroState.WAITING;
-        }
-
-        for (int i = 0; i < enemiesInBattle.Count; i++)
-        {
-            EnemyController tempEnemy = enemiesInBattle[i].GetComponent<EnemyController>();
-            tempEnemy.enemy.CurrentHealth = tempEnemy.enemy.baseHealth;
-            tempEnemy.currentState = EnemyController.EnemyState.WAITING;
-        }
-
-        // Disable menus
-        ClearAttackPanel();
-        EnemySelectionButtons();
-
-        endDelayTimer = endDelay;
-        pauseBattle = false;
-
     }
 }
