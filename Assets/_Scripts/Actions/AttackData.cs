@@ -18,9 +18,9 @@ public class AttackData : MonoBehaviour
     public string attackName;
     public string attackDescription;
 
-    public float attackDamage;
-    public float resouceCost;
-    public float chargeCost;
+    public int attackDamage;
+    public int energyCost;
+    public int chargeCost;
 
     public float attackWaitTime;
     public float damageWaitTime;

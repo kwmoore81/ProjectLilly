@@ -27,7 +27,7 @@ public class HeroController : MonoBehaviour
     private float ATB_MaxDelay = 5;
     private Image ATB_Bar;
     private Image HP_Bar;
-    private Image MP_Bar;
+    private Image Resource_Bar;
 
     public GameObject selector;
     public GameObject enemyToAttack;
@@ -201,13 +201,13 @@ public class HeroController : MonoBehaviour
         }
         else
         {
-
+            hero.CurrentEnergy -= battleControl.activeAgentList[0].chosenAttack.energyCost;
         }
 
         UpdateHeroPanel();
     }
 
-    public void TakeDamage(float _damage)
+    public void TakeDamage(int _damage)
     {
         hero.CurrentHealth -= _damage;
 
@@ -225,7 +225,7 @@ public class HeroController : MonoBehaviour
 
     public void DoDamage()
     {
-        float calculatedDamage = hero.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
+        int calculatedDamage = hero.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
         enemyToAttack.GetComponent<EnemyController>().TakeDamage(calculatedDamage);
     }
 
@@ -285,6 +285,7 @@ public class HeroController : MonoBehaviour
 
         ATB_Bar = panelInfo.ATB_Bar;
         HP_Bar = panelInfo.HP_Bar;
+        Resource_Bar = panelInfo.Resource_Bar;
     }
 
     public void UpdateHeroPanel()
@@ -292,13 +293,16 @@ public class HeroController : MonoBehaviour
     {
         // Update HP bar and text
         float HP_FillPercentage = hero.CurrentHealth / hero.baseHealth;
-        HP_Bar.transform.localScale = new Vector3(Mathf.Clamp(HP_FillPercentage, 0, 1), ATB_Bar.transform.localScale.y, ATB_Bar.transform.localScale.z);
+        HP_Bar.transform.localScale = new Vector3(Mathf.Clamp(HP_FillPercentage, 0, 1), HP_Bar.transform.localScale.y, HP_Bar.transform.localScale.z);
         panelInfo.heroHP.text = "HP: " + hero.CurrentHealth + " / " + hero.baseHealth;
 
-        // Update energy bar and text
-        //float MP_FillPercentage = hero.CurrentMP / hero.BaseMP;
-        //MP_Bar.transform.localScale = new Vector3(Mathf.Clamp(MP_FillPercentage, 0, 1), ATB_Bar.transform.localScale.y, ATB_Bar.transform.localScale.z);
-        //panelInfo.heroMP.text = "MP: " + hero.CurrentMP + " / " + hero.BaseMP;
+        //Update energy bar and text
+        if (hero.baseEnergy > 0)
+        {
+            float Resource_FillPercentage = hero.CurrentEnergy / hero.baseEnergy;
+            Resource_Bar.transform.localScale = new Vector3(Mathf.Clamp(Resource_FillPercentage, 0, 1), Resource_Bar.transform.localScale.y, Resource_Bar.transform.localScale.z);
+            panelInfo.heroResource.text = "Energy: " + hero.CurrentEnergy + " / " + hero.baseEnergy;
+        }
 
         // Update elemental charges
         if (hero.maxEarthCharges > 0)
