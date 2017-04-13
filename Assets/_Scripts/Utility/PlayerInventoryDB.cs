@@ -88,15 +88,16 @@ public class PlayerInventoryDB : MonoBehaviour {
     }
     
     //Add an item stored in temp variables to the player's inventory
-    public void AddToInventory()
+    public void AddToInventory(int itemID, int quantity)
     {
-        bool exists = false;
+        bool itemExists = false;
 
         using (SqliteConnection dbconnection = new SqliteConnection(inventoryConnectionDB))
         {
             dbconnection.Open();
             using (IDbCommand dbCmd = dbconnection.CreateCommand())
             {
+                
                 string sqlQuery = "INSERT INTO InventoryDB (ID, Name, Type, Quantity)";
 
                 dbCmd.CommandText = sqlQuery;
