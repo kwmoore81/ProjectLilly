@@ -14,6 +14,7 @@ public class PlayerInventoryDB : MonoBehaviour {
     public int itemIDtemp;
     public string nameTemp;
     public string typeTemp;
+    public int quantityTemp;
 
     // Use this for initialization
     void Start ()
@@ -76,6 +77,7 @@ public class PlayerInventoryDB : MonoBehaviour {
                         itemIDtemp = readerItem.GetInt32(0);
                         nameTemp = readerItem.GetString(1);
                         typeTemp = readerItem.GetString(2);
+                        quantityTemp = readerItem.GetInt32(3);
                     }
                     readerItem.Close();
                     dbConnection.Close();
@@ -88,18 +90,36 @@ public class PlayerInventoryDB : MonoBehaviour {
     //Add an item stored in temp variables to the player's inventory
     public void AddToInventory()
     {
+        bool exists = false;
+
         using (SqliteConnection dbconnection = new SqliteConnection(inventoryConnectionDB))
         {
             dbconnection.Open();
             using (IDbCommand dbCmd = dbconnection.CreateCommand())
             {
-                string sqlQuery = "INSERT INTO InventoryDB (ID, Name, Type)";
+                string sqlQuery = "INSERT INTO InventoryDB (ID, Name, Type, Quantity)";
 
                 dbCmd.CommandText = sqlQuery;
                 dbCmd.Connection = dbconnection;
                 dbCmd.Parameters.Add(new SqliteParameter("@ID", itemIDtemp));
                 dbCmd.Parameters.Add(new SqliteParameter("@Name", nameTemp));
                 dbCmd.Parameters.Add(new SqliteParameter("@Type", typeTemp));
+                dbCmd.Parameters.Add(new SqliteParameter("@Quantity", quantityTemp));
+
+                dbconnection.Close();
+            }
+        }
+    }
+
+    //Remove an item from the player's inventory
+    public void RemoveFromInventory(int itemID)
+    {
+        using (SqliteConnection dbconnection = new SqliteConnection(inventoryConnectionDB))
+        {
+            dbconnection.Open();
+            using (IDbCommand dbCmd = dbconnection.CreateCommand())
+            {
+                string sqlQuery = "DELETE FROM IventoryDB WHERE ID = " + itemID;
 
                 dbconnection.Close();
             }
