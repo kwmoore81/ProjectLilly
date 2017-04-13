@@ -19,12 +19,6 @@ public class BattleController : MonoBehaviour
     }
     public ActionState actionState;
 
-    public List<TurnOrderHandler> activeAgentList = new List<TurnOrderHandler>();
-    public List<GameObject> heroesInBattle = new List<GameObject>();
-    public List<GameObject> enemiesInBattle = new List<GameObject>();
-    public List<GameObject> deadHeroes = new List<GameObject>();
-    public List<GameObject> deadEnemies = new List<GameObject>();
-
     // State engine for handling hero input
     public enum HeroUI
     {
@@ -36,12 +30,17 @@ public class BattleController : MonoBehaviour
     }
     public HeroUI heroInput;
 
-    public List<GameObject> heroesToManage = new List<GameObject>();
     private TurnOrderHandler heroChoice;
 
-    public GameObject enemyButton;
-    public Transform spacer;
+    [Header("Battle Control Lists")]
+    public List<TurnOrderHandler> activeAgentList = new List<TurnOrderHandler>();
+    public List<GameObject> heroesInBattle = new List<GameObject>();
+    public List<GameObject> enemiesInBattle = new List<GameObject>();
+    public List<GameObject> deadHeroes = new List<GameObject>();
+    public List<GameObject> deadEnemies = new List<GameObject>();
+    public List<GameObject> heroesToManage = new List<GameObject>();
 
+    [Header("UI Panels")]
     public GameObject fadeInPanel;
     public GameObject actionPanel;
     public GameObject earthPanel;
@@ -52,21 +51,26 @@ public class BattleController : MonoBehaviour
     public GameObject enemySelectPanel;
     public GameObject corruptionMeter;
 
-    // Hero attack variables
+    [Header("UI Panel Spacers")]
+    public Transform spacer;
     public Transform actionSpacer;
     public Transform earthSpacer;
     public Transform fireSpacer;
     public Transform waterSpacer;
     public Transform attackSpacer;
     public Transform utilitySpacer;
+
+    [Header("UI Buttons")]
     public GameObject actionButton;
     public GameObject defendButton;
     public GameObject meleeButton;
     public GameObject spellButton;
     public GameObject utilityButton;
-    private List<GameObject> attackButtons = new List<GameObject>();
+    public GameObject enemyButton;
 
-    // Enemy button list
+    [Header("Other Stuff")]
+    //Button Lists
+    private List<GameObject> attackButtons = new List<GameObject>();
     private List<GameObject> enemyButtonList = new List<GameObject>();
 
     // Battle start delay
@@ -304,7 +308,7 @@ public class BattleController : MonoBehaviour
         heroInput = HeroUI.DONE;
     }
 
-    void HeroInputDone()
+    public void HeroInputDone()
     {
         activeAgentList.Add(heroChoice);
         ClearAttackPanel();
@@ -439,19 +443,43 @@ public class BattleController : MonoBehaviour
         }
 
         // Create utility buttons
+        if (heroesToManage[0].GetComponent<HeroController>().hero.utility.Count > 1)
+        {
+            // Magic Button
+            GameObject utilityButton = Instantiate(actionButton) as GameObject;
+            Text utilityButtonText = utilityButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
+            utilityButtonText.text = "Earth Spells";
+            utilityButton.GetComponent<Button>().onClick.AddListener(() => MagicInput("Earth"));
+            utilityButton.transform.SetParent(actionSpacer, false);
+            attackButtons.Add(utilityButton);
 
+            // Spell Buttons
+            foreach (ActionData utilityAction in heroesToManage[0].GetComponent<HeroController>().hero.utility)
+            {
+                GameObject utilityBtn = Instantiate(utilityButton) as GameObject;
+                Text utilityActionButtonText = utilityBtn.transform.FindChild("Text").gameObject.GetComponent<Text>();
+                utilityActionButtonText.text = utilityAction.actionName;
+                UtilityButton utilityActionButton = utilityBtn.GetComponent<UtilityButton>();
+                // Fix this line
+                //utilityActionButton.blah = utilityAction;
+                utilityBtn.transform.SetParent(utilitySpacer, false);
+                attackButtons.Add(utilityBtn);
+            }
+        }
 
         // Create item buttons
 
 
-        // Create defend button
-        // Magic Button
-        //GameObject defendButton = Instantiate(actionButton) as GameObject;
-        //Text defendButtonText = defendButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
-        //defendButtonText.text = "Defend";
-        //defendButton.GetComponent<Button>().onClick.AddListener(() => DefendInput());
-        //defendButton.transform.SetParent(actionSpacer, false);
-        //attackButtons.Add(defendButton);
+        //Create defend button
+        //if (heroesToManage[0].GetComponent<HeroController>().canDefend)
+        //{
+        //    GameObject defendButton = Instantiate(actionButton) as GameObject;
+        //    Text defendButtonText = defendButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
+        //    defendButtonText.text = "Defend";
+        //    defendButton.GetComponent<Button>().onClick.AddListener(() => DefendInput());
+        //    defendButton.transform.SetParent(actionSpacer, false);
+        //    attackButtons.Add(defendButton);
+        //}
     }
 
     public void AttackInput()
@@ -516,28 +544,14 @@ public class BattleController : MonoBehaviour
     {
         heroChoice.activeAgent = heroesToManage[0].name;
         heroChoice.agentGO = heroesToManage[0];
-        // TODO: Change this from attack (placeholder) to defense
-        heroChoice.chosenAttack = heroesToManage[0].GetComponent<HeroController>().hero.attacks[0];
-
-        Debug.Log(heroesToManage[0].name + " defends.");
-        enemySelectPanel.SetActive(true);
+        heroChoice.agentGO.GetComponent<HeroController>().isBlocking = true;
     }
 
     void WinBattle()
     {
-        //for (int i = 0; i < heroesInBattle.Count; i++)
-        //{
-        //    heroesInBattle[i].GetComponent<HeroController>().currentState = HeroController.HeroState.IDLE;
-        //}
-
-        if (endDelayTimer < 0)
+        for (int i = 0; i < heroesInBattle.Count; i++)
         {
-            pauseBattle = true;
-            BattleReset();
-        }
-        else
-        {
-            endDelayTimer -= Time.deltaTime;
+            heroesInBattle[i].GetComponent<HeroController>().currentState = HeroController.HeroState.IDLE;
         }
     }
 
@@ -547,73 +561,5 @@ public class BattleController : MonoBehaviour
         {
             enemiesInBattle[i].GetComponent<EnemyController>().currentState = EnemyController.EnemyState.IDLE;
         }
-
-        if (endDelayTimer < 0)
-        {
-            //BattleReset();
-        }
-        else
-        {
-            endDelayTimer -= Time.deltaTime;
-        }
-    }
-
-    void BattleReset()
-    {
-        Debug.Log("Reset battle");
-
-        startBattle = false;
-
-        deadHeroes.AddRange(GameObject.FindGameObjectsWithTag("DeadHero"));
-        deadEnemies.AddRange(GameObject.FindGameObjectsWithTag("DeadEnemy"));
-
-        // Reset dead character tags and health
-        for (int i = 0; i < deadHeroes.Count; i++)
-        {
-            HeroController heroReset = deadHeroes[i].GetComponent<HeroController>();
-            //heroesInBattle.Add(deadHeroes[i]);
-            heroReset.isAlive = true;
-            heroReset.tag = "Hero";
-        }
-        deadHeroes.Clear();
-
-        for (int i = 0; i < deadEnemies.Count; i++)
-        {
-            EnemyController enemyReset = deadEnemies[i].GetComponent<EnemyController>();
-            //enemiesInBattle.Add(deadEnemies[i]);
-            enemyReset.isAlive = true;
-            enemyReset.tag = "Enemy";
-            enemyReset.EnemyRevive();
-        }
-        deadEnemies.Clear();
-
-        // Reset hero and enemy states to IDLE
-        actionState = ActionState.WAITING;
-        heroInput = HeroUI.ACTIVATE;
-        enemiesInBattle.AddRange(GameObject.FindGameObjectsWithTag("Enemy"));
-        heroesInBattle.AddRange(GameObject.FindGameObjectsWithTag("Hero"));
-
-        for (int i = 0; i < heroesInBattle.Count; i++)
-        {
-            HeroController tempHero = heroesInBattle[i].GetComponent<HeroController>();
-            tempHero.hero.CurrentHealth = tempHero.hero.baseHealth;
-            tempHero.UpdateHeroPanel();
-            tempHero.currentState = HeroController.HeroState.WAITING;
-        }
-
-        for (int i = 0; i < enemiesInBattle.Count; i++)
-        {
-            EnemyController tempEnemy = enemiesInBattle[i].GetComponent<EnemyController>();
-            tempEnemy.enemy.CurrentHealth = tempEnemy.enemy.baseHealth;
-            tempEnemy.currentState = EnemyController.EnemyState.WAITING;
-        }
-
-        // Disable menus
-        ClearAttackPanel();
-        EnemySelectionButtons();
-
-        endDelayTimer = endDelay;
-        pauseBattle = false;
-
     }
 }

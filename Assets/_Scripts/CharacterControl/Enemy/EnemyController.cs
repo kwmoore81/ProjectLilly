@@ -152,7 +152,7 @@ public class EnemyController : MonoBehaviour
         //battleCameraSet = false;
     }
 
-    public void TakeDamage(float _damage)
+    public void TakeDamage(int _damage)
     {
         enemy.CurrentHealth -= _damage;
 
@@ -168,7 +168,7 @@ public class EnemyController : MonoBehaviour
 
     public void DoDamage()
     {
-        float calculatedDamage = enemy.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
+        int calculatedDamage = enemy.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
         enemyAttack.targetGO.GetComponent<HeroController>().TakeDamage(calculatedDamage);
     }
 

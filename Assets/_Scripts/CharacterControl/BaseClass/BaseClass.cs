@@ -25,39 +25,39 @@ public class BaseClass
     // Resources (public)
     public float baseHealth;
     public float baseEnergy;
-    public float maxFireCharges;
-    public float maxWaterCharges;
-    public float maxEarthCharges;
+    public int maxFireCharges;
+    public int maxWaterCharges;
+    public int maxEarthCharges;
 
     // Resources (private)
     private float currentHealth;
     private float currentEnergy;
-    private float currentFireCharges;
-    private float currentWaterCharges;
-    private float currentEarthCharges;
+    private int currentFireCharges;
+    private int currentWaterCharges;
+    private int currentEarthCharges;
 
     // Secondary Attributes (private)
     // Speed = Agility
-    private float baseSpeed;
-    private float currentSpeed;
+    private int baseSpeed;
+    private int currentSpeed;
     // Accuracy = Agility + Mind
-    private float baseAccuracy;
-    private float currentAccuracy;
+    private int baseAccuracy;
+    private int currentAccuracy;
     // Evasion = Agility + (Resilience or Spirit?)
-    private float baseEvasion;
-    private float currentEvasion;
+    private int baseEvasion;
+    private int currentEvasion;
     // Attack Power = Strength + Weapon Base Physical Power
-    private float baseAttackPower;
-    private float currentAttackPower;
+    private int baseAttackPower;
+    private int currentAttackPower;
     // Magic Power = Mind + Weapon Base Magic Power
-    private float baseMagicPower;
-    private float currentMagicPower;
+    private int baseMagicPower;
+    private int currentMagicPower;
     // Physical Defense = Resilience + Combined Armor Base Physical Defense
-    private float basePhysicalDefense;
-    private float currentPhysicalDefense;
+    private int basePhysicalDefense;
+    private int currentPhysicalDefense;
     // Magic Defense = Spirit + Combined Armor Base Magic Defense
-    private float baseMagicDefense;
-    private float currentMagicDefense;
+    private int baseMagicDefense;
+    private int currentMagicDefense;
 
     //// Name and description
     //public string CharacterName
@@ -134,7 +134,7 @@ public class BaseClass
     }
 
     // Resources (private)
-    //public float BaseHealth
+    //public int BaseHealth
     //{
     //    get { return baseHealth; }
     //    set { baseHealth = value; }
@@ -146,7 +146,7 @@ public class BaseClass
         set { currentHealth = value; }
     }
 
-    //public float BaseEnergy
+    //public int BaseEnergy
     //{
     //    get { return baseEnergy; }
     //    set { baseEnergy = value; }
@@ -158,123 +158,123 @@ public class BaseClass
         set { currentEnergy = value; }
     }
 
-    //public float MaxFireCharges
+    //public int MaxFireCharges
     //{
     //    get { return maxFireCharges; }
     //    set { maxFireCharges = value; }
     //}
 
-    public float CurrentFireCharges
+    public int CurrentFireCharges
     {
         get { return currentFireCharges; }
         set { currentFireCharges = value; }
     }
 
-    //public float MaxWaterCharges
+    //public int MaxWaterCharges
     //{
     //    get { return maxWaterCharges; }
     //    set { maxWaterCharges = value; }
     //}
 
-    public float CurrentWaterCharges
+    public int CurrentWaterCharges
     {
         get { return currentWaterCharges; }
         set { currentWaterCharges = value; }
     }
 
-    //public float MaxEarthCharges
+    //public int MaxEarthCharges
     //{
     //    get { return maxEarthCharges; }
     //    set { maxEarthCharges = value; }
     //}
 
-    public float CurrentEarthCharges
+    public int CurrentEarthCharges
     {
         get { return currentEarthCharges; }
         set { currentEarthCharges = value; }
     }
 
     // Speed, accuracy, and evasion
-    public float BaseSpeed
+    public int BaseSpeed
     {
         get { return baseSpeed; }
         set { baseSpeed = value; }
     }
 
-    public float CurrentSpeed
+    public int CurrentSpeed
     {
         get { return currentSpeed; }
         set { currentSpeed = value; }
     }
 
-    public float BaseAccuracy
+    public int BaseAccuracy
     {
         get { return baseAccuracy; }
         set { baseAccuracy = value; }
     }
 
-    public float CurrentAccuracy
+    public int CurrentAccuracy
     {
         get { return currentAccuracy; }
         set { currentAccuracy = value; }
     }
 
-    public float BaseEvasion
+    public int BaseEvasion
     {
         get { return baseEvasion; }
         set { baseEvasion = value; }
     }
 
-    public float CurrentEvasion
+    public int CurrentEvasion
     {
         get { return currentEvasion; }
         set { currentEvasion = value; }
     }
 
     // Attack and Defense
-    public float BaseMagicPower
+    public int BaseMagicPower
     {
         get { return baseMagicPower; }
         set { baseMagicPower = value; }
     }
 
-    public float CurrentMagicPower
+    public int CurrentMagicPower
     {
         get { return currentMagicPower; }
         set { currentMagicPower = value; }
     }
 
-    public float BaseAttackPower
+    public int BaseAttackPower
     {
         get { return baseAttackPower; }
         set { baseAttackPower = value; }
     }
 
-    public float CurrentAttackPower
+    public int CurrentAttackPower
     {
         get { return currentAttackPower; }
         set { currentAttackPower = value; }
     }
 
-    public float BasePhysicalDefense
+    public int BasePhysicalDefense
     {
         get { return basePhysicalDefense; }
         set { basePhysicalDefense = value; }
     }
 
-    public float CurrentPhysicalDefense
+    public int CurrentPhysicalDefense
     {
         get { return currentPhysicalDefense; }
         set { currentPhysicalDefense = value; }
     }
 
-    public float BaseMagicDefense
+    public int BaseMagicDefense
     {
         get { return baseMagicDefense; }
         set { baseMagicDefense = value; }
     }
 
-    public float CurrentMagicDefense
+    public int CurrentMagicDefense
     {
         get { return currentMagicDefense; }
         set { currentMagicDefense = value; }

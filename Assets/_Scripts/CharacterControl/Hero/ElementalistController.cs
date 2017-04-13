@@ -87,10 +87,17 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         }
     }
 
-    // TODO: Setup RecieveAttack() function
+    // Recieve attack type and route it to the proper IEnumerator
     public void AttackInput(AttackData _chosenAttack, Vector3 _targetPosition)
     {
-        StartCoroutine(PerformAttack(_chosenAttack, _targetPosition));
+        if (_chosenAttack.attackType == AttackData.AttackType.SPELL)
+        {
+            StartCoroutine(PerformMagicAttack(_chosenAttack, _targetPosition));
+        }
+        else if (_chosenAttack.attackType == AttackData.AttackType.MELEE)
+        {
+            StartCoroutine(PerformMeleeAttack(_chosenAttack, _targetPosition));
+        }
     }
 
     // TODO: Setup ReceiveStance() function
@@ -124,7 +131,7 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         animator.SetTrigger("Death1Trigger");
     }
 
-    private IEnumerator PerformAttack(AttackData _chosenAttack, Vector3 _targetPosition)
+    private IEnumerator PerformMagicAttack(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         if (actionStarted)
         {
@@ -137,7 +144,7 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
 
         yield return new WaitForSeconds(_chosenAttack.attackWaitTime);
 
-        // Fire arrow
+        // Shoot spell
         Vector3 relativePosition = _targetPosition - transform.position;
         Quaternion spellRotation = Quaternion.LookRotation(relativePosition);
         GameObject tempSpell = Instantiate(_chosenAttack.projectile, spellSpawn.transform.position, spellRotation) as GameObject;
@@ -153,6 +160,53 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         heroControl.EndAction();
     }
 
+    private IEnumerator PerformMeleeAttack(AttackData _chosenAttack, Vector3 _targetPosition)
+    {
+        if (actionStarted)
+        {
+            yield break;
+        }
+
+        actionStarted = true;
+
+        // Move enemy to target
+        while (MoveTowardTarget(_targetPosition))
+        {
+            animator.SetBool("Moving", true);
+            animator.SetFloat("Velocity Z", moveSpeed);
+
+            yield return null;
+        }
+
+        animator.SetBool("Moving", false);
+
+        animator.SetTrigger(_chosenAttack.attackAnimation);
+
+        yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
+
+        heroControl.DoDamage();
+
+        yield return new WaitForSeconds(.5f);
+
+        animator.SetInteger("Jumping", 1);
+        animator.SetTrigger("JumpTrigger");
+
+        // Move enemy back to starting position
+        while (MoveTowardStart(startPosition))
+        {
+            // Setup jump animation
+            animator.SetInteger("Jumping", 2);
+            animator.SetTrigger("JumpTrigger");
+
+            yield return null;
+        }
+
+        animator.SetInteger("Jumping", 0);
+
+        actionStarted = false;
+        heroControl.EndAction();
+    }
+
     private bool MoveTowardTarget(Vector3 target)
     {
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime));
@@ -163,36 +217,64 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, (moveSpeed * 1.25f) * Time.deltaTime));
     }
 
-
-    // TODO: Setup melee animation function
-    private void MeleeAnim()
-    {
-
-    }
-
-    // TODO: Setup attack animation function
-    private void SpellcastingAnim()
-    {
-        int attackRand = Random.Range(0, 3);
-
-        if (attackRand == 0)
-            animator.SetTrigger("CastAttack1Trigger");
-        if (attackRand == 1)
-            animator.SetTrigger("CastAttack2Trigger");
-        if (attackRand == 2)
-            animator.SetTrigger("CastAttack3Trigger");
-    }
-
     // TODO: Setup stance animation function
-    private void UtilityAnim()
+    private IEnumerator PerformUtility(AttackData _chosenAttack, Vector3 _targetPosition)
     {
+        if (actionStarted)
+        {
+            yield break;
+        }
 
+        actionStarted = true;
+
+        animator.SetTrigger(_chosenAttack.attackAnimation);
+
+        yield return new WaitForSeconds(_chosenAttack.attackWaitTime);
+
+        // Shoot spell
+        Vector3 relativePosition = _targetPosition - transform.position;
+        Quaternion spellRotation = Quaternion.LookRotation(relativePosition);
+        GameObject tempSpell = Instantiate(_chosenAttack.projectile, spellSpawn.transform.position, spellRotation) as GameObject;
+
+        yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
+
+        Destroy(tempSpell);
+        heroControl.DoDamage();
+
+        yield return new WaitForSeconds(.5f);
+
+        actionStarted = false;
+        heroControl.EndAction();
     }
 
     // TODO: Setup item use animation function
-    private void ItemUseAnim()
+    private IEnumerator PerformItemUse(AttackData _chosenAttack, Vector3 _targetPosition)
     {
+        if (actionStarted)
+        {
+            yield break;
+        }
 
+        actionStarted = true;
+
+        animator.SetTrigger(_chosenAttack.attackAnimation);
+
+        yield return new WaitForSeconds(_chosenAttack.attackWaitTime);
+
+        // Shoot spell
+        Vector3 relativePosition = _targetPosition - transform.position;
+        Quaternion spellRotation = Quaternion.LookRotation(relativePosition);
+        GameObject tempSpell = Instantiate(_chosenAttack.projectile, spellSpawn.transform.position, spellRotation) as GameObject;
+
+        yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
+
+        Destroy(tempSpell);
+        heroControl.DoDamage();
+
+        yield return new WaitForSeconds(.5f);
+
+        actionStarted = false;
+        heroControl.EndAction();
     }
 
     // TODO: Setup hit animation function
@@ -204,7 +286,7 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
     // TODO: Setup defend animation function
     private void DefendAnim()
     {
-
+        animator.SetTrigger("BlockTrigger");
     }
 
     public void HeroDeathAnim()
