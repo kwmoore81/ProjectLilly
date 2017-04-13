@@ -443,7 +443,29 @@ public class BattleController : MonoBehaviour
         }
 
         // Create utility buttons
+        if (heroesToManage[0].GetComponent<HeroController>().hero.utility.Count > 1)
+        {
+            // Magic Button
+            GameObject utilityButton = Instantiate(actionButton) as GameObject;
+            Text utilityButtonText = utilityButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
+            utilityButtonText.text = "Earth Spells";
+            utilityButton.GetComponent<Button>().onClick.AddListener(() => MagicInput("Earth"));
+            utilityButton.transform.SetParent(actionSpacer, false);
+            attackButtons.Add(utilityButton);
 
+            // Spell Buttons
+            foreach (ActionData utilityAction in heroesToManage[0].GetComponent<HeroController>().hero.utility)
+            {
+                GameObject utilityBtn = Instantiate(utilityButton) as GameObject;
+                Text utilityActionButtonText = utilityBtn.transform.FindChild("Text").gameObject.GetComponent<Text>();
+                utilityActionButtonText.text = utilityAction.actionName;
+                UtilityButton utilityActionButton = utilityBtn.GetComponent<UtilityButton>();
+                // Fix this line
+                //utilityActionButton.blah = utilityAction;
+                utilityBtn.transform.SetParent(utilitySpacer, false);
+                attackButtons.Add(utilityBtn);
+            }
+        }
 
         // Create item buttons
 
