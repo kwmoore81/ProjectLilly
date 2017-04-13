@@ -55,6 +55,8 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         animator = GetComponentInChildren<Animator>();
         heroControl = GetComponent<HeroController>();
         startPosition = transform.position;
+        heroControl.hero.baseEnergy = 100;
+        heroControl.hero.CurrentEnergy = heroControl.hero.baseEnergy;
 
         // Hide weapon
         if (twohandsword != null)
@@ -113,7 +115,8 @@ public class WardenController : MonoBehaviour, IHeroActionControl
     // TODO: Setup Defend() function
     public void DefendInput()
     {
-        
+        animator.SetTrigger("BlockTrigger");
+        heroControl.EndSimpleAction();
     }
 
     public void HitReaction()
@@ -122,6 +125,9 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         int hits = 5;
         int hitNumber = Random.Range(0, hits);
         animator.SetTrigger("GetHit" + (hitNumber + 1).ToString() + "Trigger");
+
+        // Add resolve
+        
     }
 
     public void DeathReaction()
@@ -163,8 +169,6 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         // Move enemy back to starting position
         while (MoveTowardStart(startPosition))
         {
-            //animator.SetBool("Moving", true);
-            //animator.SetFloat("Velocity Z", -moveSpeed);
 
             // Setup jump animation
             animator.SetInteger("Jumping", 2);
@@ -178,7 +182,16 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         //animator.SetBool("Moving", false);
 
         actionStarted = false;
+
+        heroControl.hero.CurrentEnergy -= _chosenAttack.energyCost;
+
         heroControl.EndAction();
+    }
+
+    // Add resolve based on damage taken from enemy attack
+    public void AddResolve(int _damage)
+    {
+        heroControl.hero.CurrentEnergy += _damage;
     }
 
     private bool MoveTowardTarget(Vector3 target)
@@ -190,7 +203,6 @@ public class WardenController : MonoBehaviour, IHeroActionControl
     {
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, (moveSpeed * 1.25f) * Time.deltaTime));
     }
-
 
     // TODO: Setup attack animation function
     private void BowShootingAnim()

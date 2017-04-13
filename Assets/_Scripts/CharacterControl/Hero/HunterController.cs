@@ -55,8 +55,9 @@ public class HunterController : MonoBehaviour, IHeroActionControl
     {
         animator = GetComponentInChildren<Animator>();
         heroControl = GetComponent<HeroController>();
-
         startPosition = transform.position;
+        heroControl.hero.baseEnergy = 100;
+        heroControl.hero.CurrentEnergy = heroControl.hero.baseEnergy;
 
         // Hide weapon
         if (twohandbow != null)
@@ -154,7 +155,17 @@ public class HunterController : MonoBehaviour, IHeroActionControl
         yield return new WaitForSeconds(.5f);
 
         actionStarted = false;
+
+        heroControl.hero.CurrentEnergy -= _chosenAttack.energyCost;
+        heroControl.UpdateHeroPanel();
+
         heroControl.EndAction();
+    }
+
+    // Add stamina based on the energy return of the low stress action
+    public void AddStamina(int _energyToAdd)
+    {
+        heroControl.hero.CurrentEnergy += _energyToAdd;
     }
 
     private bool MoveTowardTarget(Vector3 target)

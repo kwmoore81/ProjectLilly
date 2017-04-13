@@ -28,4 +28,5 @@ public class BaseHero: BaseClass
     public List<AttackData> fireSpells = new List<AttackData>();
     public List<AttackData> waterSpells = new List<AttackData>();
     public List<AttackData> earthSpells = new List<AttackData>();
+    public List<ActionData> utility = new List<ActionData>();
 }
