@@ -87,6 +87,9 @@ public class BattleController : MonoBehaviour
     public float fadeInTimer = 0.0f, fadeInLength = 2f;
     Color fadeInColorStart, fadeInColorEnd;
 
+    //Scene Changer
+    private OverWorldSceneChanger2 overWorldSceneChanger2;
+
     void Start ()
 	{
         animatorCamera = GameObject.Find("MainCamera").GetComponentInChildren<Animator>();
@@ -112,7 +115,9 @@ public class BattleController : MonoBehaviour
 
         startDelayTimer = startDelay;
         endDelayTimer = endDelay;
-	}
+        
+        overWorldSceneChanger2 = GameObject.Find("BattleMaster").GetComponent<OverWorldSceneChanger2>();
+    }
 	
 	void Update ()
 	{
@@ -553,6 +558,8 @@ public class BattleController : MonoBehaviour
         {
             heroesInBattle[i].GetComponent<HeroController>().currentState = HeroController.HeroState.IDLE;
         }
+
+        overWorldSceneChanger2.SceneChange();
     }
 
     void LoseBattle()
@@ -561,5 +568,8 @@ public class BattleController : MonoBehaviour
         {
             enemiesInBattle[i].GetComponent<EnemyController>().currentState = EnemyController.EnemyState.IDLE;
         }
+
+        overWorldSceneChanger2.SceneChange();
+        //TODO Add Game Over Scene Change
     }
 }
