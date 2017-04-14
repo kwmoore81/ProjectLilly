@@ -51,6 +51,8 @@ public class BattleController : MonoBehaviour
     public GameObject enemySelectHighlight;
     public GameObject enemySelectPanel;
     public GameObject corruptionMeter;
+    public GameObject victoryPanel;
+    public GameObject defeatPanel;
 
     [Header("UI Panel Spacers")]
     public Transform spacer;
@@ -90,6 +92,8 @@ public class BattleController : MonoBehaviour
 
     //Scene Changer
     private OverWorldSceneChanger2 overWorldSceneChanger2;
+    [HideInInspector]
+    public bool battleResultWait = false;
 
     void Start ()
 	{
@@ -112,6 +116,8 @@ public class BattleController : MonoBehaviour
         utilityPanel.SetActive(false);
         enemySelectHighlight.SetActive(false);
         enemySelectPanel.SetActive(false);
+        victoryPanel.SetActive(false);
+        defeatPanel.SetActive(false);
 
         EnemySelectionButtons();
 
@@ -259,10 +265,12 @@ public class BattleController : MonoBehaviour
         if (heroesInBattle.Count <= 0)
         {
             actionState = ActionState.LOSE;
+            battleResultWait = true;
         }
         else if (enemiesInBattle.Count <= 0)
         {
             actionState = ActionState.WIN;
+            battleResultWait = true;
         }
         else
         {
@@ -565,7 +573,13 @@ public class BattleController : MonoBehaviour
             heroesInBattle[i].GetComponent<HeroController>().currentState = HeroController.HeroState.IDLE;
         }
 
-        overWorldSceneChanger2.SceneChange();
+        victoryPanel.SetActive(true);
+
+        if (!battleResultWait)
+        {
+            victoryPanel.SetActive(false);
+            overWorldSceneChanger2.SceneChange();
+        }
     }
 
     void LoseBattle()
@@ -575,7 +589,14 @@ public class BattleController : MonoBehaviour
             enemiesInBattle[i].GetComponent<EnemyController>().currentState = EnemyController.EnemyState.IDLE;
         }
 
-        overWorldSceneChanger2.SceneChange();
+        defeatPanel.SetActive(true);
+
+        if (!battleResultWait)
+        {
+            defeatPanel.SetActive(false);
+            overWorldSceneChanger2.SceneChange();
+        }
+
         //TODO Add Game Over Scene Change
     }
 }
