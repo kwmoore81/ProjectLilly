@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class EnemyController : MonoBehaviour
@@ -32,6 +33,13 @@ public class EnemyController : MonoBehaviour
     TurnOrderHandler enemyAttack;
 
     public bool isAlive = true;
+
+    // Enemy info panel variables
+    private EnemyPanelInfo panelInfo;
+    public GameObject enemyPanel;
+    private Image HP_Bar;
+    private Image corruption_Bar;
+    private Image element_Icon;
 
     void Awake()
     {
@@ -85,6 +93,8 @@ public class EnemyController : MonoBehaviour
         enemy.CurrentHealth = enemy.baseHealth;
         enemy.CurrentAttackPower = enemy.BaseAttackPower;
         enemy.CurrentPhysicalDefense = enemy.BasePhysicalDefense;
+
+        StartEnemyPanel();
     }
 
     void UpdateATB()
@@ -164,6 +174,8 @@ public class EnemyController : MonoBehaviour
             enemy.CurrentHealth = 0;
             currentState = EnemyState.DEAD;
         }
+
+        UpdateEnemyPanel();
     }
 
     public void DoDamage()
@@ -223,5 +235,32 @@ public class EnemyController : MonoBehaviour
     public void EnemyRevive()
     {
         enemyActionControl.Revive();
+    }
+
+    void StartEnemyPanel()
+    {
+        panelInfo = enemyPanel.GetComponent<EnemyPanelInfo>();
+
+        // Add info to hero panel
+        panelInfo.enemyName.text = name;
+        panelInfo.enemyHP.text = "HP: " + enemy.CurrentHealth + " / " + enemy.baseHealth;
+
+        HP_Bar = panelInfo.HP_Bar;
+        corruption_Bar = panelInfo.Corruption_Bar;
+        element_Icon = panelInfo.Element_Icon;
+    }
+
+    public void UpdateEnemyPanel()
+    // TODO: Modify to accomodate different class info
+    {
+        // Update HP bar and text
+        float HP_FillPercentage = enemy.CurrentHealth / enemy.baseHealth;
+        HP_Bar.transform.localScale = new Vector3(Mathf.Clamp(HP_FillPercentage, 0, 1), HP_Bar.transform.localScale.y, HP_Bar.transform.localScale.z);
+        panelInfo.enemyHP.text = "HP: " + enemy.CurrentHealth + " / " + enemy.baseHealth;
+
+        // Update corruption bar and text
+
+
+        // Update element icon
     }
 }
