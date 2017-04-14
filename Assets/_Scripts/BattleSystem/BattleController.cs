@@ -48,6 +48,7 @@ public class BattleController : MonoBehaviour
     public GameObject waterPanel;
     public GameObject attackPanel;
     public GameObject utilityPanel;
+    public GameObject enemySelectHighlight;
     public GameObject enemySelectPanel;
     public GameObject corruptionMeter;
 
@@ -106,6 +107,7 @@ public class BattleController : MonoBehaviour
         earthPanel.SetActive(false);
         waterPanel.SetActive(false);
         utilityPanel.SetActive(false);
+        enemySelectHighlight.SetActive(false);
         enemySelectPanel.SetActive(false);
 
         EnemySelectionButtons();
@@ -299,6 +301,7 @@ public class BattleController : MonoBehaviour
         heroChoice.activeAgent = heroesToManage[0].name;
         heroChoice.agentGO = heroesToManage[0];
         heroChoice.chosenAttack = heroesToManage[0].GetComponent<HeroController>().hero.attacks[0];
+        enemySelectHighlight.SetActive(true);
         enemySelectPanel.SetActive(true);
     }
 
@@ -320,6 +323,7 @@ public class BattleController : MonoBehaviour
 
     void ClearAttackPanel()
     {
+        enemySelectHighlight.SetActive(false);
         enemySelectPanel.SetActive(false);
         actionPanel.SetActive(false);
         earthPanel.SetActive(false);
@@ -494,6 +498,7 @@ public class BattleController : MonoBehaviour
         heroChoice.chosenAttack = chosenAttack;
 
         attackPanel.SetActive(false);
+        enemySelectHighlight.SetActive(true);
         enemySelectPanel.SetActive(true);
     }
 
@@ -522,6 +527,7 @@ public class BattleController : MonoBehaviour
         earthPanel.SetActive(false);
         firePanel.SetActive(false);
         waterPanel.SetActive(false);
+        enemySelectHighlight.SetActive(true);
         enemySelectPanel.SetActive(true);
     }
 

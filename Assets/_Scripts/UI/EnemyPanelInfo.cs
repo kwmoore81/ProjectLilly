@@ -8,6 +8,6 @@ public class EnemyPanelInfo : MonoBehaviour
     public Text enemyHP;
     public Text corruptionLevel;
     public Image HP_Bar;
-    public Image NatureCorruption_Bar;
-    public Image elementIcon;
+    public Image Corruption_Bar;
+    public Image Element_Icon;
 }
