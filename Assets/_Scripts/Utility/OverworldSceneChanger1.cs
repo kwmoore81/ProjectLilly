@@ -37,7 +37,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     public float encounterBuffer;
     public float maxTimeBeforeEncounter;
 
-    
+    public bool battleToggle = true;
     public Vector3 playerLastPos;
     public Vector3 playerCurrentPos;
     float _time = 0;
@@ -80,43 +80,44 @@ public class OverworldSceneChanger1 : MonoBehaviour {
 
     void Update()
     {
-        
-        if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") !=0)
+        if (battleToggle)
         {
-
-            movementCounter += Time.deltaTime;
-            maxMovmentCounter += Time.deltaTime;
-
-            if (movementCounter >= encounterBuffer)
+            if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
             {
-                movementCounter = 0;
-                randValue = Random.value;
-                if (randValue < encounterChance)
-                {                   
+
+                movementCounter += Time.deltaTime;
+                maxMovmentCounter += Time.deltaTime;
+
+                if (movementCounter >= encounterBuffer)
+                {
+                    movementCounter = 0;
+                    randValue = Random.value;
+                    if (randValue < encounterChance)
+                    {
                         maxMovmentCounter = 0;
                         characterStatsDB.SendData1();
-                        SceneChange();                 
-                }
-                else if (maxMovmentCounter >= maxTimeBeforeEncounter)
-                {                   
+                        SceneChange();
+                    }
+                    else if (maxMovmentCounter >= maxTimeBeforeEncounter)
+                    {
                         maxMovmentCounter = 0;
                         characterStatsDB.SendData1();
-                        SceneChange();                   
+                        SceneChange();
+                    }
                 }
-            }           
-        }
-        else if (_time < 2f)
-        {
+            }
+            else if (_time < 2f)
+            {
 
-            _time = 0;
-        }
-        else if (_time < 2f)
-        {
-            _time += Time.deltaTime;
-        }
+                _time = 0;
+            }
+            else if (_time < 2f)
+            {
+                _time += Time.deltaTime;
+            }
 
-        playerLastPos = playerCurrentPos;
-        
+            playerLastPos = playerCurrentPos;
+
+        }
     }
-
 }
