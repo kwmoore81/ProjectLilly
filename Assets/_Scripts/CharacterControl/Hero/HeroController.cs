@@ -105,7 +105,6 @@ public class HeroController : MonoBehaviour
         hero.CurrentAttackPower = hero.BaseAttackPower;
         hero.CurrentPhysicalDefense = hero.BasePhysicalDefense;
 
-
         // Initialize elemental charges (Remove after database is integerated)
         hero.CurrentFireCharges = hero.maxFireCharges;
         hero.CurrentWaterCharges = hero.maxWaterCharges;
@@ -274,7 +273,6 @@ public class HeroController : MonoBehaviour
         }
     }
 
-    // TODO: Need to setup bar for each class.  Maybe move it to class controllers.
     void CreateHeroPanel()
     {
         panelInfo = heroPanel.GetComponent<HeroPanelInfo>();
