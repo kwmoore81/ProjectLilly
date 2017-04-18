@@ -146,7 +146,8 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
 
         // Shoot spell
         Vector3 relativePosition = _targetPosition - transform.position;
-        Quaternion spellRotation = Quaternion.LookRotation(relativePosition);
+        Vector3 targetHieghtOffset = new Vector3(0, 1.25f, 0);
+        Quaternion spellRotation = Quaternion.LookRotation(relativePosition + targetHieghtOffset);
         GameObject tempSpell = Instantiate(_chosenAttack.projectile, spellSpawn.transform.position, spellRotation) as GameObject;
 
         yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
