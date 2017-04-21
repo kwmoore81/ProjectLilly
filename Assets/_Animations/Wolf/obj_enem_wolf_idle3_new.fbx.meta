@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 516ab00aa506e7e409727d8ed7ffcc9d
-timeCreated: 1492642487
+guid: 76ed95067b7b501409e62eda42b82ab6
+timeCreated: 1492717027
 licenseType: Pro
 ModelImporter:
   serializedVersion: 19
@@ -119,7 +119,7 @@ ModelImporter:
     400108: bind_tail6
     400110: bind_tailb
     400112: //RootNode
-    7400000: Wolf Idle 1
+    7400000: Wolf Idle 3
     9500000: //RootNode
   materials:
     importMaterials: 1
@@ -143,10 +143,10 @@ ModelImporter:
     extraExposedTransformPaths: []
     clipAnimations:
     - serializedVersion: 16
-      name: Wolf Idle 1
+      name: Wolf Idle 3
       takeName: Take 001
       firstFrame: 1
-      lastFrame: 159
+      lastFrame: 125
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
