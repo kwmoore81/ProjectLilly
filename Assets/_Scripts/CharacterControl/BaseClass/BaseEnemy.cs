@@ -24,11 +24,19 @@ public class BaseEnemy : BaseClass
         BaseMagicDefense = CurrentSpirit; //+ CombinedEquipment.MagicDefense
     }
 
+    public float maxCorruption;
+    public float startingCorruption;
+    public float currentCorruption;
+
     public List<AttackData> attacks = new List<AttackData>();
+    public List<AttackData> fireSpells = new List<AttackData>();
+    public List<AttackData> waterSpells = new List<AttackData>();
+    public List<AttackData> earthSpells = new List<AttackData>();
+    public List<ActionData> utility = new List<ActionData>();
 
     public enum EnemyType
     {
-        FIRE, ICE, EARTH, AIR
+        FIRE, WATER, EARTH, WOOD, METAL
     }
 
     public enum SpawnType

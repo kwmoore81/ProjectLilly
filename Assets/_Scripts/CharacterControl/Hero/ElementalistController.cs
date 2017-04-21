@@ -6,6 +6,7 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
 {
     protected Animator animator;
     HeroController heroControl;
+    BattleController battleControl;
 
     // Variables for weapon draw delay
     private float weaponDrawTimer = 0.0f;
@@ -49,6 +50,7 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
     {
         animator = GetComponentInChildren<Animator>();
         heroControl = GetComponent<HeroController>();
+        battleControl = GameObject.Find("BattleManager").GetComponent<BattleController>();
         startPosition = transform.position;
 
         // Hide Weapon
@@ -153,7 +155,11 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
 
         Destroy(tempSpell);
-        heroControl.DoDamage();
+
+        if (CheckElementParity(_chosenAttack))
+            heroControl.DoCleansing();
+        else
+            heroControl.DoDamage();
 
         yield return new WaitForSeconds(.5f);
 
@@ -276,6 +282,15 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
 
         actionStarted = false;
         heroControl.EndAction();
+    }
+
+    private bool CheckElementParity(AttackData _chosenAttack)
+    {
+        string attackElement = _chosenAttack.damageType.ToString();
+        string enemyElement = battleControl.activeAgentList[0].targetGO.GetComponent<EnemyController>().enemy.enemyType.ToString();
+
+        if (attackElement == enemyElement) return true;
+        else return false;
     }
 
     // TODO: Setup hit animation function

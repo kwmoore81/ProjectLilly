@@ -20,12 +20,12 @@ public class CorruptionMeter : MonoBehaviour
         UpdateCorruptionMeter();
 	}
 
-    public void RaiseCorruption(int _corruptionChange)
+    public void RaiseCorruption(float _corruptionChange)
     {
         currentCorruption += _corruptionChange;
     }
 
-    public void LowerCorruption(int _corruptionChange)
+    public void LowerCorruption(float _corruptionChange)
     {
         currentCorruption -= _corruptionChange;
     }
