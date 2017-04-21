@@ -263,4 +263,14 @@ public class EnemyController : MonoBehaviour
 
         // Update element icon
     }
+
+    public void EnemyPanelButtonOn()
+    {
+        panelInfo.GetComponent<Outline>().enabled = true;
+    }
+
+    public void EnemyPanelButtonOff()
+    {
+        panelInfo.GetComponent<Outline>().enabled = false;
+    }
 }

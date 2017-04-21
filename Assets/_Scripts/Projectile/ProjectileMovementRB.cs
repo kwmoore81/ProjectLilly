@@ -21,7 +21,7 @@ public class ProjectileMovementRB : MonoBehaviour
     {
         //transform.Translate(Vector3.forward * speed * Time.deltaTime);
 
-        transform.LookAt(target.position);
+        transform.LookAt(target.position + targetHeightOffset);
         transform.GetComponent<Rigidbody>().AddForce(transform.forward * speed);
     }
 }
