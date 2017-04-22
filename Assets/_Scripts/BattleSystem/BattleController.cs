@@ -5,8 +5,6 @@ using System.Collections.Generic;
 
 public class BattleController : MonoBehaviour
 {
-    Animator animatorCamera;
-    
     // State engine for perfoming actions
     public enum ActionState
     {
@@ -31,6 +29,12 @@ public class BattleController : MonoBehaviour
     public HeroUI heroInput;
 
     private TurnOrderHandler heroChoice;
+
+    [Header("Animators")]
+    Animator animatorCamera;
+    public Animator animPanelGabi;
+    public Animator animPanelQuinn;
+    public Animator animPanelArvandus;
 
     [Header("Battle Control Lists")]
     public List<TurnOrderHandler> activeAgentList = new List<TurnOrderHandler>();
@@ -94,6 +98,11 @@ public class BattleController : MonoBehaviour
     [HideInInspector]
     public bool battleResultWait = false;
 
+    public bool gabiTurn = false;
+    public bool quinnTurn = false;
+    public bool arvandusTurn = false;
+    public bool heroPanelActive = false;
+
     void Start ()
 	{
         animatorCamera = GameObject.Find("MainCamera").GetComponentInChildren<Animator>();
@@ -156,6 +165,8 @@ public class BattleController : MonoBehaviour
 
                 startDelayTimer -= Time.deltaTime;
             }
+
+            AnimateHeroPanels();
         }
 	}
 
@@ -214,6 +225,8 @@ public class BattleController : MonoBehaviour
         {
             heroesToManage[0].transform.FindChild("Selector").gameObject.SetActive(true);
             heroChoice = new TurnOrderHandler();
+
+            // Hero panel animation
 
             actionPanel.SetActive(true);
             CreateActionButtons();
@@ -347,6 +360,65 @@ public class BattleController : MonoBehaviour
             Destroy(attackButton);
         }
         attackButtons.Clear();
+    }
+
+    void ActivateHeroPanels()
+    {
+        if (activeAgentList[0].agentGO.GetComponent<HeroController>().name == "Gabi")
+        {
+            gabiTurn = true;
+        }
+        else if (activeAgentList[0].agentGO.GetComponent<HeroController>().name == "Quinn")
+        {
+            quinnTurn = true;
+        }
+        else if (activeAgentList[0].agentGO.GetComponent<HeroController>().name == "Arvandus")
+        {
+            arvandusTurn = true;
+        }
+    }
+
+    void AnimateHeroPanels()
+    {
+        if (heroPanelActive)
+        {
+            if (gabiTurn)
+            {
+                animPanelGabi.SetTrigger("expand");
+            }
+            else if (quinnTurn)
+            {
+                animPanelGabi.SetTrigger("gabiUp");
+                animPanelQuinn.SetTrigger("expand");
+            }
+            else if (arvandusTurn)
+            {
+                animPanelGabi.SetTrigger("gabiUp");
+                animPanelQuinn.SetTrigger("quinnUp");
+                animPanelArvandus.SetTrigger("expand");
+            }
+        }
+        else
+        {
+            if (gabiTurn)
+            {
+                animPanelGabi.SetTrigger("minimize");
+                gabiTurn = false;
+            }
+            else if (quinnTurn)
+            {
+                animPanelGabi.SetTrigger("gabiDown");
+                animPanelQuinn.SetTrigger("minimize");
+                quinnTurn = false;
+            }
+            else if (arvandusTurn)
+            {
+                animPanelGabi.SetTrigger("gabiDown");
+                animPanelQuinn.SetTrigger("quinnDown");
+                animPanelArvandus.SetTrigger("minimize");
+                arvandusTurn = false;
+            }
+        }
     }
 
     // TODO: Modify this for specific classes.  Should it be in the individual class controllers?
