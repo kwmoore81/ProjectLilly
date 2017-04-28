@@ -24,7 +24,7 @@ public class OverWorldSceneChanger2 : MonoBehaviour {
     public int quinnCurrentEarth;
     public int quinnCurrentWater;
 
-    public int currentAreaCorruption;
+    public float currentAreaCorruption;
 
     void Start()
     {
@@ -55,7 +55,7 @@ public class OverWorldSceneChanger2 : MonoBehaviour {
         quinnCurrentEarth = characterStatsDB.quinnCurrentEarth;
         quinnCurrentWater = characterStatsDB.quinnCurrentWater;
 
-        //currentAreaCorruption = databank.currentAreaCorruption;
+        currentAreaCorruption = characterStatsDB.currentAreaCorruption;
     }
 
     void Update()

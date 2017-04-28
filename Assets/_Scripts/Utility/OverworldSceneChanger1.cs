@@ -30,7 +30,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     public int quinnCurrentEarth;
     public int quinnCurrentWater;
 
-    public int currentAreaCorruption;
+    public float currentAreaCorruption;
     public float characterMovementCounter;
     float randValue;
     public float encounterChance = 0.60f;
@@ -75,7 +75,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
         quinnCurrentEarth = characterStatsDB.quinnCurrentEarth;
         quinnCurrentWater = characterStatsDB.quinnCurrentWater;
 
-        //currentAreaCorruption = databank.currentAreaCorruption;             
+        currentAreaCorruption = characterStatsDB.currentAreaCorruption;             
     }
 
     void Update()
