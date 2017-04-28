@@ -19,25 +19,25 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     private vThirdPersonController thirdPersonController;
     Animator animator;  
     
-    public int gabiCurrentHealth;
-    public int gabiCurrentResolve;
+    public float gabiCurrentHealth;
+    public float gabiCurrentResolve;
 
-    public int arvandusCurrentHealth;
-    public int arvanusCurrentStamina;
+    public float arvandusCurrentHealth;
+    public float arvanusCurrentStamina;
 
-    public int quinnCurrentHealth;
+    public float quinnCurrentHealth;
     public int quinnCurrentFire;
     public int quinnCurrentEarth;
     public int quinnCurrentWater;
 
-    public int currentAreaCorruption;
+    public float currentAreaCorruption;
     public float characterMovementCounter;
     float randValue;
     public float encounterChance = 0.60f;
     public float encounterBuffer;
     public float maxTimeBeforeEncounter;
 
-    
+    public bool battleToggle = true;
     public Vector3 playerLastPos;
     public Vector3 playerCurrentPos;
     float _time = 0;
@@ -75,48 +75,49 @@ public class OverworldSceneChanger1 : MonoBehaviour {
         quinnCurrentEarth = characterStatsDB.quinnCurrentEarth;
         quinnCurrentWater = characterStatsDB.quinnCurrentWater;
 
-        //currentAreaCorruption = databank.currentAreaCorruption;             
+        currentAreaCorruption = characterStatsDB.currentAreaCorruption;             
     }
 
     void Update()
     {
-        
-        if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") !=0)
+        if (battleToggle)
         {
-
-            movementCounter += Time.deltaTime;
-            maxMovmentCounter += Time.deltaTime;
-
-            if (movementCounter >= encounterBuffer)
+            if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
             {
-                movementCounter = 0;
-                randValue = Random.value;
-                if (randValue < encounterChance)
-                {                   
+
+                movementCounter += Time.deltaTime;
+                maxMovmentCounter += Time.deltaTime;
+
+                if (movementCounter >= encounterBuffer)
+                {
+                    movementCounter = 0;
+                    randValue = Random.value;
+                    if (randValue < encounterChance)
+                    {
                         maxMovmentCounter = 0;
                         characterStatsDB.SendData1();
-                        SceneChange();                 
-                }
-                else if (maxMovmentCounter >= maxTimeBeforeEncounter)
-                {                   
+                        SceneChange();
+                    }
+                    else if (maxMovmentCounter >= maxTimeBeforeEncounter)
+                    {
                         maxMovmentCounter = 0;
                         characterStatsDB.SendData1();
-                        SceneChange();                   
+                        SceneChange();
+                    }
                 }
-            }           
-        }
-        else if (_time < 2f)
-        {
+            }
+            else if (_time < 2f)
+            {
 
-            _time = 0;
-        }
-        else if (_time < 2f)
-        {
-            _time += Time.deltaTime;
-        }
+                _time = 0;
+            }
+            else if (_time < 2f)
+            {
+                _time += Time.deltaTime;
+            }
 
-        playerLastPos = playerCurrentPos;
-        
+            playerLastPos = playerCurrentPos;
+
+        }
     }
-
 }

@@ -16,16 +16,18 @@ public class CharacterStatsDB : MonoBehaviour
 
     public PauseGame pauseGame;
 
-    public int gabiCurrentHealth;
-    public int gabiCurrentResolve;
+    public float gabiCurrentHealth;
+    public float gabiCurrentResolve;
 
-    public int arvandusCurrentHealth;
-    public int arvandusCurrentStamina;
+    public float arvandusCurrentHealth;
+    public float arvandusCurrentStamina;
 
-    public int quinnCurrentHealth;
+    public float quinnCurrentHealth;
     public int quinnCurrentFire;
     public int quinnCurrentEarth;
     public int quinnCurrentWater;
+
+    public float currentAreaCorruption;
 
     private string connectionString;
 
@@ -66,8 +68,8 @@ public class CharacterStatsDB : MonoBehaviour
                 {
                     while (readerGabi.Read())
                     {
-                        gabiCurrentHealth = readerGabi.GetInt32(2);
-                        gabiCurrentResolve = readerGabi.GetInt32(3);
+                        gabiCurrentHealth = readerGabi.GetFloat(2);
+                        gabiCurrentResolve = readerGabi.GetFloat(3);
                     }
 
                     readerGabi.Close();
@@ -84,8 +86,8 @@ public class CharacterStatsDB : MonoBehaviour
                     while (readerArvandus.Read())
                     {
 
-                        arvandusCurrentHealth = readerArvandus.GetInt32(2);
-                        arvandusCurrentStamina = readerArvandus.GetInt32(3);
+                        arvandusCurrentHealth = readerArvandus.GetFloat(2);
+                        arvandusCurrentStamina = readerArvandus.GetFloat(3);
 
                     }
 
@@ -102,24 +104,37 @@ public class CharacterStatsDB : MonoBehaviour
                 {
                     while (readerQuinn.Read())
                     {
-                        quinnCurrentHealth = readerQuinn.GetInt32(2);
+                        quinnCurrentHealth = readerQuinn.GetFloat(2);
                         quinnCurrentFire = readerQuinn.GetInt32(15);
                         quinnCurrentEarth = readerQuinn.GetInt32(16);
                         quinnCurrentWater = readerQuinn.GetInt32(17);
 
-                        Debug.Log(quinnCurrentFire + " - " + quinnCurrentEarth + " - " + quinnCurrentWater);
-
                     }
 
                     readerQuinn.Close();
-                    dbConnection.Close();
+
+                    //Update Area Corruption from the DataBase
+                    string sqlQueryCorruption = "SELECT * FROM CharacterStatsDB WHERE Name = 'Corruption'";
+
+                    dbCmd.CommandText = sqlQueryCorruption;
+
+                    using (IDataReader readerCorruption = dbCmd.ExecuteReader())
+
+                    {
+                        while (readerCorruption.Read())
+                        {
+                            currentAreaCorruption = readerCorruption.GetFloat(1);
+                        }
+
+                        readerCorruption.Close();
+                        dbConnection.Close();
+
+                    }
 
                 }
-
             }
         }
     }
-
     public void SendData1()
     {
 
@@ -134,7 +149,7 @@ public class CharacterStatsDB : MonoBehaviour
         quinnCurrentFire = overWorldSceneChanger1.quinnCurrentFire;
         quinnCurrentEarth = overWorldSceneChanger1.quinnCurrentEarth;
         quinnCurrentWater = overWorldSceneChanger1.quinnCurrentWater;
-
+        currentAreaCorruption = overWorldSceneChanger1.currentAreaCorruption;
 
         using (SqliteConnection dbConnection = new SqliteConnection(connectionString))
         {
@@ -167,6 +182,13 @@ public class CharacterStatsDB : MonoBehaviour
                 dbCmd.Parameters.Add(new SqliteParameter("@fireCharges", quinnCurrentFire));
                 dbCmd.Parameters.Add(new SqliteParameter("@earthCharges", quinnCurrentEarth));
                 dbCmd.Parameters.Add(new SqliteParameter("@waterCharges", quinnCurrentWater));
+
+                //Update Area Corruption
+                string sqlQueryCorruption = "Update CharacterStatsDB Set Amount = @amount WHERE Name = 'Corruption'";
+
+                dbCmd.CommandText = sqlQueryCorruption;
+                dbCmd.Connection = dbConnection;
+                dbCmd.Parameters.Add(new SqliteParameter("@amount", currentAreaCorruption));
 
                 dbConnection.Close();
 
@@ -188,6 +210,7 @@ public class CharacterStatsDB : MonoBehaviour
         quinnCurrentFire = overWorldSceneChanger2.quinnCurrentFire;
         quinnCurrentEarth = overWorldSceneChanger2.quinnCurrentEarth;
         quinnCurrentWater = overWorldSceneChanger2.quinnCurrentWater;
+        currentAreaCorruption = overWorldSceneChanger2.currentAreaCorruption;
 
 
         using (SqliteConnection dbConnection = new SqliteConnection(connectionString))
@@ -221,6 +244,13 @@ public class CharacterStatsDB : MonoBehaviour
                 dbCmd.Parameters.Add(new SqliteParameter("@fireCharges", quinnCurrentFire));
                 dbCmd.Parameters.Add(new SqliteParameter("@earthCharges", quinnCurrentEarth));
                 dbCmd.Parameters.Add(new SqliteParameter("@waterCharges", quinnCurrentWater));
+
+                //Update Area Corruption
+                string sqlQueryCorruption = "Update CharacterStatsDB Set Amount = @amount WHERE Name = 'Corruption'";
+
+                dbCmd.CommandText = sqlQueryCorruption;
+                dbCmd.Connection = dbConnection;
+                dbCmd.Parameters.Add(new SqliteParameter("@amount", currentAreaCorruption));
 
                 dbConnection.Close();
 
