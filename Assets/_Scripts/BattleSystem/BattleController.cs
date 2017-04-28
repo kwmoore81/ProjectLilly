@@ -102,6 +102,9 @@ public class BattleController : MonoBehaviour
     public bool quinnTurn = false;
     public bool arvandusTurn = false;
     public bool heroPanelActive = false;
+    public bool heroPanelOn = false;
+    private bool expandTriggered = false;
+    private bool contractTriggered = false;
 
     void Start ()
 	{
@@ -165,10 +168,14 @@ public class BattleController : MonoBehaviour
 
                 startDelayTimer -= Time.deltaTime;
             }
-
-            AnimateHeroPanels();
         }
-	}
+
+        if (heroPanelActive)
+        {
+            if (heroPanelOn) ExpandHeroPanels();
+            else ContractHeroPanels();
+        }
+    }
 
     void CheckActionState()
     {
@@ -378,37 +385,47 @@ public class BattleController : MonoBehaviour
         }
     }
 
-    void AnimateHeroPanels()
+    void ExpandHeroPanels()
     {
-        if (heroPanelActive)
+        if (!expandTriggered)
         {
             if (gabiTurn)
             {
                 animPanelGabi.SetTrigger("expand");
+                expandTriggered = true;
             }
             else if (quinnTurn)
             {
                 animPanelGabi.SetTrigger("gabiUp");
                 animPanelQuinn.SetTrigger("expand");
+                expandTriggered = true;
             }
             else if (arvandusTurn)
             {
                 animPanelGabi.SetTrigger("gabiUp");
                 animPanelQuinn.SetTrigger("quinnUp");
                 animPanelArvandus.SetTrigger("expand");
+                expandTriggered = true;
             }
+            contractTriggered = false;
         }
-        else
+    }
+
+    void ContractHeroPanels()
+    {
+        if (!contractTriggered)
         {
             if (gabiTurn)
             {
                 animPanelGabi.SetTrigger("minimize");
+                contractTriggered = true;
                 gabiTurn = false;
             }
             else if (quinnTurn)
             {
                 animPanelGabi.SetTrigger("gabiDown");
                 animPanelQuinn.SetTrigger("minimize");
+                contractTriggered = true;
                 quinnTurn = false;
             }
             else if (arvandusTurn)
@@ -416,10 +433,15 @@ public class BattleController : MonoBehaviour
                 animPanelGabi.SetTrigger("gabiDown");
                 animPanelQuinn.SetTrigger("quinnDown");
                 animPanelArvandus.SetTrigger("minimize");
+                contractTriggered = true;
                 arvandusTurn = false;
             }
+
+            heroPanelActive = false;
+            expandTriggered = false;
         }
     }
+    
 
     // TODO: Modify this for specific classes.  Should it be in the individual class controllers?
     void CreateActionButtons()
