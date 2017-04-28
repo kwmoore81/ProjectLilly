@@ -13,13 +13,13 @@ public class OverWorldSceneChanger2 : MonoBehaviour {
     public GameObject DataBase;
     private CharacterStatsDB characterStatsDB;
 
-    public int gabiCurrentHealth;
-    public int gabiCurrentResolve;
+    public float gabiCurrentHealth;
+    public float gabiCurrentResolve;
 
-    public int arvandusCurrentHealth;
-    public int arvanusCurrentStamina;
+    public float arvandusCurrentHealth;
+    public float arvanusCurrentStamina;
 
-    public int quinnCurrentHealth;
+    public float quinnCurrentHealth;
     public int quinnCurrentFire;
     public int quinnCurrentEarth;
     public int quinnCurrentWater;

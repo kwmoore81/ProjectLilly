@@ -16,13 +16,13 @@ public class CharacterStatsDB : MonoBehaviour
 
     public PauseGame pauseGame;
 
-    public int gabiCurrentHealth;
-    public int gabiCurrentResolve;
+    public float gabiCurrentHealth;
+    public float gabiCurrentResolve;
 
-    public int arvandusCurrentHealth;
-    public int arvandusCurrentStamina;
+    public float arvandusCurrentHealth;
+    public float arvandusCurrentStamina;
 
-    public int quinnCurrentHealth;
+    public float quinnCurrentHealth;
     public int quinnCurrentFire;
     public int quinnCurrentEarth;
     public int quinnCurrentWater;
@@ -68,8 +68,8 @@ public class CharacterStatsDB : MonoBehaviour
                 {
                     while (readerGabi.Read())
                     {
-                        gabiCurrentHealth = readerGabi.GetInt32(2);
-                        gabiCurrentResolve = readerGabi.GetInt32(3);
+                        gabiCurrentHealth = readerGabi.GetFloat(2);
+                        gabiCurrentResolve = readerGabi.GetFloat(3);
                     }
 
                     readerGabi.Close();
@@ -86,8 +86,8 @@ public class CharacterStatsDB : MonoBehaviour
                     while (readerArvandus.Read())
                     {
 
-                        arvandusCurrentHealth = readerArvandus.GetInt32(2);
-                        arvandusCurrentStamina = readerArvandus.GetInt32(3);
+                        arvandusCurrentHealth = readerArvandus.GetFloat(2);
+                        arvandusCurrentStamina = readerArvandus.GetFloat(3);
 
                     }
 
@@ -104,7 +104,7 @@ public class CharacterStatsDB : MonoBehaviour
                 {
                     while (readerQuinn.Read())
                     {
-                        quinnCurrentHealth = readerQuinn.GetInt32(2);
+                        quinnCurrentHealth = readerQuinn.GetFloat(2);
                         quinnCurrentFire = readerQuinn.GetInt32(15);
                         quinnCurrentEarth = readerQuinn.GetInt32(16);
                         quinnCurrentWater = readerQuinn.GetInt32(17);
