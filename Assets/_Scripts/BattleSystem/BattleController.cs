@@ -5,8 +5,6 @@ using System.Collections.Generic;
 
 public class BattleController : MonoBehaviour
 {
-    Animator animatorCamera;
-    
     // State engine for perfoming actions
     public enum ActionState
     {
@@ -32,6 +30,12 @@ public class BattleController : MonoBehaviour
 
     private TurnOrderHandler heroChoice;
 
+    [Header("Animators")]
+    Animator animatorCamera;
+    public Animator animPanelGabi;
+    public Animator animPanelQuinn;
+    public Animator animPanelArvandus;
+
     [Header("Battle Control Lists")]
     public List<TurnOrderHandler> activeAgentList = new List<TurnOrderHandler>();
     public List<GameObject> heroesInBattle = new List<GameObject>();
@@ -48,7 +52,6 @@ public class BattleController : MonoBehaviour
     public GameObject waterPanel;
     public GameObject attackPanel;
     public GameObject utilityPanel;
-    public GameObject enemySelectHighlight;
     public GameObject enemySelectPanel;
     public GameObject corruptionMeter;
     public GameObject victoryPanel;
@@ -95,6 +98,14 @@ public class BattleController : MonoBehaviour
     [HideInInspector]
     public bool battleResultWait = false;
 
+    public bool gabiTurn = false;
+    public bool quinnTurn = false;
+    public bool arvandusTurn = false;
+    public bool heroPanelActive = false;
+    public bool heroPanelOn = false;
+    private bool expandTriggered = false;
+    private bool contractTriggered = false;
+
     void Start ()
 	{
         animatorCamera = GameObject.Find("MainCamera").GetComponentInChildren<Animator>();
@@ -109,12 +120,12 @@ public class BattleController : MonoBehaviour
         enemiesInBattle.AddRange(GameObject.FindGameObjectsWithTag("Enemy"));
         heroesInBattle.AddRange(GameObject.FindGameObjectsWithTag("Hero"));
         actionPanel.SetActive(false);
+        attackPanel.SetActive(false);
         earthPanel.SetActive(false);
         firePanel.SetActive(false);
         earthPanel.SetActive(false);
         waterPanel.SetActive(false);
         utilityPanel.SetActive(false);
-        enemySelectHighlight.SetActive(false);
         enemySelectPanel.SetActive(false);
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
@@ -158,7 +169,13 @@ public class BattleController : MonoBehaviour
                 startDelayTimer -= Time.deltaTime;
             }
         }
-	}
+
+        if (heroPanelActive)
+        {
+            if (heroPanelOn) ExpandHeroPanels();
+            else ContractHeroPanels();
+        }
+    }
 
     void CheckActionState()
     {
@@ -177,11 +194,11 @@ public class BattleController : MonoBehaviour
                 CheckForDead();
                 break;
             case (ActionState.WIN):
-                Debug.Log("You win!");
+                //Debug.Log("You win!");
                 WinBattle();
                 break;
             case (ActionState.LOSE):
-                Debug.Log("You lose!");
+                //Debug.Log("You lose!");
                 LoseBattle();
                 break;
         }
@@ -215,6 +232,8 @@ public class BattleController : MonoBehaviour
         {
             heroesToManage[0].transform.FindChild("Selector").gameObject.SetActive(true);
             heroChoice = new TurnOrderHandler();
+
+            // Hero panel animation
 
             actionPanel.SetActive(true);
             CreateActionButtons();
@@ -314,7 +333,6 @@ public class BattleController : MonoBehaviour
         heroChoice.activeAgent = heroesToManage[0].name;
         heroChoice.agentGO = heroesToManage[0];
         heroChoice.chosenAttack = heroesToManage[0].GetComponent<HeroController>().hero.attacks[0];
-        enemySelectHighlight.SetActive(true);
         enemySelectPanel.SetActive(true);
     }
 
@@ -336,7 +354,6 @@ public class BattleController : MonoBehaviour
 
     void ClearAttackPanel()
     {
-        enemySelectHighlight.SetActive(false);
         enemySelectPanel.SetActive(false);
         actionPanel.SetActive(false);
         earthPanel.SetActive(false);
@@ -351,6 +368,80 @@ public class BattleController : MonoBehaviour
         }
         attackButtons.Clear();
     }
+
+    void ActivateHeroPanels()
+    {
+        if (activeAgentList[0].agentGO.GetComponent<HeroController>().name == "Gabi")
+        {
+            gabiTurn = true;
+        }
+        else if (activeAgentList[0].agentGO.GetComponent<HeroController>().name == "Quinn")
+        {
+            quinnTurn = true;
+        }
+        else if (activeAgentList[0].agentGO.GetComponent<HeroController>().name == "Arvandus")
+        {
+            arvandusTurn = true;
+        }
+    }
+
+    void ExpandHeroPanels()
+    {
+        if (!expandTriggered)
+        {
+            if (gabiTurn)
+            {
+                animPanelGabi.SetTrigger("expand");
+                expandTriggered = true;
+            }
+            else if (quinnTurn)
+            {
+                animPanelGabi.SetTrigger("gabiUp");
+                animPanelQuinn.SetTrigger("expand");
+                expandTriggered = true;
+            }
+            else if (arvandusTurn)
+            {
+                animPanelGabi.SetTrigger("gabiUp");
+                animPanelQuinn.SetTrigger("quinnUp");
+                animPanelArvandus.SetTrigger("expand");
+                expandTriggered = true;
+            }
+            contractTriggered = false;
+        }
+    }
+
+    void ContractHeroPanels()
+    {
+        if (!contractTriggered)
+        {
+            if (gabiTurn)
+            {
+                animPanelGabi.SetTrigger("minimize");
+                contractTriggered = true;
+                gabiTurn = false;
+            }
+            else if (quinnTurn)
+            {
+                animPanelGabi.SetTrigger("gabiDown");
+                animPanelQuinn.SetTrigger("minimize");
+                contractTriggered = true;
+                quinnTurn = false;
+            }
+            else if (arvandusTurn)
+            {
+                animPanelGabi.SetTrigger("gabiDown");
+                animPanelQuinn.SetTrigger("quinnDown");
+                animPanelArvandus.SetTrigger("minimize");
+                contractTriggered = true;
+                arvandusTurn = false;
+            }
+
+            heroPanelActive = false;
+            expandTriggered = false;
+        }
+    }
+    
 
     // TODO: Modify this for specific classes.  Should it be in the individual class controllers?
     void CreateActionButtons()
@@ -470,7 +561,7 @@ public class BattleController : MonoBehaviour
             utilityButton.transform.SetParent(actionSpacer, false);
             attackButtons.Add(utilityButton);
 
-            // Spell Buttons
+            // Utility Buttons
             foreach (ActionData utilityAction in heroesToManage[0].GetComponent<HeroController>().hero.utility)
             {
                 GameObject utilityBtn = Instantiate(utilityButton) as GameObject;
@@ -511,12 +602,15 @@ public class BattleController : MonoBehaviour
         heroChoice.chosenAttack = chosenAttack;
 
         attackPanel.SetActive(false);
-        enemySelectHighlight.SetActive(true);
         enemySelectPanel.SetActive(true);
     }
 
     public void MagicInput(string _magicType)
     {
+        earthPanel.SetActive(false);
+        firePanel.SetActive(false);
+        waterPanel.SetActive(false);
+
         if (_magicType == "Fire")
         {
             firePanel.SetActive(true);
@@ -537,10 +631,10 @@ public class BattleController : MonoBehaviour
         heroChoice.agentGO = heroesToManage[0];
         heroChoice.chosenAttack = chosenSpell;
 
-        earthPanel.SetActive(false);
-        firePanel.SetActive(false);
-        waterPanel.SetActive(false);
-        enemySelectHighlight.SetActive(true);
+        //earthPanel.SetActive(false);
+        //firePanel.SetActive(false);
+        //waterPanel.SetActive(false);
+        //enemySelectHighlight.SetActive(true);
         enemySelectPanel.SetActive(true);
     }
 
@@ -564,6 +658,29 @@ public class BattleController : MonoBehaviour
         heroChoice.activeAgent = heroesToManage[0].name;
         heroChoice.agentGO = heroesToManage[0];
         heroChoice.agentGO.GetComponent<HeroController>().isBlocking = true;
+
+        // Need agent action clean up code
+
+    }
+
+    public void enemyButtonsControl()
+    {
+        for (int i = 0; i < enemiesInBattle.Count; i++)
+        {
+            if (enemiesInBattle[i].tag == "Enemy")
+            {
+                
+            }
+            else if (enemiesInBattle[i].tag == "DeadEnemy")
+            {
+
+            }
+        }
+    }
+
+    public void enemyButtonsOff()
+    {
+
     }
 
     void WinBattle()
@@ -571,7 +688,7 @@ public class BattleController : MonoBehaviour
         for (int i = 0; i < heroesInBattle.Count; i++)
         {
             heroesInBattle[i].GetComponent<HeroController>().currentState = HeroController.HeroState.IDLE;
-        }
+        }   
 
         victoryPanel.SetActive(true);
 
@@ -596,7 +713,5 @@ public class BattleController : MonoBehaviour
             defeatPanel.SetActive(false);
             overWorldSceneChanger2.SceneChange();
         }
-
-        //TODO Add Game Over Scene Change
     }
 }

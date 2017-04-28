@@ -222,6 +222,12 @@ public class HeroController : MonoBehaviour
         UpdateHeroPanel();
     }
 
+    public void DoCleansing()
+    {
+        int calculatedDamage = hero.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
+        enemyToAttack.GetComponent<EnemyController>().TakeCleansing(calculatedDamage);
+    }
+
     public void DoDamage()
     {
         int calculatedDamage = hero.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
