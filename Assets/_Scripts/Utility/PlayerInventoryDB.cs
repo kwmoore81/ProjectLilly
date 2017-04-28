@@ -90,23 +90,33 @@ public class PlayerInventoryDB : MonoBehaviour {
     //Add an item stored in temp variables to the player's inventory
     public void AddToInventory(int itemID, int quantity)
     {
-        bool itemExists = false;
-
         using (SqliteConnection dbconnection = new SqliteConnection(inventoryConnectionDB))
         {
             dbconnection.Open();
             using (IDbCommand dbCmd = dbconnection.CreateCommand())
             {
-                
-                string sqlQuery = "INSERT INTO InventoryDB (ID, Name, Type, Quantity)";
+                dbCmd.CommandText = "SELECT count(*) FROM InventoryDB WHERE ID = " + itemID;
+                int count = Convert.ToInt32(dbCmd.ExecuteScalar());
 
-                dbCmd.CommandText = sqlQuery;
-                dbCmd.Connection = dbconnection;
-                dbCmd.Parameters.Add(new SqliteParameter("@ID", itemIDtemp));
-                dbCmd.Parameters.Add(new SqliteParameter("@Name", nameTemp));
-                dbCmd.Parameters.Add(new SqliteParameter("@Type", typeTemp));
-                dbCmd.Parameters.Add(new SqliteParameter("@Quantity", quantityTemp));
+                if (count <= 0)
+                {
+                    string sqlQuery = "INSERT INTO InventoryDB (ID, Name, Type, Quantity)";
 
+                    dbCmd.CommandText = sqlQuery;
+                    dbCmd.Connection = dbconnection;
+                    dbCmd.Parameters.Add(new SqliteParameter("@ID", itemIDtemp));
+                    dbCmd.Parameters.Add(new SqliteParameter("@Name", nameTemp));
+                    dbCmd.Parameters.Add(new SqliteParameter("@Type", typeTemp));
+                    dbCmd.Parameters.Add(new SqliteParameter("@Quantity", quantityTemp));
+                }
+                else
+                {
+                    int newQuantity = quantity + quantityTemp;
+                    string sqlQuery = "Update CharacterStatsDB Set Quantity = @Quantity WHERE ID = " + itemID;
+                    dbCmd.CommandText = sqlQuery;
+                    dbCmd.Connection = dbconnection;
+                    dbCmd.Parameters.Add(new SqliteParameter("@Quantity", newQuantity));
+                }
                 dbconnection.Close();
             }
         }

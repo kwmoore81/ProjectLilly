@@ -19,18 +19,18 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     private vThirdPersonController thirdPersonController;
     Animator animator;  
     
-    public int gabiCurrentHealth;
-    public int gabiCurrentResolve;
+    public float gabiCurrentHealth;
+    public float gabiCurrentResolve;
 
-    public int arvandusCurrentHealth;
-    public int arvanusCurrentStamina;
+    public float arvandusCurrentHealth;
+    public float arvanusCurrentStamina;
 
-    public int quinnCurrentHealth;
+    public float quinnCurrentHealth;
     public int quinnCurrentFire;
     public int quinnCurrentEarth;
     public int quinnCurrentWater;
 
-    public int currentAreaCorruption;
+    public float currentAreaCorruption;
     public float characterMovementCounter;
     float randValue;
     public float encounterChance = 0.60f;
@@ -75,7 +75,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
         quinnCurrentEarth = characterStatsDB.quinnCurrentEarth;
         quinnCurrentWater = characterStatsDB.quinnCurrentWater;
 
-        //currentAreaCorruption = databank.currentAreaCorruption;             
+        currentAreaCorruption = characterStatsDB.currentAreaCorruption;             
     }
 
     void Update()
