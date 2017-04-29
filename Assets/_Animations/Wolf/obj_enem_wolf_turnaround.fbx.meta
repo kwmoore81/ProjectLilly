@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: d93742ed25f472f41866ccb4f887b68f
-timeCreated: 1493336094
+guid: 15902add6e1d35d4cb214f9f35f1bac6
+timeCreated: 1493417969
 licenseType: Pro
 ModelImporter:
   serializedVersion: 19
@@ -139,7 +139,7 @@ ModelImporter:
     400128: rightear_cntrl
     400130: rightear_cntrlGrp
     400132: upperback_cntrl
-    7400000: Wolf Howl
+    7400000: Wolf Turn Around
     9500000: //RootNode
   materials:
     importMaterials: 1
@@ -150,7 +150,7 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
-    motionNodeName: bind_pelvis
+    motionNodeName: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -163,10 +163,10 @@ ModelImporter:
     extraExposedTransformPaths: []
     clipAnimations:
     - serializedVersion: 16
-      name: Wolf Howl
+      name: Wolf Turn Around
       takeName: Take 001
-      firstFrame: 199
-      lastFrame: 234
+      firstFrame: 59
+      lastFrame: 77
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -359,7 +359,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    rootMotionBoneName: bind_pelvis
+    rootMotionBoneName: 
     rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
     hasExtraRoot: 0
