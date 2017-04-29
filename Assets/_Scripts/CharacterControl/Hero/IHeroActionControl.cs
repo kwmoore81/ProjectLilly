@@ -10,5 +10,5 @@ public interface IHeroActionControl
     void DefendInput();
     void HitReaction();
     void DeathReaction();
-
+    void WriteStats();
 }
