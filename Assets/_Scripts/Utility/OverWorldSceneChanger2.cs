@@ -36,6 +36,7 @@ public class OverWorldSceneChanger2 : MonoBehaviour {
     public void SceneChange()
     {
             overworldScene.gameObject.SetActive(true);
+            characterStatsDB.SendData2();
             overWorldSceneChanger1.UpdateFromBank();
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;

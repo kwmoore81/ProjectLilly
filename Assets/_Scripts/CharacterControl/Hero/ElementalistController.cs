@@ -7,6 +7,7 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
     protected Animator animator;
     HeroController heroControl;
     BattleController battleControl;
+    private OverWorldSceneChanger2 sceneChanger;
 
     // Variables for weapon draw delay
     private float weaponDrawTimer = 0.0f;
@@ -48,16 +49,37 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
 
     public void HeroAwake()
     {
+        sceneChanger = GameObject.Find("BattleMaster").GetComponent<OverWorldSceneChanger2>();
         animator = GetComponentInChildren<Animator>();
         heroControl = GetComponent<HeroController>();
         battleControl = GameObject.Find("BattleManager").GetComponent<BattleController>();
         startPosition = transform.position;
+
+        InitilizeStats();
 
         // Hide Weapon
         if (staff != null)
         {
             staff.SetActive(false);
         }
+    }
+
+    void InitilizeStats()
+    {
+        heroControl.hero.baseHealth = 410;
+
+        heroControl.hero.CurrentHealth = sceneChanger.quinnCurrentHealth;
+        heroControl.hero.CurrentWaterCharges = sceneChanger.quinnCurrentWater;
+        heroControl.hero.CurrentFireCharges = sceneChanger.quinnCurrentFire;
+        heroControl.hero.CurrentEarthCharges = sceneChanger.quinnCurrentEarth;
+    }
+
+    public void WriteStats()
+    {
+        sceneChanger.quinnCurrentHealth = heroControl.hero.CurrentHealth;
+        sceneChanger.quinnCurrentWater = heroControl.hero.CurrentWaterCharges;
+        sceneChanger.quinnCurrentFire = heroControl.hero.CurrentFireCharges;
+        sceneChanger.quinnCurrentEarth = heroControl.hero.CurrentEarthCharges;
     }
 
     public void DrawWeapon()

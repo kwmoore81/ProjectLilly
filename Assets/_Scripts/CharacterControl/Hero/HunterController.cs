@@ -6,6 +6,7 @@ public class HunterController : MonoBehaviour, IHeroActionControl
 {
     protected Animator animator;
     HeroController heroControl;
+    private OverWorldSceneChanger2 sceneChanger;
 
     // Hunter arrow types
     public enum ArrowType
@@ -53,17 +54,35 @@ public class HunterController : MonoBehaviour, IHeroActionControl
 
     public void HeroAwake()
     {
+        sceneChanger = GameObject.Find("BattleMaster").GetComponent<OverWorldSceneChanger2>();
         animator = GetComponentInChildren<Animator>();
         heroControl = GetComponent<HeroController>();
         startPosition = transform.position;
         heroControl.hero.baseEnergy = 100;
         heroControl.hero.CurrentEnergy = heroControl.hero.baseEnergy;
 
+        InitilizeStats();
+
         // Hide weapon
         if (twohandbow != null)
         {
             twohandbow.SetActive(false);
         }
+    }
+
+    void InitilizeStats()
+    {
+        heroControl.hero.baseHealth = 520;
+        heroControl.hero.baseEnergy = 100;
+
+        heroControl.hero.CurrentHealth = sceneChanger.arvandusCurrentHealth;
+        heroControl.hero.CurrentEnergy = sceneChanger.arvanusCurrentStamina;
+    }
+
+    public void WriteStats()
+    {
+        sceneChanger.arvandusCurrentHealth = heroControl.hero.CurrentHealth;
+        sceneChanger.arvanusCurrentStamina = heroControl.hero.CurrentEnergy;
     }
 
     public void DrawWeapon()

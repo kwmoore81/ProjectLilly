@@ -136,6 +136,8 @@ public class BattleController : MonoBehaviour
         endDelayTimer = endDelay;
         
         overWorldSceneChanger2 = GameObject.Find("BattleMaster").GetComponent<OverWorldSceneChanger2>();
+
+        corruptionMeter.GetComponent<CorruptionMeter>().currentCorruption = overWorldSceneChanger2.currentAreaCorruption;
     }
 	
 	void Update ()
@@ -695,6 +697,18 @@ public class BattleController : MonoBehaviour
         if (!battleResultWait)
         {
             victoryPanel.SetActive(false);
+
+            // Write current stats to database
+            overWorldSceneChanger2.currentAreaCorruption = corruptionMeter.GetComponent<CorruptionMeter>().currentCorruption;
+            for (int i = 0; 0 < deadHeroes.Count; i++)
+            {
+                deadHeroes[i].GetComponent<HeroController>().EndBattleRevive();
+            }
+            for (int i = 0; i < heroesInBattle.Count; i++)
+            {
+                heroesInBattle[i].GetComponent<HeroController>().heroActionControl.WriteStats();
+            }
+
             overWorldSceneChanger2.SceneChange();
         }
     }
@@ -711,6 +725,19 @@ public class BattleController : MonoBehaviour
         if (!battleResultWait)
         {
             defeatPanel.SetActive(false);
+
+            // Write current stats to database
+            overWorldSceneChanger2.currentAreaCorruption = corruptionMeter.GetComponent<CorruptionMeter>().currentCorruption;
+
+            for (int i = 0; 0 < deadHeroes.Count; i++)
+            {
+                deadHeroes[i].GetComponent<HeroController>().EndBattleRevive();
+            }
+            for (int i = 0; 0 < heroesInBattle.Count; i++)
+            {
+                heroesInBattle[i].GetComponent<HeroController>().heroActionControl.WriteStats();
+            }
+
             overWorldSceneChanger2.SceneChange();
         }
     }
