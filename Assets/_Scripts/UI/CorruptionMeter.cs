@@ -12,7 +12,7 @@ public class CorruptionMeter : MonoBehaviour
 
 	void Start ()
     {
-        currentCorruption = maxCorruption;
+        //currentCorruption = maxCorruption;
 	}
 	
 	void Update ()
@@ -20,14 +20,16 @@ public class CorruptionMeter : MonoBehaviour
         UpdateCorruptionMeter();
 	}
 
-    public void RaiseCorruption(int _corruptionChange)
+    public void RaiseCorruption(float _corruptionChange)
     {
         currentCorruption += _corruptionChange;
+        if (currentCorruption > maxCorruption) currentCorruption = maxCorruption;
     }
 
-    public void LowerCorruption(int _corruptionChange)
+    public void LowerCorruption(float _corruptionChange)
     {
         currentCorruption -= _corruptionChange;
+        if (currentCorruption < 0) currentCorruption = 0;
     }
 
     public void UpdateCorruptionMeter()

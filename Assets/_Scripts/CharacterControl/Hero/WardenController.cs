@@ -6,6 +6,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
 {
     protected Animator animator;
     HeroController heroControl;
+    private OverWorldSceneChanger2 sceneChanger;
 
     // Warden stance
     public enum Stance
@@ -52,17 +53,35 @@ public class WardenController : MonoBehaviour, IHeroActionControl
 
     public void HeroAwake()
     {
+        sceneChanger = GameObject.Find("BattleMaster").GetComponent<OverWorldSceneChanger2>();
         animator = GetComponentInChildren<Animator>();
         heroControl = GetComponent<HeroController>();
         startPosition = transform.position;
         heroControl.hero.baseEnergy = 100;
         heroControl.hero.CurrentEnergy = heroControl.hero.baseEnergy;
 
+        InitilizeStats();
+
         // Hide weapon
         if (twohandsword != null)
         {
             twohandsword.SetActive(false);
         }
+    }
+
+    void InitilizeStats()
+    {
+        heroControl.hero.baseHealth = 960;
+        heroControl.hero.baseEnergy = 100;
+
+        heroControl.hero.CurrentHealth = sceneChanger.gabiCurrentHealth;
+        heroControl.hero.CurrentEnergy = sceneChanger.gabiCurrentResolve;
+    }
+
+    public void WriteStats()
+    {
+        sceneChanger.gabiCurrentHealth = heroControl.hero.CurrentHealth;
+        sceneChanger.gabiCurrentResolve = heroControl.hero.CurrentEnergy;
     }
 
     public void DrawWeapon()

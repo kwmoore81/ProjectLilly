@@ -8,7 +8,7 @@ public class HeroController : MonoBehaviour
     private BattleController battleControl;
     public BaseHero hero;
 
-    IHeroActionControl heroActionControl;
+    public IHeroActionControl heroActionControl;
 
     // Hero state machine
     public enum HeroState
@@ -45,8 +45,6 @@ public class HeroController : MonoBehaviour
 
     void Awake()
     {
-        InitializeStats();
-
         // Create panel and add info
         heroPanelSpacer = GameObject.Find("BattleCanvas").transform.FindChild("HeroPanel").transform.FindChild("HeroPanelSpacer");
         CreateHeroPanel();
@@ -61,6 +59,7 @@ public class HeroController : MonoBehaviour
         heroActionControl = gameObject.GetComponent<IHeroActionControl>();
 
         heroActionControl.HeroAwake();
+        UpdateHeroPanel();
     }
 
     void Update()
@@ -97,18 +96,6 @@ public class HeroController : MonoBehaviour
                 HeroDeath();
                 break;
         }
-    }
-
-    void InitializeStats()
-    {
-        hero.CurrentHealth = hero.baseHealth;
-        hero.CurrentAttackPower = hero.BaseAttackPower;
-        hero.CurrentPhysicalDefense = hero.BasePhysicalDefense;
-
-        // Initialize elemental charges (Remove after database is integerated)
-        hero.CurrentFireCharges = hero.maxFireCharges;
-        hero.CurrentWaterCharges = hero.maxWaterCharges;
-        hero.CurrentEarthCharges = hero.maxEarthCharges;
     }
 
     void UpdateATB()
@@ -222,6 +209,12 @@ public class HeroController : MonoBehaviour
         UpdateHeroPanel();
     }
 
+    public void DoCleansing()
+    {
+        int calculatedDamage = hero.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
+        enemyToAttack.GetComponent<EnemyController>().TakeCleansing(calculatedDamage);
+    }
+
     public void DoDamage()
     {
         int calculatedDamage = hero.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
@@ -271,6 +264,13 @@ public class HeroController : MonoBehaviour
 
             isAlive = false;
         }
+    }
+
+    public void EndBattleRevive()
+    {
+        hero.CurrentHealth = 1;
+        this.gameObject.tag = "Hero";
+        battleControl.heroesInBattle.Add(this.gameObject);
     }
 
     void CreateHeroPanel()

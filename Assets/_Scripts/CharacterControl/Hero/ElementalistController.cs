@@ -6,6 +6,8 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
 {
     protected Animator animator;
     HeroController heroControl;
+    BattleController battleControl;
+    private OverWorldSceneChanger2 sceneChanger;
 
     // Variables for weapon draw delay
     private float weaponDrawTimer = 0.0f;
@@ -47,15 +49,37 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
 
     public void HeroAwake()
     {
+        sceneChanger = GameObject.Find("BattleMaster").GetComponent<OverWorldSceneChanger2>();
         animator = GetComponentInChildren<Animator>();
         heroControl = GetComponent<HeroController>();
+        battleControl = GameObject.Find("BattleManager").GetComponent<BattleController>();
         startPosition = transform.position;
+
+        InitilizeStats();
 
         // Hide Weapon
         if (staff != null)
         {
             staff.SetActive(false);
         }
+    }
+
+    void InitilizeStats()
+    {
+        heroControl.hero.baseHealth = 410;
+
+        heroControl.hero.CurrentHealth = sceneChanger.quinnCurrentHealth;
+        heroControl.hero.CurrentWaterCharges = sceneChanger.quinnCurrentWater;
+        heroControl.hero.CurrentFireCharges = sceneChanger.quinnCurrentFire;
+        heroControl.hero.CurrentEarthCharges = sceneChanger.quinnCurrentEarth;
+    }
+
+    public void WriteStats()
+    {
+        sceneChanger.quinnCurrentHealth = heroControl.hero.CurrentHealth;
+        sceneChanger.quinnCurrentWater = heroControl.hero.CurrentWaterCharges;
+        sceneChanger.quinnCurrentFire = heroControl.hero.CurrentFireCharges;
+        sceneChanger.quinnCurrentEarth = heroControl.hero.CurrentEarthCharges;
     }
 
     public void DrawWeapon()
@@ -146,13 +170,18 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
 
         // Shoot spell
         Vector3 relativePosition = _targetPosition - transform.position;
-        Quaternion spellRotation = Quaternion.LookRotation(relativePosition);
+        Vector3 targetHieghtOffset = new Vector3(0, 1.25f, 0);
+        Quaternion spellRotation = Quaternion.LookRotation(relativePosition + targetHieghtOffset);
         GameObject tempSpell = Instantiate(_chosenAttack.projectile, spellSpawn.transform.position, spellRotation) as GameObject;
 
         yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
 
         Destroy(tempSpell);
-        heroControl.DoDamage();
+
+        if (CheckElementParity(_chosenAttack))
+            heroControl.DoCleansing();
+        else
+            heroControl.DoDamage();
 
         yield return new WaitForSeconds(.5f);
 
@@ -275,6 +304,15 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
 
         actionStarted = false;
         heroControl.EndAction();
+    }
+
+    private bool CheckElementParity(AttackData _chosenAttack)
+    {
+        string attackElement = _chosenAttack.damageType.ToString();
+        string enemyElement = battleControl.activeAgentList[0].targetGO.GetComponent<EnemyController>().enemy.enemyType.ToString();
+
+        if (attackElement == enemyElement) return true;
+        else return false;
     }
 
     // TODO: Setup hit animation function

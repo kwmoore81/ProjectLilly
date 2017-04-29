@@ -93,6 +93,7 @@ public class EnemyController : MonoBehaviour
         enemy.CurrentHealth = enemy.baseHealth;
         enemy.CurrentAttackPower = enemy.BaseAttackPower;
         enemy.CurrentPhysicalDefense = enemy.BasePhysicalDefense;
+        enemy.currentCorruption = enemy.startingCorruption;
 
         StartEnemyPanel();
     }
@@ -162,6 +163,20 @@ public class EnemyController : MonoBehaviour
         //battleCameraSet = false;
     }
 
+    public void TakeCleansing(int _damage)
+    {
+        enemy.currentCorruption -= _damage;
+
+        if (enemy.currentCorruption <= 0)
+        {
+            enemy.currentCorruption = 0;
+
+            EnemyCleansed();
+        }
+
+        UpdateEnemyPanel();
+    }
+
     public void TakeDamage(int _damage)
     {
         enemy.CurrentHealth -= _damage;
@@ -182,6 +197,18 @@ public class EnemyController : MonoBehaviour
     {
         int calculatedDamage = enemy.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
         enemyAttack.targetGO.GetComponent<HeroController>().TakeDamage(calculatedDamage);
+    }
+
+    void EnemyCleansed()
+    {
+        // Update area corruption
+        battleControl.corruptionMeter.GetComponent<CorruptionMeter>().LowerCorruption(enemy.startingCorruption);
+
+        // TODO: Add animations to leave battle area
+        // TODO: Cleanup battle manager agent list
+
+        // Making enemy dead for now, so the battle can continue
+        currentState = EnemyState.DEAD;
     }
 
     void EnemyDeath()
@@ -220,7 +247,7 @@ public class EnemyController : MonoBehaviour
             enemyActionControl.DeathReaction();
 
             // Update area corruption
-            battleControl.corruptionMeter.GetComponent<CorruptionMeter>().LowerCorruption(7);
+            battleControl.corruptionMeter.GetComponent<CorruptionMeter>().RaiseCorruption(enemy.startingCorruption);
            
             // Check if all enemies are dead and set isAlive to false;
             battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
@@ -248,6 +275,8 @@ public class EnemyController : MonoBehaviour
         HP_Bar = panelInfo.HP_Bar;
         corruption_Bar = panelInfo.Corruption_Bar;
         element_Icon = panelInfo.Element_Icon;
+
+        UpdateEnemyPanel();
     }
 
     public void UpdateEnemyPanel()
@@ -259,8 +288,20 @@ public class EnemyController : MonoBehaviour
         panelInfo.enemyHP.text = "HP: " + enemy.CurrentHealth + " / " + enemy.baseHealth;
 
         // Update corruption bar and text
-
+        float CorruptionFillPercentage = enemy.currentCorruption / enemy.maxCorruption;
+        corruption_Bar.transform.localScale = new Vector3(Mathf.Clamp(CorruptionFillPercentage, 0, 1), corruption_Bar.transform.localScale.y, corruption_Bar.transform.localScale.z);
+        panelInfo.corruptionLevel.text = "Corruption: " + Mathf.Round(CorruptionFillPercentage * 100) + "%";
 
         // Update element icon
+    }
+
+    public void EnemyPanelButtonOn()
+    {
+        panelInfo.GetComponent<Outline>().enabled = true;
+    }
+
+    public void EnemyPanelButtonOff()
+    {
+        panelInfo.GetComponent<Outline>().enabled = false;
     }
 }
