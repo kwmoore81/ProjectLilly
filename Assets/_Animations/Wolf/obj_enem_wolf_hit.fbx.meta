@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 98db689c65daa2042be55dec44e85d62
-timeCreated: 1493846921
+guid: 6b22ee3e481de944da74f3380fb827b7
+timeCreated: 1493846916
 licenseType: Pro
 ModelImporter:
   serializedVersion: 19
@@ -174,7 +174,7 @@ ModelImporter:
     400164: tail_cntrlGrp
     400166: upperback_cntrl
     4300000: obj_enem_wolf_corr0
-    7400000: Wolf Idle 1
+    7400000: Wolf Hit
     9500000: //RootNode
     13700000: obj_enem_wolf_corr0
   materials:
@@ -199,10 +199,10 @@ ModelImporter:
     extraExposedTransformPaths: []
     clipAnimations:
     - serializedVersion: 16
-      name: Wolf Idle 1
+      name: Wolf Hit
       takeName: Take 001
-      firstFrame: 1
-      lastFrame: 199
+      firstFrame: 79
+      lastFrame: 110
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
