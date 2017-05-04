@@ -1,8 +1,13 @@
 fileFormatVersion: 2
 guid: 73a28a86bf4d41441b3e580428a340a2
 folderAsset: yes
+<<<<<<< HEAD
 timeCreated: 1493903402
 licenseType: Free
+=======
+timeCreated: 1493915243
+licenseType: Pro
+>>>>>>> refs/remotes/origin/BattleSystem
 DefaultImporter:
   userData: 
   assetBundleName: 

@@ -5,6 +5,21 @@ using System.Collections.Generic;
 
 public class BattleController : MonoBehaviour
 {
+    // Enums for tracking primary and secondary evironment elements
+    public enum TerrainElementPrimary
+    {
+        FIRE, WATER, EARTH, WOOD, METAL
+    }
+    [HideInInspector]
+    public TerrainElementPrimary terrainElementPrimary;
+
+    public enum TerrainElementSecondary
+    {
+        FIRE, WATER, EARTH, WOOD, METAL
+    }
+    [HideInInspector]
+    public TerrainElementSecondary terrainElementSecondary;
+
     // State engine for perfoming actions
     public enum ActionState
     {
@@ -114,6 +129,8 @@ public class BattleController : MonoBehaviour
         fadeInColorStart = new Color(0, 0, 0, 1);
         fadeInColorEnd = new Color(fadeInColorStart.r, fadeInColorStart.g, fadeInColorStart.b, 0);
 
+        terrainElementPrimary = TerrainElementPrimary.EARTH;
+        terrainElementSecondary = TerrainElementSecondary.WOOD;
 
         actionState = ActionState.WAITING;
         heroInput = HeroUI.ACTIVATE;
@@ -354,6 +371,16 @@ public class BattleController : MonoBehaviour
         heroInput = HeroUI.ACTIVATE;
     }
 
+    void ResetAttackPanels()
+    {
+        enemySelectPanel.SetActive(false);
+        earthPanel.SetActive(false);
+        firePanel.SetActive(false);
+        waterPanel.SetActive(false);
+        attackPanel.SetActive(false);
+        utilityPanel.SetActive(false);
+    }
+
     void ClearAttackPanel()
     {
         enemySelectPanel.SetActive(false);
@@ -449,7 +476,7 @@ public class BattleController : MonoBehaviour
     void CreateActionButtons()
     {
         // Create attack buttons
-        if (heroesToManage[0].GetComponent<HeroController>().hero.attacks.Count > 1)
+        if (heroesToManage[0].GetComponent<HeroController>().hero.attacks.Count > 0)
         {
             // Attack Button
             GameObject attackButton = Instantiate(actionButton) as GameObject;
@@ -470,15 +497,15 @@ public class BattleController : MonoBehaviour
                 attackButtons.Add(meleeBtn);
             }
         }
-        else if (heroesToManage[0].GetComponent<HeroController>().hero.attacks.Count == 1)
-        {
-            GameObject attackButton = Instantiate(actionButton) as GameObject;
-            Text attackButtonText = attackButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
-            attackButtonText.text = "Attack";
-            attackButton.GetComponent<Button>().onClick.AddListener(() => ActionInput());
-            attackButton.transform.SetParent(actionSpacer, false);
-            attackButtons.Add(attackButton);
-        }
+        //else if (heroesToManage[0].GetComponent<HeroController>().hero.attacks.Count == 1)
+        //{
+        //    GameObject attackButton = Instantiate(actionButton) as GameObject;
+        //    Text attackButtonText = attackButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
+        //    attackButtonText.text = "Attack";
+        //    attackButton.GetComponent<Button>().onClick.AddListener(() => ActionInput());
+        //    attackButton.transform.SetParent(actionSpacer, false);
+        //    attackButtons.Add(attackButton);
+        //}
 
         // Create fire spell buttons
         if (heroesToManage[0].GetComponent<HeroController>().hero.fireSpells.Count > 1)
@@ -594,6 +621,7 @@ public class BattleController : MonoBehaviour
 
     public void AttackInput()
     {
+        ResetAttackPanels();
         attackPanel.SetActive(true);
     }
 
@@ -603,15 +631,12 @@ public class BattleController : MonoBehaviour
         heroChoice.agentGO = heroesToManage[0];
         heroChoice.chosenAttack = chosenAttack;
 
-        attackPanel.SetActive(false);
         enemySelectPanel.SetActive(true);
     }
 
     public void MagicInput(string _magicType)
     {
-        earthPanel.SetActive(false);
-        firePanel.SetActive(false);
-        waterPanel.SetActive(false);
+        ResetAttackPanels();
 
         if (_magicType == "Fire")
         {
@@ -633,10 +658,6 @@ public class BattleController : MonoBehaviour
         heroChoice.agentGO = heroesToManage[0];
         heroChoice.chosenAttack = chosenSpell;
 
-        //earthPanel.SetActive(false);
-        //firePanel.SetActive(false);
-        //waterPanel.SetActive(false);
-        //enemySelectHighlight.SetActive(true);
         enemySelectPanel.SetActive(true);
     }
 

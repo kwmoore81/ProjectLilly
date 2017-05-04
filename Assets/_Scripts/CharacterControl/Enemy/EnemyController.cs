@@ -16,7 +16,8 @@ public class EnemyController : MonoBehaviour
         CHOOSEACTION,   // Choose enemy action
         IDLE,           // Make enemy idle in between actions
         ACTION,         // Process enemy actions
-        DEAD            // Enemy is dead, waiting for things to happen
+        DEAD,           // Enemy is dead, waiting for things to happen
+        CLEANSED        // Enemy is cleansed and leaves the battle
     }
     public EnemyState currentState;
 
@@ -84,6 +85,9 @@ public class EnemyController : MonoBehaviour
                 break;
             case (EnemyState.DEAD):
                 EnemyDeath();
+                break;
+            case (EnemyState.CLEANSED):
+                EnemyCleansed();
                 break;
         }
     }
@@ -206,9 +210,39 @@ public class EnemyController : MonoBehaviour
 
         // TODO: Add animations to leave battle area
         // TODO: Cleanup battle manager agent list
+        this.gameObject.tag = "DeadEnemy";
+        battleControl.enemiesInBattle.Remove(this.gameObject);
+
+        // Disable enemy selector
+        selector.SetActive(false);
+
+        // Remove from active agent list
+        if (battleControl.enemiesInBattle.Count > 0)
+        {
+            for (int i = 0; i < battleControl.activeAgentList.Count; i++)
+            {
+                if (battleControl.activeAgentList[i].agentGO == this.gameObject)
+                {
+                    battleControl.activeAgentList.Remove(battleControl.activeAgentList[i]);
+                }
+
+                if (battleControl.activeAgentList[i].targetGO == this.gameObject)
+                {
+                    battleControl.activeAgentList[i].targetGO = battleControl.enemiesInBattle[Random.Range(0, battleControl.enemiesInBattle.Count)];
+                }
+            }
+        }
 
         // Making enemy dead for now, so the battle can continue
-        currentState = EnemyState.DEAD;
+        enemyActionControl.DeathReaction();
+
+        // Check if all enemies are dead and set isAlive to false;
+        battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
+        isAlive = false;
+
+        // Reset enemy buttons and check if battle has been won or lost
+        battleControl.EnemySelectionButtons();
+        battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
     }
 
     void EnemyDeath()

@@ -213,7 +213,10 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
 
         yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
 
-        heroControl.DoDamage();
+        if (CheckElementParity(_chosenAttack))
+            heroControl.DoCleansing();
+        else
+            heroControl.DoDamage();
 
         yield return new WaitForSeconds(.5f);
 
