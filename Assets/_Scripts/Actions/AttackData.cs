@@ -7,7 +7,7 @@ public class AttackData : MonoBehaviour
 
     public enum AttackType
     {
-        MELEE, RANGED, SPELL
+        MELEE, RANGED, SPELL, CLEANSE
     }
 
     public enum DamageType
