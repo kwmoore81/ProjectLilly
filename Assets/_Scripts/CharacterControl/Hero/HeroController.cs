@@ -22,9 +22,11 @@ public class HeroController : MonoBehaviour
     }
     public HeroState currentState;
 
-    // Variables for handling ATB bar
+    // Variables for handling UI info bars
     private float ATB_Timer = 0;
     private float ATB_MaxDelay = 5;
+    private float ResourceBarTimer = 0;
+    private float ResourceBarMaxDelay = 1;
     private Image ATB_Bar;
     private Image HP_Bar;
     private Image Resource_Bar;
