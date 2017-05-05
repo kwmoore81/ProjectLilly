@@ -119,5 +119,11 @@ public class OverworldSceneChanger1 : MonoBehaviour {
             playerLastPos = playerCurrentPos;
 
         }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            characterStatsDB.SendData1();
+            SceneChange();
+        }
     }
 }

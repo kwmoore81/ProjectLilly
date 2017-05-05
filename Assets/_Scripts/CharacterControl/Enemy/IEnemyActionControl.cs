@@ -6,10 +6,12 @@ public interface IEnemyActionControl
 
     void DrawWeapon();
     void Revive();
-    void AttackInput(int _attackID, Vector3 _targetPosition);
+    void AttackInput(AttackData _chosenAttack, Vector3 _targetPosition);
+    void MagicInput(AttackData _chosenAttack, Vector3 _targetPosition);
     void ItemUseInput(int _itemID);
     void DefendInput();
     void HitReaction();
+    void InjuredReaction();
     void DeathReaction();
 
 }

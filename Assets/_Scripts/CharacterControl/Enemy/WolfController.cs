@@ -2,18 +2,14 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class WolfController : MonoBehaviour
+public class WolfController : MonoBehaviour, IEnemyActionControl
 {
     protected Animator animator;
     EnemyController enemyControl;
 
-    // Variables for weapon draw delay
-    private float weaponDrawTimer = 0.0f;
-    private float weaponDrawDelay = .75f;
-
     // Variables for performing timed actions
     private Vector3 startPosition;
-    private float moveSpeed = 20;
+    private float moveSpeed = 15;
     private bool actionStarted = false;
 
     private bool isAlive = true;
@@ -23,6 +19,13 @@ public class WolfController : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         enemyControl = GetComponent<EnemyController>();
         startPosition = transform.position;
+
+        animator.Play("Wolf Basic Idle", -1, Random.Range(0.0f, 1.0f));
+    }
+
+    public void DrawWeapon()
+    {
+        // Nothing happening here, but the interface needs it.
     }
 
     void ClawEffect(bool _trailOn)
@@ -41,35 +44,51 @@ public class WolfController : MonoBehaviour
 
     public void Revive()
     {
-        animator.SetTrigger("Revive1Trigger");
+        //animator.SetTrigger("Revive1Trigger");
     }
 
     // TODO: Setup RecieveAttack() function
-    public void AttackInput(int _attackID, Vector3 _targetPosition)
+    public void AttackInput(AttackData _chosenAttack, Vector3 _targetPosition)
     {
-        StartCoroutine(PerformAttack(_targetPosition));
+        StartCoroutine(PerformAttack(_chosenAttack, _targetPosition));
+    }
+
+    public void MagicInput(AttackData _chosenAttack, Vector3 _targetPosition)
+    {
+        StartCoroutine(PerformMagicAttack(_chosenAttack, _targetPosition));
+    }
+
+    // TODO: Setup RecieveItemUse() function
+    public void ItemUseInput(int _itemID)
+    {
+        // Probably won't have item use on the wolf, but the interface needs it.
+    }
+
+    // TODO: Setup Defend() function
+    public void DefendInput()
+    {
+
     }
 
     public void HitReaction()
     {
-        // TODO: Add variable hit reaction based on damage done and defend state
-        int hits = 5;
-        int hitNumber = Random.Range(0, hits);
-        animator.SetTrigger("GetHit" + (hitNumber + 1).ToString() + "Trigger");
+        animator.SetTrigger("hit");
     }
 
-    public void InjuredAnimation()
+    public void InjuredReaction()
     {
-
+        animator.SetBool("injured", true);
     }
 
     public void DeathReaction()
     {
-        animator.SetTrigger("Death1Trigger");
+        animator.SetTrigger("death");
     }
 
-    private IEnumerator PerformAttack(Vector3 _targetPosition)
+    private IEnumerator PerformAttack(AttackData _chosenAttack, Vector3 _targetPosition)
     {
+        _targetPosition = new Vector3(_targetPosition.x + _chosenAttack.targetOffset, _targetPosition.y, _targetPosition.z);
+
         if (actionStarted)
         {
             yield break;
@@ -77,38 +96,52 @@ public class WolfController : MonoBehaviour
 
         actionStarted = true;
 
-        // Move enemy to target
-        while (MoveTowardTarget(_targetPosition))
-        {
-            // Set running animation trigger
+        // Set running animation trigger
+        animator.SetTrigger("run");
+        yield return new WaitForSeconds(.1f);
 
-            yield return null;
+        if (_chosenAttack.moveDuringAttack)
+        {
+            while (MoveTowardTarget(_targetPosition))
+            {
+                yield return null;
+            }
+
+            animator.SetTrigger(_chosenAttack.attackAnimation);
+
+            while (MoveTowardTarget(_targetPosition))
+            {
+                yield return null;
+            }
+        }
+        else
+        {
+            while (MoveTowardTarget(_targetPosition))
+            {
+                yield return null;
+            }
+
+            animator.SetTrigger(_chosenAttack.attackAnimation);
         }
 
-        // Wait for set time, then do damage
-        int attackRand = Random.Range(0, 3);
-
-        if (attackRand == 0)
-            animator.SetTrigger("Attack4Trigger");
-        if (attackRand == 1)
-            animator.SetTrigger("Attack5Trigger");
-        if (attackRand == 2)
-            animator.SetTrigger("Attack6Trigger");
-
-        yield return new WaitForSeconds(0.85f);
+        yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
 
         enemyControl.DoDamage();
 
-        // Set turn animation trigger
-        // Set run animation trigger
+        yield return new WaitForSeconds(_chosenAttack.attackWaitTime);
+
+        animator.SetTrigger("run");
+        yield return new WaitForSeconds(.5f);
 
         // Move enemy back to starting position
         while (MoveTowardStart(startPosition))
         {
-            // set turn animation trigger
-
             yield return null;
         }
+
+        animator.SetTrigger("attackTurn");
+        //yield return new WaitForSeconds(_chosenAttack.attackWaitTime);
+        animator.SetTrigger("idle");
 
         actionStarted = false;
         enemyControl.EndAction();
@@ -152,7 +185,7 @@ public class WolfController : MonoBehaviour
 
     private bool MoveTowardStart(Vector3 target)
     {
-        return target != (transform.position = Vector3.MoveTowards(transform.position, target, (moveSpeed * 1.25f) * Time.deltaTime));
+        return target != (transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime));
     }
 
     public void HeroDeathAnim()

@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class HumanMeleeController : MonoBehaviour, IEnemyActionControl
+public class HumanMeleeController : MonoBehaviour
 {
     protected Animator animator;
     EnemyController enemyControl;
@@ -180,9 +180,14 @@ public class HumanMeleeController : MonoBehaviour, IEnemyActionControl
     }
 
     // TODO: Setup RecieveAttack() function
-    public void AttackInput(int _attackID, Vector3 _targetPosition)
+    public void AttackInput(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         StartCoroutine(PerformAttack(_targetPosition));
+    }
+
+    public void MagicInput(AttackData _chosenAttack, Vector3 _targetPosition)
+    {
+        StartCoroutine(PerformMagicAttack(_chosenAttack, _targetPosition));
     }
 
     // TODO: Setup ReceiveStance() function
@@ -209,6 +214,11 @@ public class HumanMeleeController : MonoBehaviour, IEnemyActionControl
         int hits = 5;
         int hitNumber = Random.Range(0, hits);
         animator.SetTrigger("GetHit" + (hitNumber + 1).ToString() + "Trigger");
+    }
+
+    public void InjuredReaction()
+    {
+        animator.SetTrigger("injured");
     }
 
     public void DeathReaction()
@@ -273,6 +283,11 @@ public class HumanMeleeController : MonoBehaviour, IEnemyActionControl
 
         actionStarted = false;
         enemyControl.EndAction();
+    }
+
+    private IEnumerator PerformMagicAttack(AttackData _chosenAttack, Vector3 _targetPosition)
+    {
+        return null;
     }
 
     private bool MoveTowardTarget(Vector3 target)
