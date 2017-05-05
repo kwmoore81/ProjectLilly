@@ -2,14 +2,10 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class WolfController : MonoBehaviour
+public class WolfController : MonoBehaviour, IEnemyActionControl
 {
     protected Animator animator;
     EnemyController enemyControl;
-
-    // Variables for weapon draw delay
-    private float weaponDrawTimer = 0.0f;
-    private float weaponDrawDelay = .75f;
 
     // Variables for performing timed actions
     private Vector3 startPosition;
@@ -23,6 +19,13 @@ public class WolfController : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         enemyControl = GetComponent<EnemyController>();
         startPosition = transform.position;
+
+        animator.Play("Wolf Basic Idle", -1, Random.Range(0.0f, 1.0f));
+    }
+
+    public void DrawWeapon()
+    {
+        // Nothing happening here, but the interface needs it.
     }
 
     void ClawEffect(bool _trailOn)
@@ -41,7 +44,7 @@ public class WolfController : MonoBehaviour
 
     public void Revive()
     {
-        animator.SetTrigger("Revive1Trigger");
+        //animator.SetTrigger("Revive1Trigger");
     }
 
     // TODO: Setup RecieveAttack() function
@@ -50,12 +53,21 @@ public class WolfController : MonoBehaviour
         StartCoroutine(PerformAttack(_targetPosition));
     }
 
+    // TODO: Setup RecieveItemUse() function
+    public void ItemUseInput(int _itemID)
+    {
+        // Probably won't have item use on the wolf, but the interface needs it.
+    }
+
+    // TODO: Setup Defend() function
+    public void DefendInput()
+    {
+
+    }
+
     public void HitReaction()
     {
-        // TODO: Add variable hit reaction based on damage done and defend state
-        int hits = 5;
-        int hitNumber = Random.Range(0, hits);
-        animator.SetTrigger("GetHit" + (hitNumber + 1).ToString() + "Trigger");
+        animator.SetTrigger("hit");
     }
 
     public void InjuredAnimation()
@@ -65,7 +77,7 @@ public class WolfController : MonoBehaviour
 
     public void DeathReaction()
     {
-        animator.SetTrigger("Death1Trigger");
+        animator.SetTrigger("death");
     }
 
     private IEnumerator PerformAttack(Vector3 _targetPosition)
