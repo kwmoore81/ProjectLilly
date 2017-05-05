@@ -53,6 +53,11 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
         StartCoroutine(PerformAttack(_chosenAttack, _targetPosition));
     }
 
+    public void MagicInput(AttackData _chosenAttack, Vector3 _targetPosition)
+    {
+        StartCoroutine(PerformMagicAttack(_chosenAttack, _targetPosition));
+    }
+
     // TODO: Setup RecieveItemUse() function
     public void ItemUseInput(int _itemID)
     {
@@ -70,9 +75,9 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
         animator.SetTrigger("hit");
     }
 
-    public void InjuredAnimation()
+    public void InjuredReaction()
     {
-        animator.SetTrigger("injured");
+        animator.SetBool("injured", true);
     }
 
     public void DeathReaction()
@@ -82,6 +87,8 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
 
     private IEnumerator PerformAttack(AttackData _chosenAttack, Vector3 _targetPosition)
     {
+        _targetPosition = new Vector3(_targetPosition.x + _chosenAttack.targetOffset, _targetPosition.y, _targetPosition.z);
+
         if (actionStarted)
         {
             yield break;
@@ -93,18 +100,34 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
         animator.SetTrigger("run");
         yield return new WaitForSeconds(.1f);
 
-        // Move enemy to target
-        while (MoveTowardTarget(_targetPosition + _chosenAttack.attackDistOffset))
+        if (_chosenAttack.moveDuringAttack)
         {
-            yield return null;
+            while (MoveTowardTarget(_targetPosition))
+            {
+                yield return null;
+            }
+
+            animator.SetTrigger(_chosenAttack.attackAnimation);
+
+            while (MoveTowardTarget(_targetPosition))
+            {
+                yield return null;
+            }
+        }
+        else
+        {
+            while (MoveTowardTarget(_targetPosition))
+            {
+                yield return null;
+            }
+
+            animator.SetTrigger(_chosenAttack.attackAnimation);
         }
 
-        animator.SetTrigger(_chosenAttack.attackAnimation);
         yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
 
         enemyControl.DoDamage();
 
-        animator.SetTrigger("attackTurn");
         yield return new WaitForSeconds(_chosenAttack.attackWaitTime);
 
         animator.SetTrigger("run");
@@ -116,9 +139,8 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
             yield return null;
         }
 
-        yield return new WaitForSeconds(2);
         animator.SetTrigger("attackTurn");
-        yield return new WaitForSeconds(_chosenAttack.attackWaitTime);
+        //yield return new WaitForSeconds(_chosenAttack.attackWaitTime);
         animator.SetTrigger("idle");
 
         actionStarted = false;

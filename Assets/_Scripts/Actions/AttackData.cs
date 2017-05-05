@@ -26,7 +26,10 @@ public class AttackData : MonoBehaviour
     public float damageWaitTime;
     public string attackAnimation;
 
-    public Vector3 attackDistOffset;
+    public float targetOffset;
+    public float attackOffset;
+    public float finishOffset;
+    public bool moveDuringAttack = false;
 
     public AttackType attackType;
     public DamageType damageType;
