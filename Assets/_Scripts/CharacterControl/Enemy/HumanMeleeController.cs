@@ -180,7 +180,7 @@ public class HumanMeleeController : MonoBehaviour, IEnemyActionControl
     }
 
     // TODO: Setup RecieveAttack() function
-    public void AttackInput(int _attackID, Vector3 _targetPosition)
+    public void AttackInput(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         StartCoroutine(PerformAttack(_targetPosition));
     }

@@ -7,7 +7,7 @@ public class EnemyController : MonoBehaviour
     private BattleController battleControl;
     public BaseEnemy enemy;
 
-    IEnemyActionControl enemyActionControl;
+    public IEnemyActionControl enemyActionControl;
 
     // Enemy state machine
     public enum EnemyState
@@ -140,8 +140,8 @@ public class EnemyController : MonoBehaviour
         //}
 
         // Perform attack animation
-        Vector3 targetPosition = new Vector3(enemyAttack.targetGO.transform.position.x + 2f, transform.position.y, enemyAttack.targetGO.transform.position.z);
-        enemyActionControl.AttackInput(0, targetPosition);
+        Vector3 targetPosition = new Vector3(enemyAttack.targetGO.transform.position.x, transform.position.y, enemyAttack.targetGO.transform.position.z);
+        enemyActionControl.AttackInput(battleControl.activeAgentList[0].chosenAttack, targetPosition);
     }
 
     public void EndAction()

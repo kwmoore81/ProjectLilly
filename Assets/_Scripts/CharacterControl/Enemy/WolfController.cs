@@ -9,7 +9,7 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
 
     // Variables for performing timed actions
     private Vector3 startPosition;
-    private float moveSpeed = 20;
+    private float moveSpeed = 15;
     private bool actionStarted = false;
 
     private bool isAlive = true;
@@ -48,9 +48,9 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
     }
 
     // TODO: Setup RecieveAttack() function
-    public void AttackInput(int _attackID, Vector3 _targetPosition)
+    public void AttackInput(AttackData _chosenAttack, Vector3 _targetPosition)
     {
-        StartCoroutine(PerformAttack(_targetPosition));
+        StartCoroutine(PerformAttack(_chosenAttack, _targetPosition));
     }
 
     // TODO: Setup RecieveItemUse() function
@@ -72,7 +72,7 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
 
     public void InjuredAnimation()
     {
-
+        animator.SetTrigger("injured");
     }
 
     public void DeathReaction()
@@ -80,7 +80,7 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
         animator.SetTrigger("death");
     }
 
-    private IEnumerator PerformAttack(Vector3 _targetPosition)
+    private IEnumerator PerformAttack(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         if (actionStarted)
         {
@@ -89,38 +89,37 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
 
         actionStarted = true;
 
-        // Move enemy to target
-        while (MoveTowardTarget(_targetPosition))
-        {
-            // Set running animation trigger
+        // Set running animation trigger
+        animator.SetTrigger("run");
+        yield return new WaitForSeconds(.1f);
 
+        // Move enemy to target
+        while (MoveTowardTarget(_targetPosition + _chosenAttack.attackDistOffset))
+        {
             yield return null;
         }
 
-        // Wait for set time, then do damage
-        int attackRand = Random.Range(0, 3);
-
-        if (attackRand == 0)
-            animator.SetTrigger("Attack4Trigger");
-        if (attackRand == 1)
-            animator.SetTrigger("Attack5Trigger");
-        if (attackRand == 2)
-            animator.SetTrigger("Attack6Trigger");
-
-        yield return new WaitForSeconds(0.85f);
+        animator.SetTrigger(_chosenAttack.attackAnimation);
+        yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
 
         enemyControl.DoDamage();
 
-        // Set turn animation trigger
-        // Set run animation trigger
+        animator.SetTrigger("attackTurn");
+        yield return new WaitForSeconds(_chosenAttack.attackWaitTime);
+
+        animator.SetTrigger("run");
+        yield return new WaitForSeconds(.5f);
 
         // Move enemy back to starting position
         while (MoveTowardStart(startPosition))
         {
-            // set turn animation trigger
-
             yield return null;
         }
+
+        yield return new WaitForSeconds(2);
+        animator.SetTrigger("attackTurn");
+        yield return new WaitForSeconds(_chosenAttack.attackWaitTime);
+        animator.SetTrigger("idle");
 
         actionStarted = false;
         enemyControl.EndAction();
@@ -164,7 +163,7 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
 
     private bool MoveTowardStart(Vector3 target)
     {
-        return target != (transform.position = Vector3.MoveTowards(transform.position, target, (moveSpeed * 1.25f) * Time.deltaTime));
+        return target != (transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime));
     }
 
     public void HeroDeathAnim()

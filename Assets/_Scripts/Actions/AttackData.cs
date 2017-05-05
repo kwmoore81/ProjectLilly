@@ -26,6 +26,8 @@ public class AttackData : MonoBehaviour
     public float damageWaitTime;
     public string attackAnimation;
 
+    public Vector3 attackDistOffset;
+
     public AttackType attackType;
     public DamageType damageType;
 }
