@@ -6,6 +6,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
 {
     protected Animator animator;
     HeroController heroControl;
+    BattleController battleControl;
     private OverWorldSceneChanger2 sceneChanger;
 
     // Warden stance
@@ -56,6 +57,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         sceneChanger = GameObject.Find("BattleMaster").GetComponent<OverWorldSceneChanger2>();
         animator = GetComponentInChildren<Animator>();
         heroControl = GetComponent<HeroController>();
+        battleControl = GameObject.Find("BattleManager").GetComponent<BattleController>();
         startPosition = transform.position;
         heroControl.hero.baseEnergy = 100;
         heroControl.hero.CurrentEnergy = heroControl.hero.baseEnergy;
@@ -178,7 +180,12 @@ public class WardenController : MonoBehaviour, IHeroActionControl
 
         yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
 
-        heroControl.DoDamage();
+        if (_chosenAttack.attackType == AttackData.AttackType.CLEANSE)
+        {
+            if (CheckTerrainElementParity()) heroControl.DoCleansing();
+        }
+        else
+            heroControl.DoDamage();
 
         yield return new WaitForSeconds(.5f);
 
@@ -205,6 +212,16 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         heroControl.hero.CurrentEnergy -= _chosenAttack.energyCost;
 
         heroControl.EndAction();
+    }
+
+    private bool CheckTerrainElementParity()
+    {
+        string primaryElement = battleControl.terrainElementPrimary.ToString();
+        string secondaryElement = battleControl.terrainElementSecondary.ToString();
+        string enemyElement = battleControl.activeAgentList[0].targetGO.GetComponent<EnemyController>().enemy.enemyType.ToString();
+
+        if (primaryElement == enemyElement || secondaryElement == enemyElement) return true;
+        else return false;
     }
 
     // Add resolve based on damage taken from enemy attack
@@ -258,7 +275,9 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         animator.SetTrigger("Death1Trigger");
     }
 
+    //**************************
     #region _Coroutines
+    //**************************
 
     //for two-hand weapon switching
     void SwitchWeaponTwoHand(int upDown)

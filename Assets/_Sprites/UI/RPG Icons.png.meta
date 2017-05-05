@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 7110c7f1ef402454a828805065dfb07d
-timeCreated: 1492110014
-licenseType: Pro
+timeCreated: 1493688157
+licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: RPG Icons_0
@@ -52,7 +52,7 @@ TextureImporter:
     21300090: RPG Icons_45
     21300092: RPG Icons_46
     21300094: RPG Icons_47
-    21300096: RPG Icons_48
+    21300096: Icon_WoodElement
     21300098: RPG Icons_49
     21300100: RPG Icons_50
     21300102: RPG Icons_51
@@ -806,7 +806,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: RPG Icons_48
+      name: Icon_WoodElement
       rect:
         serializedVersion: 2
         x: 0
