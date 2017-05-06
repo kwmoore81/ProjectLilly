@@ -8,6 +8,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     public GameObject battleScene;
     public GameObject battleSceneTemp;
     public GameObject ForestBattlePrefab;
+    public GameObject BossBattlePrefab;
 
     public GameObject battleMaster;
     private OverWorldSceneChanger2 overWorldSceneChanger2;
@@ -60,6 +61,15 @@ public class OverworldSceneChanger1 : MonoBehaviour {
             Cursor.lockState = CursorLockMode.None;
             overworldScene.gameObject.SetActive(false);
                
+    }
+
+    public void BossSceneChange()
+    {
+        battleSceneTemp = Object.Instantiate(BossBattlePrefab, battleScene.transform);
+        overWorldSceneChanger2.UpdateFromBank();
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        overworldScene.gameObject.SetActive(false);
     }
 
     public void UpdateFromBank()
