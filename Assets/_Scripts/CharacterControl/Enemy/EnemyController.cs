@@ -7,7 +7,7 @@ public class EnemyController : MonoBehaviour
     private BattleController battleControl;
     public BaseEnemy enemy;
 
-    IEnemyActionControl enemyActionControl;
+    public IEnemyActionControl enemyActionControl;
 
     // Enemy state machine
     public enum EnemyState
@@ -46,6 +46,7 @@ public class EnemyController : MonoBehaviour
     {
         InitializeStats();
 
+
         ATB_Timer = Random.Range(0, 2.5f);
         currentState = EnemyState.WAITING;
         battleControl = GameObject.Find("BattleManager").GetComponent<BattleController>();
@@ -53,7 +54,7 @@ public class EnemyController : MonoBehaviour
         selector.SetActive(false);
 
         enemyActionControl = gameObject.GetComponent<IEnemyActionControl>();
-
+        Debug.Log(gameObject.name);
         enemyActionControl.EnemyAwake();
     }
 
@@ -123,8 +124,24 @@ public class EnemyController : MonoBehaviour
         enemyAttack.targetGO = battleControl.heroesInBattle[Random.Range(0, battleControl.heroesInBattle.Count)];
 
         // Pass enemy attack to the active agent list
-        int randomChoice = Random.Range(0, enemy.attacks.Count);
-        enemyAttack.chosenAttack = enemy.attacks[randomChoice];
+        int randomChoice = Random.Range(0, 3);
+
+        if (randomChoice < 2)
+        {
+            enemyAttack.chosenAttack = enemy.attacks[randomChoice];
+        }
+        else
+        {
+            // Quick and dirty iFest code.  Do you properly later.
+            if (enemy.waterSpells.Count > 0)
+                enemyAttack.chosenAttack = enemy.waterSpells[0];
+            else if (enemy.fireSpells.Count > 0)
+                enemyAttack.chosenAttack = enemy.fireSpells[0];
+            else if (enemy.earthSpells.Count > 0)
+                enemyAttack.chosenAttack = enemy.earthSpells[0];
+        }
+
+        //enemyAttack.chosenAttack = enemy.attacks[randomChoice];
         //Debug.Log(this.gameObject.name + " has chosen " + enemyAttack.chosenAttack.attackName + " and does " + enemyAttack.chosenAttack.attackDamage + " damage.");
 
         battleControl.ActionCollector(enemyAttack);
@@ -140,8 +157,17 @@ public class EnemyController : MonoBehaviour
         //}
 
         // Perform attack animation
-        Vector3 targetPosition = new Vector3(enemyAttack.targetGO.transform.position.x + 2f, transform.position.y, enemyAttack.targetGO.transform.position.z);
-        enemyActionControl.AttackInput(0, targetPosition);
+        Debug.Log(gameObject.name);
+        if (enemyAttack.chosenAttack.attackType == AttackData.AttackType.MELEE)
+        {
+            Vector3 targetPosition = new Vector3(enemyAttack.targetGO.transform.position.x, transform.position.y, enemyAttack.targetGO.transform.position.z);
+            enemyActionControl.AttackInput(battleControl.activeAgentList[0].chosenAttack, targetPosition);
+        }
+        else if (enemyAttack.chosenAttack.attackType == AttackData.AttackType.SPELL)
+        {
+            Vector3 targetPosition = new Vector3(enemyAttack.targetGO.transform.position.x, enemyAttack.targetGO.transform.position.y, enemyAttack.targetGO.transform.position.z);
+            enemyActionControl.MagicInput(battleControl.activeAgentList[0].chosenAttack, targetPosition);
+        }
     }
 
     public void EndAction()
@@ -184,9 +210,14 @@ public class EnemyController : MonoBehaviour
     public void TakeDamage(int _damage)
     {
         enemy.CurrentHealth -= _damage;
-
+        Debug.Log(gameObject.name);
         // Play hit animation
         enemyActionControl.HitReaction();
+
+        if (enemy.CurrentHealth <= 20)
+        {
+            enemyActionControl.InjuredReaction();
+        }
 
         if (enemy.CurrentHealth <= 0)
         {

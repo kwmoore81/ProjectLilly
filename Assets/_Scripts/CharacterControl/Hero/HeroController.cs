@@ -132,7 +132,7 @@ public class HeroController : MonoBehaviour
         //}
 
         // Perform attack animation
-        Vector3 targetPosition = new Vector3(enemyToAttack.transform.position.x - 2f, transform.position.y, enemyToAttack.transform.position.z);
+        Vector3 targetPosition = new Vector3(enemyToAttack.transform.position.x - 3.5f, transform.position.y, enemyToAttack.transform.position.z);
         heroActionControl.AttackInput(battleControl.activeAgentList[0].chosenAttack, targetPosition);
     }
 

@@ -174,7 +174,7 @@ ModelImporter:
     400164: tail_cntrlGrp
     400166: upperback_cntrl
     4300000: obj_enem_wolf_corr0
-    7400000: Wolf Idle 1
+    7400000: Wolf Basic Idle
     9500000: //RootNode
     13700000: obj_enem_wolf_corr0
   materials:
@@ -199,14 +199,14 @@ ModelImporter:
     extraExposedTransformPaths: []
     clipAnimations:
     - serializedVersion: 16
-      name: Wolf Idle 1
+      name: Wolf Basic Idle
       takeName: Take 001
       firstFrame: 1
       lastFrame: 199
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
-      cycleOffset: 0
+      cycleOffset: 2
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 1
