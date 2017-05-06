@@ -27,6 +27,9 @@ public class HeroController : MonoBehaviour
     private float ATB_MaxDelay = 5;
     private float ResourceBarTimer = 0;
     private float ResourceBarMaxDelay = 1;
+    private float barSpeed = 20;
+    private float newHealth;
+    private float newEnergy;
     private Image ATB_Bar;
     private Image HP_Bar;
     private Image Resource_Bar;
@@ -42,6 +45,7 @@ public class HeroController : MonoBehaviour
     private HeroPanelInfo panelInfo;
     public GameObject heroPanel;
     private Transform heroPanelSpacer;
+
 
     private bool battleCameraSet = false;
 

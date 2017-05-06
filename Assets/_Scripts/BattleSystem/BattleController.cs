@@ -73,6 +73,7 @@ public class BattleController : MonoBehaviour
     public GameObject corruptionMeter;
     public GameObject victoryPanel;
     public GameObject defeatPanel;
+    public GameObject endGamePanel;
 
     [Header("UI Panel Spacers")]
     public Transform spacer;
@@ -107,7 +108,8 @@ public class BattleController : MonoBehaviour
     private float endDelayTimer;
 
     // Fade In Properties
-    public float fadeInTimer = 0.0f, fadeInLength = 2f;
+    public float fadeInTimer = 0.0f, fadeInLength = 10f;
+    public float endGameLength = 10f;
     Color fadeInColorStart, fadeInColorEnd;
 
     //Scene Changer
@@ -146,6 +148,7 @@ public class BattleController : MonoBehaviour
         enemySelectPanel.SetActive(false);
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
+        endGamePanel.SetActive(false);
 
         EnemySelectionButtons();
 
@@ -166,6 +169,17 @@ public class BattleController : MonoBehaviour
                 CheckActionState();
                 CheckHeroInputState();
             }
+            else
+            {
+                if (fadeInTimer < endGameLength)
+                {
+                    fadeInTimer += Time.deltaTime;
+                }
+                else
+                {
+                    endGamePanel.SetActive(true);
+                }
+            }
         }
         else
         {
@@ -175,14 +189,13 @@ public class BattleController : MonoBehaviour
             }
             else
             {
-                if (fadeInTimer < fadeInLength)
+                if (fadeInTimer > fadeInLength)
                 {
-                    fadeInPanel.GetComponent<Image>().color = Color.Lerp(fadeInColorStart, fadeInColorEnd, fadeInTimer / fadeInLength);
                     fadeInTimer += Time.deltaTime;
                 }
                 else
                 {
-                    fadeInPanel.SetActive(false);
+                    endGamePanel.SetActive(true);
                 }
 
                 startDelayTimer -= Time.deltaTime;

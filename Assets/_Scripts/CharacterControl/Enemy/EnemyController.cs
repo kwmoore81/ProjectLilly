@@ -42,6 +42,8 @@ public class EnemyController : MonoBehaviour
     public GameObject enemyPanel;
     private Image HP_Bar;
     private Image corruption_Bar;
+    private float barSpeed = 20;
+    private float newHealth;
     private Image earth_Icon;
     private Image water_Icon;
     private Image wood_Icon;
