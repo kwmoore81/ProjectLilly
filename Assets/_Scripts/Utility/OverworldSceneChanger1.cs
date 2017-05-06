@@ -22,14 +22,22 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     
     public float gabiCurrentHealth;
     public float gabiCurrentResolve;
+    private float gabiHealthMax = 960.0f;
+    private float gabiResolveMax = 100;
 
     public float arvandusCurrentHealth;
     public float arvanusCurrentStamina;
+    private float arvandusHealthMax = 520.0f;
+    private float arvandusStaminaMax = 100;
 
     public float quinnCurrentHealth;
     public int quinnCurrentFire;
     public int quinnCurrentEarth;
     public int quinnCurrentWater;
+    private float quinnHealthMax = 410.0f;
+    private int quinnFireMax = 5;
+    private int quinnEarthMax = 5;
+    private int quinnWaterMax = 5;
 
     public float currentAreaCorruption;
     public float characterMovementCounter;
@@ -135,5 +143,22 @@ public class OverworldSceneChanger1 : MonoBehaviour {
             characterStatsDB.SendData1();
             SceneChange();
         }
+    }
+
+    public void HealAll()
+    {
+        gabiCurrentHealth = gabiHealthMax;
+        quinnCurrentHealth = quinnHealthMax;
+        arvandusCurrentHealth = arvandusHealthMax;
+    }
+
+    public void ResourceRestore()
+    {
+        gabiCurrentResolve = gabiResolveMax;
+        arvanusCurrentStamina = arvandusStaminaMax;
+        quinnCurrentWater = quinnWaterMax;
+        quinnCurrentFire = quinnFireMax;
+        quinnCurrentEarth = quinnEarthMax;
+
     }
 }
