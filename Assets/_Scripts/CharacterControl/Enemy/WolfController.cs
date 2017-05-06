@@ -6,6 +6,7 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
 {
     protected Animator animator;
     EnemyController enemyControl;
+    public GameObject enemyButton;
 
     // Variables for performing timed actions
     private Vector3 startPosition;
@@ -19,6 +20,7 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
         animator = GetComponentInChildren<Animator>();
         enemyControl = GetComponent<EnemyController>();
         startPosition = transform.position;
+        enemyButton.GetComponent<EnemySelectButton>().enemyPrefab = gameObject;
 
         animator.Play("Wolf Basic Idle", -1, Random.Range(0.0f, 1.0f));
     }
