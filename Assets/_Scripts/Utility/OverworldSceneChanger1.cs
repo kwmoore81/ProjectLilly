@@ -138,11 +138,11 @@ public class OverworldSceneChanger1 : MonoBehaviour {
 
         }
 
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            characterStatsDB.SendData1();
-            SceneChange();
-        }
+        //if (Input.GetKeyDown(KeyCode.P))
+        //{
+        //    characterStatsDB.SendData1();
+        //    SceneChange();
+        //}
     }
 
     public void HealAll()
