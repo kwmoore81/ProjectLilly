@@ -58,6 +58,8 @@ public class BattleController : MonoBehaviour
     public List<GameObject> deadHeroes = new List<GameObject>();
     public List<GameObject> deadEnemies = new List<GameObject>();
     public List<GameObject> heroesToManage = new List<GameObject>();
+    public List<GameObject> upperRowEnemies = new List<GameObject>();
+    public List<GameObject> lowerRowEnemies = new List<GameObject>();
 
     [Header("UI Panels")]
     public GameObject fadeInPanel;
@@ -71,6 +73,7 @@ public class BattleController : MonoBehaviour
     public GameObject corruptionMeter;
     public GameObject victoryPanel;
     public GameObject defeatPanel;
+    public GameObject endGamePanel;
 
     [Header("UI Panel Spacers")]
     public Transform spacer;
@@ -105,7 +108,8 @@ public class BattleController : MonoBehaviour
     private float endDelayTimer;
 
     // Fade In Properties
-    public float fadeInTimer = 0.0f, fadeInLength = 2f;
+    public float fadeInTimer = 0.0f, fadeInLength = 10f;
+    public float endGameLength = 10f;
     Color fadeInColorStart, fadeInColorEnd;
 
     //Scene Changer
@@ -123,11 +127,9 @@ public class BattleController : MonoBehaviour
 
     void Start ()
 	{
-        animatorCamera = GameObject.Find("MainCamera").GetComponentInChildren<Animator>();
+        SpawnEnemies();
 
-        fadeInPanel.SetActive(true);
-        fadeInColorStart = new Color(0, 0, 0, 1);
-        fadeInColorEnd = new Color(fadeInColorStart.r, fadeInColorStart.g, fadeInColorStart.b, 0);
+        animatorCamera = GameObject.Find("MainCamera").GetComponentInChildren<Animator>();
 
         terrainElementPrimary = TerrainElementPrimary.EARTH;
         terrainElementSecondary = TerrainElementSecondary.WOOD;
@@ -146,6 +148,7 @@ public class BattleController : MonoBehaviour
         enemySelectPanel.SetActive(false);
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
+        endGamePanel.SetActive(false);
 
         EnemySelectionButtons();
 
@@ -166,6 +169,17 @@ public class BattleController : MonoBehaviour
                 CheckActionState();
                 CheckHeroInputState();
             }
+            else
+            {
+                if (fadeInTimer < endGameLength)
+                {
+                    fadeInTimer += Time.deltaTime;
+                }
+                else
+                {
+                    endGamePanel.SetActive(true);
+                }
+            }
         }
         else
         {
@@ -175,14 +189,13 @@ public class BattleController : MonoBehaviour
             }
             else
             {
-                if (fadeInTimer < fadeInLength)
+                if (fadeInTimer > fadeInLength)
                 {
-                    fadeInPanel.GetComponent<Image>().color = Color.Lerp(fadeInColorStart, fadeInColorEnd, fadeInTimer / fadeInLength);
                     fadeInTimer += Time.deltaTime;
                 }
                 else
                 {
-                    fadeInPanel.SetActive(false);
+                    endGamePanel.SetActive(true);
                 }
 
                 startDelayTimer -= Time.deltaTime;
@@ -194,6 +207,32 @@ public class BattleController : MonoBehaviour
             if (heroPanelOn) ExpandHeroPanels();
             else ContractHeroPanels();
         }
+    }
+
+    void SpawnEnemies()
+    {
+        // Make sure all upper and lower row enemies are inactive
+        for (int i = 0; i < upperRowEnemies.Count; i++)
+        {
+            upperRowEnemies[i].SetActive(false);
+        }
+
+        for (int i = 0; i < lowerRowEnemies.Count; i++)
+        {
+            lowerRowEnemies[i].SetActive(false);
+        }
+
+        // Spawn random upper row enemy
+        int randomSpawn1;
+        randomSpawn1 = Random.Range(0, upperRowEnemies.Count);
+        upperRowEnemies[randomSpawn1].SetActive(true);
+        upperRowEnemies[randomSpawn1].tag = "Enemy";
+
+        // Spawn random lower row enemy
+        int randomSpawn2;
+        randomSpawn2 = Random.Range(0, lowerRowEnemies.Count);
+        lowerRowEnemies[randomSpawn2].SetActive(true);
+        lowerRowEnemies[randomSpawn2].tag = "Enemy";
     }
 
     void CheckActionState()
