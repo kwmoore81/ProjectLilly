@@ -46,6 +46,7 @@ public class EnemyController : MonoBehaviour
     {
         InitializeStats();
 
+
         ATB_Timer = Random.Range(0, 2.5f);
         currentState = EnemyState.WAITING;
         battleControl = GameObject.Find("BattleManager").GetComponent<BattleController>();
@@ -53,7 +54,7 @@ public class EnemyController : MonoBehaviour
         selector.SetActive(false);
 
         enemyActionControl = gameObject.GetComponent<IEnemyActionControl>();
-
+        Debug.Log(gameObject.name);
         enemyActionControl.EnemyAwake();
     }
 
@@ -156,6 +157,7 @@ public class EnemyController : MonoBehaviour
         //}
 
         // Perform attack animation
+        Debug.Log(gameObject.name);
         if (enemyAttack.chosenAttack.attackType == AttackData.AttackType.MELEE)
         {
             Vector3 targetPosition = new Vector3(enemyAttack.targetGO.transform.position.x, transform.position.y, enemyAttack.targetGO.transform.position.z);
@@ -208,7 +210,7 @@ public class EnemyController : MonoBehaviour
     public void TakeDamage(int _damage)
     {
         enemy.CurrentHealth -= _damage;
-
+        Debug.Log(gameObject.name);
         // Play hit animation
         enemyActionControl.HitReaction();
 
