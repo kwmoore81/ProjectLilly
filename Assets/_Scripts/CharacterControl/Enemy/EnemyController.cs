@@ -7,6 +7,8 @@ public class EnemyController : MonoBehaviour
     private BattleController battleControl;
     public BaseEnemy enemy;
 
+    public CorruptionParticleSlider corruptionParticle;
+
     public IEnemyActionControl enemyActionControl;
 
     // Enemy state machine
@@ -40,12 +42,16 @@ public class EnemyController : MonoBehaviour
     public GameObject enemyPanel;
     private Image HP_Bar;
     private Image corruption_Bar;
-    private Image element_Icon;
+    private Image earth_Icon;
+    private Image water_Icon;
+    private Image wood_Icon;
+    private Color32 waterBackground = new Color32(26, 113, 174, 255);
+    private Color32 earthBackground = new Color32(160, 82, 45, 255);
+    private Color32 woodBackground  = new Color32(82, 165, 75, 255);
 
-    void Awake()
+    void Start()
     {
         InitializeStats();
-
 
         ATB_Timer = Random.Range(0, 2.5f);
         currentState = EnemyState.WAITING;
@@ -54,7 +60,6 @@ public class EnemyController : MonoBehaviour
         selector.SetActive(false);
 
         enemyActionControl = gameObject.GetComponent<IEnemyActionControl>();
-        Debug.Log(gameObject.name);
         enemyActionControl.EnemyAwake();
     }
 
@@ -105,13 +110,16 @@ public class EnemyController : MonoBehaviour
 
     void UpdateATB()
     {
-        if (ATB_Timer >= ATB_MaxDelay)
+        if (isAlive)
         {
-            currentState = EnemyState.CHOOSEACTION;
-        }
-        else
-        {
-            ATB_Timer += Time.deltaTime;
+            if (ATB_Timer >= ATB_MaxDelay)
+            {
+                currentState = EnemyState.CHOOSEACTION;
+            }
+            else
+            {
+                ATB_Timer += Time.deltaTime;
+            }
         }
     }
 
@@ -157,7 +165,6 @@ public class EnemyController : MonoBehaviour
         //}
 
         // Perform attack animation
-        Debug.Log(gameObject.name);
         if (enemyAttack.chosenAttack.attackType == AttackData.AttackType.MELEE)
         {
             Vector3 targetPosition = new Vector3(enemyAttack.targetGO.transform.position.x, transform.position.y, enemyAttack.targetGO.transform.position.z);
@@ -197,6 +204,9 @@ public class EnemyController : MonoBehaviour
     {
         enemy.currentCorruption -= _damage;
 
+        // Play hit animation
+        enemyActionControl.HitReaction();
+
         if (enemy.currentCorruption <= 0)
         {
             enemy.currentCorruption = 0;
@@ -210,7 +220,7 @@ public class EnemyController : MonoBehaviour
     public void TakeDamage(int _damage)
     {
         enemy.CurrentHealth -= _damage;
-        Debug.Log(gameObject.name);
+
         // Play hit animation
         enemyActionControl.HitReaction();
 
@@ -236,9 +246,6 @@ public class EnemyController : MonoBehaviour
 
     void EnemyCleansed()
     {
-        // Update area corruption
-        battleControl.corruptionMeter.GetComponent<CorruptionMeter>().LowerCorruption(enemy.startingCorruption);
-
         // TODO: Add animations to leave battle area
         // TODO: Cleanup battle manager agent list
         this.gameObject.tag = "DeadEnemy";
@@ -248,24 +255,24 @@ public class EnemyController : MonoBehaviour
         selector.SetActive(false);
 
         // Remove from active agent list
-        if (battleControl.enemiesInBattle.Count > 0)
+        for (int i = 0; i < battleControl.activeAgentList.Count; i++)
         {
-            for (int i = 0; i < battleControl.activeAgentList.Count; i++)
+            if (battleControl.activeAgentList[i].agentGO == this.gameObject)
             {
-                if (battleControl.activeAgentList[i].agentGO == this.gameObject)
-                {
-                    battleControl.activeAgentList.Remove(battleControl.activeAgentList[i]);
-                }
+                battleControl.activeAgentList.Remove(battleControl.activeAgentList[i]);
+            }
 
-                if (battleControl.activeAgentList[i].targetGO == this.gameObject)
-                {
-                    battleControl.activeAgentList[i].targetGO = battleControl.enemiesInBattle[Random.Range(0, battleControl.enemiesInBattle.Count)];
-                }
+            if (battleControl.activeAgentList[i].targetGO == this.gameObject)
+            {
+                battleControl.activeAgentList[i].targetGO = battleControl.enemiesInBattle[Random.Range(0, battleControl.enemiesInBattle.Count)];
             }
         }
 
-        // Making enemy dead for now, so the battle can continue
+        // Play death animation
         enemyActionControl.DeathReaction();
+
+        // Update area corruption
+        battleControl.corruptionMeter.GetComponent<CorruptionMeter>().LowerCorruption(enemy.startingCorruption);
 
         // Check if all enemies are dead and set isAlive to false;
         battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
@@ -334,12 +341,33 @@ public class EnemyController : MonoBehaviour
         panelInfo = enemyPanel.GetComponent<EnemyPanelInfo>();
 
         // Add info to hero panel
-        panelInfo.enemyName.text = name;
+        panelInfo.enemyName.text = enemy.characterName;
         panelInfo.enemyHP.text = "HP: " + enemy.CurrentHealth + " / " + enemy.baseHealth;
 
         HP_Bar = panelInfo.HP_Bar;
         corruption_Bar = panelInfo.Corruption_Bar;
-        element_Icon = panelInfo.Element_Icon;
+
+        // Make sure all element icons are disabled
+        panelInfo.Water_Icon.enabled = false;
+        panelInfo.Earth_Icon.enabled = false;
+        panelInfo.Wood_Icon.enabled = false;
+
+        // Active proper element icon and color
+        if (enemy.enemyType == BaseEnemy.EnemyType.WATER)
+        {
+            panelInfo.Water_Icon.enabled = true;
+            panelInfo.Element_Background.color = waterBackground;
+        }
+        else if (enemy.enemyType == BaseEnemy.EnemyType.EARTH)
+        {
+            panelInfo.Earth_Icon.enabled = true;
+            panelInfo.Element_Background.color = earthBackground;
+        }
+        else if (enemy.enemyType == BaseEnemy.EnemyType.WOOD)
+        {
+            panelInfo.Wood_Icon.enabled = true;
+            panelInfo.Element_Background.color = woodBackground;
+        }
 
         UpdateEnemyPanel();
     }
@@ -356,6 +384,7 @@ public class EnemyController : MonoBehaviour
         float CorruptionFillPercentage = enemy.currentCorruption / enemy.maxCorruption;
         corruption_Bar.transform.localScale = new Vector3(Mathf.Clamp(CorruptionFillPercentage, 0, 1), corruption_Bar.transform.localScale.y, corruption_Bar.transform.localScale.z);
         panelInfo.corruptionLevel.text = "Corruption: " + Mathf.Round(CorruptionFillPercentage * 100) + "%";
+        corruptionParticle.UpdateCorruption(CorruptionFillPercentage);
 
         // Update element icon
     }
