@@ -226,13 +226,13 @@ public class BattleController : MonoBehaviour
         int randomSpawn1;
         randomSpawn1 = Random.Range(0, upperRowEnemies.Count);
         upperRowEnemies[randomSpawn1].SetActive(true);
-        upperRowEnemies[randomSpawn1].tag = "Enemy";
+        //upperRowEnemies[randomSpawn1].tag = "Enemy";
 
         // Spawn random lower row enemy
         int randomSpawn2;
         randomSpawn2 = Random.Range(0, lowerRowEnemies.Count);
         lowerRowEnemies[randomSpawn2].SetActive(true);
-        lowerRowEnemies[randomSpawn2].tag = "Enemy";
+        //lowerRowEnemies[randomSpawn2].tag = "Enemy";
     }
 
     void CheckActionState()
@@ -304,6 +304,8 @@ public class BattleController : MonoBehaviour
     {
         GameObject agent = GameObject.Find(activeAgentList[0].activeAgent);
 
+        //agent = activeAgentList[0].agentGO;
+
         if (agent.transform.tag == "Enemy")
         {
             EnemyController enemyControl = agent.GetComponent<EnemyController>();
@@ -339,6 +341,9 @@ public class BattleController : MonoBehaviour
 
     void CheckForDead()
     {
+        deadEnemies.AddRange(GameObject.FindGameObjectsWithTag("DeadEnemy"));
+        deadHeroes.AddRange(GameObject.FindGameObjectsWithTag("DeadHero"));
+
         if (heroesInBattle.Count <= 0)
         {
             actionState = ActionState.LOSE;
@@ -346,6 +351,7 @@ public class BattleController : MonoBehaviour
         }
         else if (enemiesInBattle.Count <= 0)
         {
+
             actionState = ActionState.WIN;
             battleResultWait = true;
         }
@@ -760,10 +766,10 @@ public class BattleController : MonoBehaviour
 
             // Write current stats to database
             overWorldSceneChanger2.currentAreaCorruption = corruptionMeter.GetComponent<CorruptionMeter>().currentCorruption;
-            for (int i = 0; 0 < deadHeroes.Count; i++)
-            {
-                deadHeroes[i].GetComponent<HeroController>().EndBattleRevive();
-            }
+            //for (int i = 0; 0 < deadHeroes.Count; i++)
+            //{
+            //    deadHeroes[i].GetComponent<HeroController>().EndBattleRevive();
+            //}
             for (int i = 0; i < heroesInBattle.Count; i++)
             {
                 heroesInBattle[i].GetComponent<HeroController>().heroActionControl.WriteStats();
@@ -789,10 +795,10 @@ public class BattleController : MonoBehaviour
             // Write current stats to database
             overWorldSceneChanger2.currentAreaCorruption = corruptionMeter.GetComponent<CorruptionMeter>().currentCorruption;
 
-            for (int i = 0; 0 < deadHeroes.Count; i++)
-            {
-                deadHeroes[i].GetComponent<HeroController>().EndBattleRevive();
-            }
+            //for (int i = 0; 0 < deadHeroes.Count; i++)
+            //{
+            //    deadHeroes[i].GetComponent<HeroController>().EndBattleRevive();
+            //}
             for (int i = 0; 0 < heroesInBattle.Count; i++)
             {
                 heroesInBattle[i].GetComponent<HeroController>().heroActionControl.WriteStats();

@@ -10,7 +10,7 @@ public class CorruptionMeter : MonoBehaviour
 
     public float currentCorruption;
     private float newCorruption;
-    private float maxCorruption = 100;
+    private float maxCorruption = 500;
     private float barSpeed = 20;
 
     private bool updateMeter = false;
