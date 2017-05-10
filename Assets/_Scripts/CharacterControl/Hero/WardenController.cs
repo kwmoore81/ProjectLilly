@@ -76,7 +76,9 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         heroControl.hero.baseHealth = 960;
         heroControl.hero.baseEnergy = 100;
 
-        heroControl.hero.CurrentHealth = sceneChanger.gabiCurrentHealth;
+        heroControl.hero.CurrentHealth = heroControl.hero.baseHealth;
+
+        //heroControl.hero.CurrentHealth = sceneChanger.gabiCurrentHealth;
         heroControl.hero.CurrentEnergy = sceneChanger.gabiCurrentResolve;
     }
 
@@ -84,6 +86,14 @@ public class WardenController : MonoBehaviour, IHeroActionControl
     {
         sceneChanger.gabiCurrentHealth = heroControl.hero.CurrentHealth;
         sceneChanger.gabiCurrentResolve = heroControl.hero.CurrentEnergy;
+    }
+
+    public void ReadStats()
+    {
+        heroControl.hero.CurrentHealth = heroControl.hero.baseHealth;
+
+        //heroControl.hero.CurrentHealth = sceneChanger.gabiCurrentHealth;
+        heroControl.hero.CurrentEnergy = sceneChanger.gabiCurrentResolve;
     }
 
     public void DrawWeapon()
@@ -183,6 +193,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         if (_chosenAttack.attackType == AttackData.AttackType.CLEANSE)
         {
             if (CheckTerrainElementParity()) heroControl.DoCleansing();
+            else heroControl.DoDamage();
         }
         else
             heroControl.DoDamage();
