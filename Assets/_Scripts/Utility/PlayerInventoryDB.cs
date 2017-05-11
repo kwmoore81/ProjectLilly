@@ -37,7 +37,7 @@ public class PlayerInventoryDB : MonoBehaviour {
 
             using (IDbCommand dbCmd = dbConnection.CreateCommand())
             {
-                string sqlQuery = "SELECT * FROM ItemsDB WHERE ID = " + itemID;
+                string sqlQuery = "SELECT * FROM `Accessories`, `Armor`, `Consumables`, `Weapons` WHERE `Accessories`.`ID` = " + itemID + " AND `Armor`.`ID` = " + itemID + " AND 'Consumables`.`ID` = " + itemID + " AND `Weapons`.`ID` = " + itemID;
 
                 dbCmd.CommandText = sqlQuery;
 
