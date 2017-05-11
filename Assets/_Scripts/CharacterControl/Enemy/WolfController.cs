@@ -189,9 +189,4 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
     {
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime));
     }
-
-    public void HeroDeathAnim()
-    {
-        animator.SetTrigger("Death1Trigger");
-    }
 }

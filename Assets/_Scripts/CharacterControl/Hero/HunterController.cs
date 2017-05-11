@@ -85,6 +85,11 @@ public class HunterController : MonoBehaviour, IHeroActionControl
         sceneChanger.arvanusCurrentStamina = heroControl.hero.CurrentEnergy;
     }
 
+    public void ReadStats()
+    {
+        heroControl.hero.CurrentHealth = sceneChanger.arvandusCurrentHealth;
+        heroControl.hero.CurrentEnergy = sceneChanger.arvanusCurrentStamina;
+    }
     public void DrawWeapon()
     {
         if ((rightWeaponType > 7 && rightWeaponType < 17))

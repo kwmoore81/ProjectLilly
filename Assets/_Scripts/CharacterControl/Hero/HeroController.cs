@@ -49,7 +49,7 @@ public class HeroController : MonoBehaviour
 
     private bool battleCameraSet = false;
 
-    void Awake()
+    void Start()
     {
         // Create panel and add info
         heroPanelSpacer = GameObject.Find("BattleCanvas").transform.FindChild("HeroPanel").transform.FindChild("HeroPanelSpacer");

@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossBattleTrigger : MonoBehaviour {
-
+public class WallDropTrigger : MonoBehaviour {
     public GameObject overWorldMaster;
     private OverworldSceneChanger1 SC1;
     public GameObject DataBase;
     private CharacterStatsDB characterStatsDB;
-
+    public bool droptrigger = false;
+    public float corrutionThreshold = 15;
     // Use this for initialization
-    void Start () {
+    void Start ()
+    {
         SC1 = overWorldMaster.GetComponent<OverworldSceneChanger1>();
         characterStatsDB = DataBase.GetComponent<CharacterStatsDB>();
     }
@@ -19,12 +20,12 @@ public class BossBattleTrigger : MonoBehaviour {
 	void Update () {
 		
 	}
+
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player")
+        if (other.tag == "Player" && SC1.currentAreaCorruption <= corrutionThreshold)
         {
-            characterStatsDB.SendData1();
-            SC1.BossSceneChange();
+            droptrigger = true;
         }
     }
 }

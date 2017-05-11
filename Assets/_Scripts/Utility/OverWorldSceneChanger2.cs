@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OverWorldSceneChanger2 : MonoBehaviour {
+public class OverWorldSceneChanger2 : MonoBehaviour
+{
 
     public GameObject overworldScene;
     public GameObject battleScene;
@@ -35,12 +36,12 @@ public class OverWorldSceneChanger2 : MonoBehaviour {
 
     public void SceneChange()
     {
-            overworldScene.gameObject.SetActive(true);
-            characterStatsDB.SendData2();
-            overWorldSceneChanger1.UpdateFromBank();
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-            Destroy(overWorldSceneChanger1.battleSceneTemp);                      
+        overworldScene.gameObject.SetActive(true);
+        characterStatsDB.SendData2();
+        overWorldSceneChanger1.UpdateFromBank();
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Destroy(overWorldSceneChanger1.battleSceneTemp);
     }
 
     public void UpdateFromBank()
@@ -61,15 +62,16 @@ public class OverWorldSceneChanger2 : MonoBehaviour {
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            if (battleScene.gameObject.activeInHierarchy == true && overworldScene.gameObject.activeInHierarchy == false)
-            {
-                characterStatsDB.SendData2();
-                SceneChange();
-            }
-        }
-    }
+        //    if (Input.GetKeyDown(KeyCode.Tab))
+        //    {
+        //        if (battleScene.gameObject.activeInHierarchy == true && overworldScene.gameObject.activeInHierarchy == false)
+        //        {
+        //            characterStatsDB.SendData2();
+        //            SceneChange();
+        //        }
+        //    }
+        //}
 
+    }
 }
 
