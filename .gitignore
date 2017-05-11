@@ -129,7 +129,6 @@ artifacts/
 *_i.h
 *.ilk
 # *.meta # Keep .meta files from Unity
-*.obj
 *.pch
 *.pdb
 *.pgc
