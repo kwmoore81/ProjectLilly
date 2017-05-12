@@ -7,7 +7,7 @@ public class AttackData : MonoBehaviour
 
     public enum AttackType
     {
-        MELEE, RANGED, SPELL, CLEANSE
+        MELEE, RANGED, SPELL, CLEANSE, RESTORE
     }
 
     public enum DamageType
@@ -18,9 +18,16 @@ public class AttackData : MonoBehaviour
     public string attackName;
     public string attackDescription;
 
+    public bool partyTargeting = false;
+    public bool selfTarget = false;
+
     public int attackDamage;
     public int energyCost;
     public int chargeCost;
+
+    public int fireChargeRestore;
+    public int waterChargeRestore;
+    public int earthChargeRestore;
 
     public float attackWaitTime;
     public float damageWaitTime;
