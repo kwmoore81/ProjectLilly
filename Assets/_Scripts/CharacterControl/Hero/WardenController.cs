@@ -128,7 +128,24 @@ public class WardenController : MonoBehaviour, IHeroActionControl
     // TODO: Setup RecieveAttack() function
     public void AttackInput(AttackData _chosenAttack, Vector3 _targetPosition)
     {
-        StartCoroutine(PerformAttack(_chosenAttack, _targetPosition));
+        if (_chosenAttack.attackType == AttackData.AttackType.MELEE)
+        {
+            StartCoroutine(PerformMeleeAttack(_chosenAttack, _targetPosition));
+        }
+        else if (_chosenAttack.attackType == AttackData.AttackType.DEFEND)
+        {
+            StartCoroutine(PerformDefend(_chosenAttack, _targetPosition));
+        }
+    }
+
+    public void RestoreInput(AttackData _chosenAttack, Vector3 _tagetPositon)
+    {
+
+    }
+
+    public void ActionInput(ActionData _chosenAction, Vector3 _targetPosition)
+    {
+
     }
 
     // TODO: Setup ReceiveStance() function
@@ -147,7 +164,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
     public void DefendInput()
     {
         animator.SetTrigger("BlockTrigger");
-        heroControl.EndSimpleAction();
+        heroControl.EndAction();
     }
 
     public void HitReaction()
@@ -166,7 +183,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         animator.SetTrigger("Death1Trigger");
     }
 
-    private IEnumerator PerformAttack(AttackData _chosenAttack, Vector3 _targetPosition)
+    private IEnumerator PerformMeleeAttack(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         if (actionStarted)
         {
@@ -222,6 +239,24 @@ public class WardenController : MonoBehaviour, IHeroActionControl
 
         heroControl.hero.CurrentEnergy -= _chosenAttack.energyCost;
 
+        heroControl.EndAction();
+    }
+
+    private IEnumerator PerformDefend(AttackData _chosenAttack, Vector3 _targetPosition)
+    {
+        if (actionStarted)
+        {
+            yield break;
+        }
+
+        actionStarted = true;
+
+        // Set defend animation
+        animator.SetTrigger("BlockTrigger");
+
+        yield return new WaitForSeconds(.5f);
+
+        actionStarted = false;
         heroControl.EndAction();
     }
 

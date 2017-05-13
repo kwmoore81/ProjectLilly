@@ -135,9 +135,19 @@ public class HeroController : MonoBehaviour
         //    battleCameraSet = true;
         //}
 
-        // Perform attack animation
-        Vector3 targetPosition = new Vector3(enemyToAttack.transform.position.x - 3.5f, transform.position.y, enemyToAttack.transform.position.z);
-        heroActionControl.AttackInput(battleControl.activeAgentList[0].chosenAttack, targetPosition);
+        Vector3 targetPosition;
+
+        // Set the target position (enemy / party / self) and perform action
+        if (battleControl.activeAgentList[0].chosenAttack.attackType == AttackData.AttackType.RESTORE)
+        {
+            targetPosition = transform.position;
+            heroActionControl.RestoreInput(battleControl.activeAgentList[0].chosenAttack, targetPosition);
+        }
+        else
+        {
+            targetPosition = new Vector3(enemyToAttack.transform.position.x - 3.5f, transform.position.y, enemyToAttack.transform.position.z);
+            heroActionControl.AttackInput(battleControl.activeAgentList[0].chosenAttack, targetPosition);
+        }
     }
 
     public void EndAction()
