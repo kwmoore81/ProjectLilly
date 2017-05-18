@@ -73,8 +73,6 @@ public class HeroController : MonoBehaviour
         if (battleControl.startBattle) CheckState();
 
         heroActionControl.DrawWeapon();
-
-        if (isBlocking) heroActionControl.DefendInput();
     }
 
     void CheckState()
@@ -211,7 +209,14 @@ public class HeroController : MonoBehaviour
 
     public void TakeDamage(int _damage)
     {
-        hero.CurrentHealth -= _damage;
+        if (isBlocking)
+        {
+            hero.CurrentHealth -= _damage / 2;
+        }
+        else
+        {
+            hero.CurrentHealth -= _damage;
+        }
 
         // Play hit animation
         heroActionControl.HitReaction();
