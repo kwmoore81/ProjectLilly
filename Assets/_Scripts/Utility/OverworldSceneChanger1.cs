@@ -8,7 +8,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     public GameObject battleScene;
     public GameObject battleSceneTemp;
     public GameObject ForestBattlePrefab;
-    public GameObject BossBattlePrefab;
+    public GameObject BossBattlePrefab;    
 
     public GameObject battleMaster;
     private OverWorldSceneChanger2 overWorldSceneChanger2;
@@ -18,6 +18,10 @@ public class OverworldSceneChanger1 : MonoBehaviour {
 
     public GameObject thirdPersonControllerOBJ;
     private vThirdPersonController thirdPersonController;
+
+    public GameObject transition_Canvas;
+    private CameraBlurTest cameraBlur;
+
     Animator animator;  
     
     public float gabiCurrentHealth;
@@ -59,16 +63,21 @@ public class OverworldSceneChanger1 : MonoBehaviour {
         thirdPersonController = thirdPersonControllerOBJ.GetComponent<vThirdPersonController>();
         animator = thirdPersonControllerOBJ.GetComponent<Animator>();
         overWorldSceneChanger2 = battleMaster.GetComponent<OverWorldSceneChanger2>();
+        cameraBlur = transition_Canvas.GetComponent<CameraBlurTest>();
     }
 
     public void SceneChange()
-    {           
-            battleSceneTemp = Object.Instantiate(ForestBattlePrefab, battleScene.transform);
-            overWorldSceneChanger2.UpdateFromBank();
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-            overworldScene.gameObject.SetActive(false);
-               
+    {
+            StartCoroutine(cameraBlur.FadeIn(cameraBlur.currentAlpha, cameraBlur.lerpSpeed));                      
+    }
+
+    public void DelayedSceenChange()
+    {
+        overworldScene.gameObject.SetActive(false);
+        battleSceneTemp = Object.Instantiate(ForestBattlePrefab, battleScene.transform);
+        overWorldSceneChanger2.UpdateFromBank();
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     public void BossSceneChange()
@@ -138,11 +147,11 @@ public class OverworldSceneChanger1 : MonoBehaviour {
 
         }
 
-        //if (Input.GetKeyDown(KeyCode.P))
-        //{
-        //    characterStatsDB.SendData1();
-        //    SceneChange();
-        //}
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            characterStatsDB.SendData1();
+            SceneChange();
+        }
     }
 
     public void HealAll()
