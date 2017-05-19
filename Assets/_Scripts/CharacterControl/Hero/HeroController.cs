@@ -73,8 +73,6 @@ public class HeroController : MonoBehaviour
         if (battleControl.startBattle) CheckState();
 
         heroActionControl.DrawWeapon();
-
-        if (isBlocking) heroActionControl.DefendInput();
     }
 
     void CheckState()
@@ -135,9 +133,24 @@ public class HeroController : MonoBehaviour
         //    battleCameraSet = true;
         //}
 
-        // Perform attack animation
-        Vector3 targetPosition = new Vector3(enemyToAttack.transform.position.x - 3.5f, transform.position.y, enemyToAttack.transform.position.z);
-        heroActionControl.AttackInput(battleControl.activeAgentList[0].chosenAttack, targetPosition);
+        Vector3 targetPosition;
+
+        // Set the target position (enemy / party / self) and perform action
+        if (battleControl.activeAgentList[0].chosenAttack.attackType == AttackData.AttackType.RESTORE)
+        {
+            targetPosition = transform.position;
+            heroActionControl.RestoreInput(battleControl.activeAgentList[0].chosenAttack, targetPosition);
+        }
+        else if (battleControl.activeAgentList[0].chosenAttack.partyTargeting)
+        {
+            targetPosition = new Vector3(enemyToAttack.transform.position.x, transform.position.y, enemyToAttack.transform.position.z);
+            heroActionControl.AttackInput(battleControl.activeAgentList[0].chosenAttack, targetPosition);
+        }
+        else
+        {
+            targetPosition = new Vector3(enemyToAttack.transform.position.x - 3.5f, transform.position.y, enemyToAttack.transform.position.z);
+            heroActionControl.AttackInput(battleControl.activeAgentList[0].chosenAttack, targetPosition);
+        }
     }
 
     public void EndAction()
@@ -201,7 +214,14 @@ public class HeroController : MonoBehaviour
 
     public void TakeDamage(int _damage)
     {
-        hero.CurrentHealth -= _damage;
+        if (isBlocking)
+        {
+            hero.CurrentHealth -= _damage / 2;
+        }
+        else
+        {
+            hero.CurrentHealth -= _damage;
+        }
 
         // Play hit animation
         heroActionControl.HitReaction();
@@ -215,6 +235,15 @@ public class HeroController : MonoBehaviour
         UpdateHeroPanel();
     }
 
+    public void TakeHealing(int _healing)
+    {
+        hero.CurrentHealth += _healing;
+        if (hero.CurrentHealth > hero.baseHealth)
+        {
+            hero.CurrentHealth = hero.baseHealth;
+        }
+    }
+
     public void DoCleansing()
     {
         int calculatedDamage = hero.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
@@ -225,6 +254,12 @@ public class HeroController : MonoBehaviour
     {
         int calculatedDamage = hero.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
         enemyToAttack.GetComponent<EnemyController>().TakeDamage(calculatedDamage);
+    }
+
+    public void DoHealing()
+    {
+        enemyToAttack.GetComponent<HeroController>().TakeHealing(battleControl.activeAgentList[0].chosenAttack.healthChange);
+        UpdateHeroPanel();
     }
 
     void HeroDeath()

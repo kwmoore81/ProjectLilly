@@ -133,24 +133,34 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         {
             StartCoroutine(PerformMeleeAttack(_chosenAttack, _targetPosition));
         }
+        else if (_chosenAttack.attackType == AttackData.AttackType.HEAL || _chosenAttack.attackType == AttackData.AttackType.BUFF 
+                 || _chosenAttack.attackType == AttackData.AttackType.DEBUFF)
+        {
+            StartCoroutine(PerformUtility(_chosenAttack, _targetPosition));
+        }
+        else if (_chosenAttack.attackType == AttackData.AttackType.DEFEND)
+        {
+            StartCoroutine(PerformDefend(_chosenAttack, _targetPosition));
+        }
     }
 
-    // TODO: Setup ReceiveStance() function
-    public void StanceInput(int _stanceID)
-    {
+    
 
+    public void RestoreInput(AttackData _chosenAttack, Vector3 _targetPosition)
+    {
+        StartCoroutine(PerformChannel(_chosenAttack, _targetPosition));
     }
 
-    // TODO: Setup RecieveItemUse() function
-    public void ItemUseInput(int _itemID)
+    public void DefendInput()
     {
-
+        animator.SetTrigger("BlockTrigger");
+        heroControl.EndAction();
     }
 
     // TODO: Setup Defend() function
-    public void DefendInput()
+    public void DefendInput(AttackData _chosenDefend, Vector3 _targetPosition)
     {
-        
+        StartCoroutine(PerformDefend(_chosenDefend, _targetPosition));
     }
 
     public void HitReaction()
@@ -250,6 +260,40 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         heroControl.EndAction();
     }
 
+    private IEnumerator PerformChannel(AttackData _chosenAttack, Vector3 _targetPosition)
+    {
+        if (actionStarted)
+        {
+            yield break;
+        }
+
+        actionStarted = true;
+
+        // Perform spellcast animation and spell particle effect
+        animator.SetTrigger(_chosenAttack.attackAnimation);
+
+        yield return new WaitForSeconds(_chosenAttack.attackWaitTime);
+
+        Quaternion spellRotation = Quaternion.LookRotation(Vector3.up);
+        GameObject tempSpell = Instantiate(_chosenAttack.projectile, transform.position, spellRotation) as GameObject;
+        yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
+
+        Destroy(tempSpell);
+
+        // Restore appropriate element charges
+        if (_chosenAttack.fireChargeRestore > 0)
+            heroControl.hero.CurrentFireCharges += _chosenAttack.fireChargeRestore;
+        else if (_chosenAttack.waterChargeRestore > 0)
+            heroControl.hero.CurrentWaterCharges += _chosenAttack.waterChargeRestore;
+        else if (_chosenAttack.earthChargeRestore > 0)
+            heroControl.hero.CurrentEarthCharges += _chosenAttack.earthChargeRestore;
+
+        yield return null;
+
+        actionStarted = false;
+        heroControl.EndAction();
+    }
+
     private bool MoveTowardTarget(Vector3 target)
     {
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime));
@@ -274,15 +318,21 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
 
         yield return new WaitForSeconds(_chosenAttack.attackWaitTime);
 
-        // Shoot spell
-        Vector3 relativePosition = _targetPosition - transform.position;
-        Quaternion spellRotation = Quaternion.LookRotation(relativePosition);
-        GameObject tempSpell = Instantiate(_chosenAttack.projectile, spellSpawn.transform.position, spellRotation) as GameObject;
+        // Play spell animation
+        Quaternion spellRotation = Quaternion.LookRotation(_targetPosition);
+        GameObject tempSpell = Instantiate(_chosenAttack.projectile, _targetPosition, spellRotation) as GameObject;
 
         yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
 
         Destroy(tempSpell);
-        heroControl.DoDamage();
+        if (_chosenAttack.attackType == AttackData.AttackType.HEAL)
+        {
+            heroControl.DoHealing();
+        }
+        else
+        {
+            heroControl.DoDamage();
+        }
 
         yield return new WaitForSeconds(.5f);
 
@@ -313,6 +363,23 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
 
         Destroy(tempSpell);
         heroControl.DoDamage();
+
+        yield return new WaitForSeconds(.5f);
+
+        actionStarted = false;
+        heroControl.EndAction();
+    }
+
+    private IEnumerator PerformDefend(AttackData _chosenAttack, Vector3 _targetPosition)
+    {
+        if (actionStarted)
+        {
+            yield break;
+        }
+
+        actionStarted = true;
+
+        // Do stuff
 
         yield return new WaitForSeconds(.5f);
 
