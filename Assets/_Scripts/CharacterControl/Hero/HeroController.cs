@@ -141,6 +141,11 @@ public class HeroController : MonoBehaviour
             targetPosition = transform.position;
             heroActionControl.RestoreInput(battleControl.activeAgentList[0].chosenAttack, targetPosition);
         }
+        else if (battleControl.activeAgentList[0].chosenAttack.partyTargeting)
+        {
+            targetPosition = new Vector3(enemyToAttack.transform.position.x, transform.position.y, enemyToAttack.transform.position.z);
+            heroActionControl.AttackInput(battleControl.activeAgentList[0].chosenAttack, targetPosition);
+        }
         else
         {
             targetPosition = new Vector3(enemyToAttack.transform.position.x - 3.5f, transform.position.y, enemyToAttack.transform.position.z);
@@ -230,6 +235,15 @@ public class HeroController : MonoBehaviour
         UpdateHeroPanel();
     }
 
+    public void TakeHealing(int _healing)
+    {
+        hero.CurrentHealth += _healing;
+        if (hero.CurrentHealth > hero.baseHealth)
+        {
+            hero.CurrentHealth = hero.baseHealth;
+        }
+    }
+
     public void DoCleansing()
     {
         int calculatedDamage = hero.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
@@ -240,6 +254,12 @@ public class HeroController : MonoBehaviour
     {
         int calculatedDamage = hero.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
         enemyToAttack.GetComponent<EnemyController>().TakeDamage(calculatedDamage);
+    }
+
+    public void DoHealing()
+    {
+        enemyToAttack.GetComponent<HeroController>().TakeHealing(battleControl.activeAgentList[0].chosenAttack.healthChange);
+        UpdateHeroPanel();
     }
 
     void HeroDeath()

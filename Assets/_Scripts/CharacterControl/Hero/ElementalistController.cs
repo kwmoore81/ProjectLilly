@@ -133,38 +133,28 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         {
             StartCoroutine(PerformMeleeAttack(_chosenAttack, _targetPosition));
         }
+        else if (_chosenAttack.attackType == AttackData.AttackType.HEAL || _chosenAttack.attackType == AttackData.AttackType.BUFF 
+                 || _chosenAttack.attackType == AttackData.AttackType.DEBUFF)
+        {
+            StartCoroutine(PerformUtility(_chosenAttack, _targetPosition));
+        }
         else if (_chosenAttack.attackType == AttackData.AttackType.DEFEND)
         {
             StartCoroutine(PerformDefend(_chosenAttack, _targetPosition));
         }
     }
 
+    
+
     public void RestoreInput(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         StartCoroutine(PerformChannel(_chosenAttack, _targetPosition));
-    }
-
-    public void ActionInput(ActionData _chosenAction, Vector3 _targetPosition)
-    {
-
     }
 
     public void DefendInput()
     {
         animator.SetTrigger("BlockTrigger");
         heroControl.EndAction();
-    }
-
-    // TODO: Setup ReceiveStance() function
-    public void StanceInput(int _stanceID)
-    {
-
-    }
-
-    // TODO: Setup RecieveItemUse() function
-    public void ItemUseInput(int _itemID)
-    {
-
     }
 
     // TODO: Setup Defend() function
@@ -328,15 +318,21 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
 
         yield return new WaitForSeconds(_chosenAttack.attackWaitTime);
 
-        // Shoot spell
-        Vector3 relativePosition = _targetPosition - transform.position;
-        Quaternion spellRotation = Quaternion.LookRotation(relativePosition);
-        GameObject tempSpell = Instantiate(_chosenAttack.projectile, spellSpawn.transform.position, spellRotation) as GameObject;
+        // Play spell animation
+        Quaternion spellRotation = Quaternion.LookRotation(_targetPosition);
+        GameObject tempSpell = Instantiate(_chosenAttack.projectile, _targetPosition, spellRotation) as GameObject;
 
         yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
 
         Destroy(tempSpell);
-        heroControl.DoDamage();
+        if (_chosenAttack.attackType == AttackData.AttackType.HEAL)
+        {
+            heroControl.DoHealing();
+        }
+        else
+        {
+            heroControl.DoDamage();
+        }
 
         yield return new WaitForSeconds(.5f);
 

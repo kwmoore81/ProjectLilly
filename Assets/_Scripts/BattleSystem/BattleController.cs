@@ -399,7 +399,15 @@ public class BattleController : MonoBehaviour
         heroChoice.activeAgent = heroesToManage[0].name;
         heroChoice.agentGO = heroesToManage[0];
         heroChoice.chosenAttack = heroesToManage[0].GetComponent<HeroController>().hero.attacks[0];
-        enemySelectPanel.SetActive(true);
+
+        if (heroChoice.chosenAttack.partyTargeting)
+        {
+            heroSelectPanel.SetActive(true);
+        }
+        else
+        {
+            enemySelectPanel.SetActive(true);
+        }
     }
 
     public void EnemySelectInput(GameObject chosenEnemy)
@@ -527,7 +535,7 @@ public class BattleController : MonoBehaviour
     }
     
 
-    // TODO: Modify this for specific classes.  Should it be in the individual class controllers?
+    // Create action buttons
     void CreateActionButtons()
     {
         // Create attack buttons
@@ -552,15 +560,6 @@ public class BattleController : MonoBehaviour
                 attackButtons.Add(meleeBtn);
             }
         }
-        //else if (heroesToManage[0].GetComponent<HeroController>().hero.attacks.Count == 1)
-        //{
-        //    GameObject attackButton = Instantiate(actionButton) as GameObject;
-        //    Text attackButtonText = attackButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
-        //    attackButtonText.text = "Attack";
-        //    attackButton.GetComponent<Button>().onClick.AddListener(() => ActionInput());
-        //    attackButton.transform.SetParent(actionSpacer, false);
-        //    attackButtons.Add(attackButton);
-        //}
 
         // Create fire spell buttons
         if (heroesToManage[0].GetComponent<HeroController>().hero.fireSpells.Count > 1)
@@ -717,6 +716,10 @@ public class BattleController : MonoBehaviour
         {
             heroChoice.targetGO = heroesToManage[0];
             heroInput = HeroUI.DONE;
+        }
+        else if (heroChoice.chosenAttack.partyTargeting)
+        {
+            heroSelectPanel.SetActive(true);
         }
         else
         {

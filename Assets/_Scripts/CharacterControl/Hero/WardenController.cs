@@ -137,6 +137,10 @@ public class WardenController : MonoBehaviour, IHeroActionControl
             heroControl.isBlocking = false;
             StartCoroutine(PerformMeleeAttack(_chosenAttack, _targetPosition));
         }
+        else if (_chosenAttack.attackType == AttackData.AttackType.BUFF || _chosenAttack.attackType == AttackData.AttackType.DEBUFF)
+        {
+            // Run  Coroutine
+        }
         else if (_chosenAttack.attackType == AttackData.AttackType.DEFEND)
         {
             StartCoroutine(PerformDefend(_chosenAttack, _targetPosition));
@@ -146,33 +150,6 @@ public class WardenController : MonoBehaviour, IHeroActionControl
     public void RestoreInput(AttackData _chosenAttack, Vector3 _tagetPositon)
     {
 
-    }
-
-    public void ActionInput(ActionData _chosenAction, Vector3 _targetPosition)
-    {
-
-    }
-
-    // TODO: Setup ReceiveStance() function
-    public void StanceInput(int _stanceID)
-    {
-
-    }
-
-    // TODO: Setup RecieveItemUse() function
-    public void ItemUseInput(int _itemID)
-    {
-
-    }
-
-    // TODO: Setup Defend() function
-    public void DefendInput()
-    {
-        animator.SetBool("Blocking", true);
-        heroControl.isBlocking = true;
-        animator.SetTrigger("BlockTrigger");
-        heroControl.isBlocking = true;
-        heroControl.EndAction();
     }
 
     public void HitReaction()

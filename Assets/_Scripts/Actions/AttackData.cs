@@ -7,7 +7,7 @@ public class AttackData : MonoBehaviour
 
     public enum AttackType
     {
-        MELEE, RANGED, SPELL, CLEANSE, RESTORE, BUFF, DEBUFF, HEAL, DEFEND
+        MELEE, RANGED, SPELL, CLEANSE, RESTORE, HEAL, BUFF, DEBUFF, DEFEND
     }
 
     public enum DamageType
@@ -47,13 +47,14 @@ public class AttackData : MonoBehaviour
     public int earthChargeRestore;
 
     // Action effects
-    [Header ("Action Effects")]
+    [Header("Action Effects")]
+    public int healthChange;
     public int strengthChange;
     public int speedChange;
     public int defenseChange;
-    public bool confusion;
-    public bool blind;
-    public bool removeDebuff;
+    //public bool confusion;
+    //public bool blind;
+    //public bool removeDebuff;
 
     [Header ("Attack & Element Enums")]
     public AttackType attackType;
