@@ -13,8 +13,8 @@ public class CorruptionMeter : MonoBehaviour
     private float maxCorruption = 500;
     private float barSpeed = 20;
 
-    private bool updateMeter = false;
-    private bool meterDown = false;
+    public bool updateMeter = false;
+    public bool meterDown = false;
 	
     void Start()
     {

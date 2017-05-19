@@ -122,6 +122,16 @@ public class HunterController : MonoBehaviour, IHeroActionControl
         StartCoroutine(PerformAttack(_chosenAttack, _targetPosition));
     }
 
+    public void RestoreInput(AttackData _chosenAttack, Vector3 _tagetPositon)
+    {
+
+    }
+
+    public void ActionInput(ActionData _chosenAction, Vector3 _targetPosition)
+    {
+
+    }
+
     // TODO: Setup ReceiveStance() function
     public void StanceInput(int _stanceID)
     {
@@ -134,10 +144,10 @@ public class HunterController : MonoBehaviour, IHeroActionControl
 
     }
 
-    // TODO: Setup Defend() function
     public void DefendInput()
     {
-        
+        animator.SetTrigger("BlockTrigger");
+        heroControl.EndAction();
     }
 
     public void HitReaction()

@@ -7,7 +7,7 @@ public class AttackData : MonoBehaviour
 
     public enum AttackType
     {
-        MELEE, RANGED, SPELL, CLEANSE
+        MELEE, RANGED, SPELL, CLEANSE, RESTORE, HEAL, BUFF, DEBUFF, DEFEND
     }
 
     public enum DamageType
@@ -15,6 +15,8 @@ public class AttackData : MonoBehaviour
         NORMAL, FIRE, WATER, EARTH, WOOD, METAL
     }
 
+    // Action Basics
+    [Header ("Action Basics")]
     public string attackName;
     public string attackDescription;
 
@@ -22,15 +24,39 @@ public class AttackData : MonoBehaviour
     public int energyCost;
     public int chargeCost;
 
+    // Animation control
+    [Header ("Animation Control")]
     public float attackWaitTime;
     public float damageWaitTime;
     public string attackAnimation;
 
+    // Targetting info
+    [Header ("Targetting Info")]
+    public bool partyTargeting = false;
+    public bool selfTarget = false;
     public float targetOffset;
     public float attackOffset;
     public float finishOffset;
     public bool moveDuringAttack = false;
 
+    // Resource manipulation
+    [Header ("Resource Manipulation")]
+    public int energyRestore;
+    public int fireChargeRestore;
+    public int waterChargeRestore;
+    public int earthChargeRestore;
+
+    // Action effects
+    [Header("Action Effects")]
+    public int healthChange;
+    public int strengthChange;
+    public int speedChange;
+    public int defenseChange;
+    //public bool confusion;
+    //public bool blind;
+    //public bool removeDebuff;
+
+    [Header ("Attack & Element Enums")]
     public AttackType attackType;
     public DamageType damageType;
 }
