@@ -131,7 +131,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
     {
         //animator.SetBool("Blocking", false);
 
-        if (_chosenAttack.attackType == AttackData.AttackType.MELEE)
+        if (_chosenAttack.attackType == AttackData.AttackType.MELEE || _chosenAttack.attackType == AttackData.AttackType.CLEANSE)
         {
             animator.SetBool("Blocking", false);
             heroControl.isBlocking = false;

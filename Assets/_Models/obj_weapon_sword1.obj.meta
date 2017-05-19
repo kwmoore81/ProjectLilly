@@ -1,17 +1,17 @@
 fileFormatVersion: 2
-guid: 40436f12cbf7aa34c97583103c5dbadc
-timeCreated: 1493916229
-licenseType: Free
+guid: a8fff815947c1514c9abaefb43f24909
+timeCreated: 1495215484
+licenseType: Pro
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: default
+    100000: obj_weap_sword1
     100002: //RootNode
-    400000: default
+    400000: obj_weap_sword1
     400002: //RootNode
-    2300000: default
-    3300000: default
-    4300000: default
+    2300000: obj_weap_sword1
+    3300000: obj_weap_sword1
+    4300000: obj_weap_sword1
   materials:
     importMaterials: 1
     materialName: 0
