@@ -70,6 +70,7 @@ public class BattleController : MonoBehaviour
     public GameObject attackPanel;
     public GameObject utilityPanel;
     public GameObject enemySelectPanel;
+    public GameObject heroSelectPanel;
     public GameObject corruptionMeter;
     public GameObject victoryPanel;
     public GameObject defeatPanel;
@@ -146,6 +147,7 @@ public class BattleController : MonoBehaviour
         waterPanel.SetActive(false);
         utilityPanel.SetActive(false);
         enemySelectPanel.SetActive(false);
+        heroSelectPanel.SetActive(false);
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
         endGamePanel.SetActive(false);
@@ -397,12 +399,26 @@ public class BattleController : MonoBehaviour
         heroChoice.activeAgent = heroesToManage[0].name;
         heroChoice.agentGO = heroesToManage[0];
         heroChoice.chosenAttack = heroesToManage[0].GetComponent<HeroController>().hero.attacks[0];
-        enemySelectPanel.SetActive(true);
+
+        if (heroChoice.chosenAttack.partyTargeting)
+        {
+            heroSelectPanel.SetActive(true);
+        }
+        else
+        {
+            enemySelectPanel.SetActive(true);
+        }
     }
 
     public void EnemySelectInput(GameObject chosenEnemy)
     {
         heroChoice.targetGO = chosenEnemy;
+        heroInput = HeroUI.DONE;
+    }
+
+    public void HeroSelectInput(GameObject chosenHero)
+    {
+        heroChoice.targetGO = chosenHero;
         heroInput = HeroUI.DONE;
     }
 
@@ -419,6 +435,7 @@ public class BattleController : MonoBehaviour
     void ResetAttackPanels()
     {
         enemySelectPanel.SetActive(false);
+        heroSelectPanel.SetActive(false);
         earthPanel.SetActive(false);
         firePanel.SetActive(false);
         waterPanel.SetActive(false);
@@ -429,6 +446,7 @@ public class BattleController : MonoBehaviour
     void ClearAttackPanel()
     {
         enemySelectPanel.SetActive(false);
+        heroSelectPanel.SetActive(false);
         actionPanel.SetActive(false);
         earthPanel.SetActive(false);
         firePanel.SetActive(false);
@@ -517,7 +535,7 @@ public class BattleController : MonoBehaviour
     }
     
 
-    // TODO: Modify this for specific classes.  Should it be in the individual class controllers?
+    // Create action buttons
     void CreateActionButtons()
     {
         // Create attack buttons
@@ -542,15 +560,6 @@ public class BattleController : MonoBehaviour
                 attackButtons.Add(meleeBtn);
             }
         }
-        //else if (heroesToManage[0].GetComponent<HeroController>().hero.attacks.Count == 1)
-        //{
-        //    GameObject attackButton = Instantiate(actionButton) as GameObject;
-        //    Text attackButtonText = attackButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
-        //    attackButtonText.text = "Attack";
-        //    attackButton.GetComponent<Button>().onClick.AddListener(() => ActionInput());
-        //    attackButton.transform.SetParent(actionSpacer, false);
-        //    attackButtons.Add(attackButton);
-        //}
 
         // Create fire spell buttons
         if (heroesToManage[0].GetComponent<HeroController>().hero.fireSpells.Count > 1)
@@ -636,11 +645,11 @@ public class BattleController : MonoBehaviour
             attackButtons.Add(utilityButton);
 
             // Utility Buttons
-            foreach (ActionData utilityAction in heroesToManage[0].GetComponent<HeroController>().hero.utility)
+            foreach (AttackData utilityAction in heroesToManage[0].GetComponent<HeroController>().hero.utility)
             {
                 GameObject utilityBtn = Instantiate(utilityButton) as GameObject;
                 Text utilityActionButtonText = utilityBtn.transform.FindChild("Text").gameObject.GetComponent<Text>();
-                utilityActionButtonText.text = utilityAction.actionName;
+                utilityActionButtonText.text = utilityAction.attackName;
                 UtilityButton utilityActionButton = utilityBtn.GetComponent<UtilityButton>();
                 // Fix this line
                 //utilityActionButton.blah = utilityAction;
@@ -652,16 +661,16 @@ public class BattleController : MonoBehaviour
         // Create item buttons
 
 
-        //Create defend button
-        //if (heroesToManage[0].GetComponent<HeroController>().canDefend)
-        //{
-        //    GameObject defendButton = Instantiate(actionButton) as GameObject;
-        //    Text defendButtonText = defendButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
-        //    defendButtonText.text = "Defend";
-        //    defendButton.GetComponent<Button>().onClick.AddListener(() => DefendInput());
-        //    defendButton.transform.SetParent(actionSpacer, false);
-        //    attackButtons.Add(defendButton);
-        //}
+        // Create defend button
+        if (heroesToManage[0].GetComponent<HeroController>().hero.defend.Count > 0)
+        {
+            GameObject defendButton = Instantiate(actionButton) as GameObject;
+            Text defendButtonText = defendButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
+            defendButtonText.text = "Defend";
+            defendButton.GetComponent<Button>().onClick.AddListener(() => DefendInput());
+            defendButton.transform.SetParent(actionSpacer, false);
+            attackButtons.Add(defendButton);
+        }
     }
 
     public void AttackInput()
@@ -703,32 +712,52 @@ public class BattleController : MonoBehaviour
         heroChoice.agentGO = heroesToManage[0];
         heroChoice.chosenAttack = chosenSpell;
 
-        enemySelectPanel.SetActive(true);
+        if (heroChoice.chosenAttack.attackType == AttackData.AttackType.RESTORE)
+        {
+            heroChoice.targetGO = heroesToManage[0];
+            heroInput = HeroUI.DONE;
+        }
+        else if (heroChoice.chosenAttack.partyTargeting)
+        {
+            heroSelectPanel.SetActive(true);
+        }
+        else
+        {
+            enemySelectPanel.SetActive(true);
+        }
     }
 
     public void UtilityInput()
     {
-        //utilityPanel.SetActive(true);
+        utilityPanel.SetActive(true);
     }
 
-    public void SetUtilityInput(AttackData chosenUtility)
+    public void SetUtilityInput(AttackData _chosenUtility)
     {
         heroChoice.activeAgent = heroesToManage[0].name;
         heroChoice.agentGO = heroesToManage[0];
-        heroChoice.chosenAttack = chosenUtility;
+        heroChoice.chosenAttack = _chosenUtility;
 
-        //utilityPanel.SetActive(false);
-        //enemySelectPanel.SetActive(true);
+        utilityPanel.SetActive(false);
+        if (_chosenUtility.partyTargeting)
+        {
+            heroSelectPanel.SetActive(true);
+        }
+        else
+        {
+            enemySelectPanel.SetActive(true);
+        }
     }
 
     public void DefendInput()
     {
+        AttackData _chosenDefend = heroesToManage[0].GetComponent<HeroController>().hero.defend[0];
+
         heroChoice.activeAgent = heroesToManage[0].name;
         heroChoice.agentGO = heroesToManage[0];
-        heroChoice.agentGO.GetComponent<HeroController>().isBlocking = true;
-
-        // Need agent action clean up code
-
+        heroChoice.chosenAttack = _chosenDefend;
+        heroChoice.targetGO = heroesToManage[0];
+        heroInput = HeroUI.DONE;
     }
 
     public void enemyButtonsControl()

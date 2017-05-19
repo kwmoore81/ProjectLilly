@@ -6,8 +6,10 @@ public interface IHeroActionControl
 
     void DrawWeapon();
     void AttackInput(AttackData _chosenAttack, Vector3 _targetPosition);
-    void ItemUseInput(int _itemID);
-    void DefendInput();
+    void RestoreInput(AttackData _chosenAttack, Vector3 _tagetPositon);
+    //void ActionInput(ActionData _chosenAction, Vector3 _targetPosition);
+    //void DefendInput();
+    //void ItemUseInput(int _itemID);
     void HitReaction();
     void DeathReaction();
     void WriteStats();

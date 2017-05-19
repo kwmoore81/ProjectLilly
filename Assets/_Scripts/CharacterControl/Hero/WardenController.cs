@@ -26,6 +26,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
     private bool actionStarted = false;
 
     private bool isAlive = true;
+    public bool isBlocking = false;
 
     // Weapon Select
     public enum Weapon
@@ -128,36 +129,49 @@ public class WardenController : MonoBehaviour, IHeroActionControl
     // TODO: Setup RecieveAttack() function
     public void AttackInput(AttackData _chosenAttack, Vector3 _targetPosition)
     {
-        StartCoroutine(PerformAttack(_chosenAttack, _targetPosition));
+        //animator.SetBool("Blocking", false);
+
+        if (_chosenAttack.attackType == AttackData.AttackType.MELEE)
+        {
+            animator.SetBool("Blocking", false);
+            heroControl.isBlocking = false;
+            StartCoroutine(PerformMeleeAttack(_chosenAttack, _targetPosition));
+        }
+        else if (_chosenAttack.attackType == AttackData.AttackType.BUFF || _chosenAttack.attackType == AttackData.AttackType.DEBUFF)
+        {
+            // Run  Coroutine
+        }
+        else if (_chosenAttack.attackType == AttackData.AttackType.DEFEND)
+        {
+            StartCoroutine(PerformDefend(_chosenAttack, _targetPosition));
+        }
     }
 
-    // TODO: Setup ReceiveStance() function
-    public void StanceInput(int _stanceID)
+    public void RestoreInput(AttackData _chosenAttack, Vector3 _tagetPositon)
     {
 
-    }
-
-    // TODO: Setup RecieveItemUse() function
-    public void ItemUseInput(int _itemID)
-    {
-
-    }
-
-    // TODO: Setup Defend() function
-    public void DefendInput()
-    {
-        animator.SetTrigger("BlockTrigger");
-        heroControl.EndSimpleAction();
     }
 
     public void HitReaction()
     {
-        // TODO: Add variable hit reaction based on damage done and defend state
-        int hits = 5;
-        int hitNumber = Random.Range(0, hits);
-        animator.SetTrigger("GetHit" + (hitNumber + 1).ToString() + "Trigger");
+        if (animator.GetBool("Blocking"))
+        {
+            int hits = 2;
+            int hitNumber = Random.Range(0, hits);
 
-        // Add resolve
+            if (hitNumber == 0)
+                animator.SetTrigger("BlockGetHit1Trigger");
+            else if (hitNumber == 1)
+                animator.SetTrigger("BlockGetHit2Trigger");
+        }
+        else
+        {
+            int hits = 5;
+            int hitNumber = Random.Range(0, hits);
+            animator.SetTrigger("GetHit" + (hitNumber + 1).ToString() + "Trigger");
+        }
+
+        // TODO: Add resolve gain on hit
         
     }
 
@@ -166,7 +180,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         animator.SetTrigger("Death1Trigger");
     }
 
-    private IEnumerator PerformAttack(AttackData _chosenAttack, Vector3 _targetPosition)
+    private IEnumerator PerformMeleeAttack(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         if (actionStarted)
         {
@@ -222,6 +236,25 @@ public class WardenController : MonoBehaviour, IHeroActionControl
 
         heroControl.hero.CurrentEnergy -= _chosenAttack.energyCost;
 
+        heroControl.EndAction();
+    }
+
+    private IEnumerator PerformDefend(AttackData _chosenAttack, Vector3 _targetPosition)
+    {
+        if (actionStarted)
+        {
+            yield break;
+        }
+
+        actionStarted = true;
+
+        // Set defend animation
+        animator.SetBool("Blocking", true);
+        animator.SetTrigger("BlockTrigger");
+
+        yield return new WaitForSeconds(.5f);
+
+        actionStarted = false;
         heroControl.EndAction();
     }
 

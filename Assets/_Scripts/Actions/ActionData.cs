@@ -19,7 +19,8 @@ public class ActionData : MonoBehaviour
     public string actionName;
     public string actionDescription;
 
-    public bool partyTargeting;
+    public bool partyTargeting = false;
+    public bool selfTarget = false;
 
     // Energy manipulation
     public int energyCost;
