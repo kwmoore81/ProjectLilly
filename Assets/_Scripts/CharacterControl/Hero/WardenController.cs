@@ -139,7 +139,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         }
         else if (_chosenAttack.attackType == AttackData.AttackType.BUFF || _chosenAttack.attackType == AttackData.AttackType.DEBUFF)
         {
-            // Run  Coroutine
+            StartCoroutine(PerformUtility(_chosenAttack, _targetPosition));
         }
         else if (_chosenAttack.attackType == AttackData.AttackType.DEFEND)
         {
@@ -237,6 +237,13 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         heroControl.hero.CurrentEnergy -= _chosenAttack.energyCost;
 
         heroControl.EndAction();
+    }
+
+    private IEnumerator PerformUtility(AttackData _chosenAttack, Vector3 _targetPosition)
+    {
+        // TODO: Fill this in later
+
+        yield return null;
     }
 
     private IEnumerator PerformDefend(AttackData _chosenAttack, Vector3 _targetPosition)

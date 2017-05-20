@@ -562,7 +562,7 @@ public class BattleController : MonoBehaviour
         }
 
         // Create fire spell buttons
-        if (heroesToManage[0].GetComponent<HeroController>().hero.fireSpells.Count > 1)
+        if (heroesToManage[0].GetComponent<HeroController>().hero.fireSpells.Count > 0)
         {
             // Magic Button
             GameObject magicButton = Instantiate(actionButton) as GameObject;
@@ -586,7 +586,7 @@ public class BattleController : MonoBehaviour
         }
 
         // Create water spell buttons
-        if (heroesToManage[0].GetComponent<HeroController>().hero.waterSpells.Count > 1)
+        if (heroesToManage[0].GetComponent<HeroController>().hero.waterSpells.Count > 0)
         {
             // Magic Button
             GameObject magicButton = Instantiate(actionButton) as GameObject;
@@ -610,7 +610,7 @@ public class BattleController : MonoBehaviour
         }
 
         // Create earth spell buttons
-        if (heroesToManage[0].GetComponent<HeroController>().hero.earthSpells.Count > 1)
+        if (heroesToManage[0].GetComponent<HeroController>().hero.earthSpells.Count > 0)
         {
             // Magic Button
             GameObject magicButton = Instantiate(actionButton) as GameObject;
@@ -634,13 +634,13 @@ public class BattleController : MonoBehaviour
         }
 
         // Create utility buttons
-        if (heroesToManage[0].GetComponent<HeroController>().hero.utility.Count > 1)
+        if (heroesToManage[0].GetComponent<HeroController>().hero.utility.Count > 0)
         {
             // Magic Button
             GameObject utilityButton = Instantiate(actionButton) as GameObject;
             Text utilityButtonText = utilityButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
-            utilityButtonText.text = "Earth Spells";
-            utilityButton.GetComponent<Button>().onClick.AddListener(() => MagicInput("Earth"));
+            utilityButtonText.text = "Utility";
+            utilityButton.GetComponent<Button>().onClick.AddListener(() => UtilityInput());
             utilityButton.transform.SetParent(actionSpacer, false);
             attackButtons.Add(utilityButton);
 
@@ -651,8 +651,7 @@ public class BattleController : MonoBehaviour
                 Text utilityActionButtonText = utilityBtn.transform.FindChild("Text").gameObject.GetComponent<Text>();
                 utilityActionButtonText.text = utilityAction.attackName;
                 UtilityButton utilityActionButton = utilityBtn.GetComponent<UtilityButton>();
-                // Fix this line
-                //utilityActionButton.blah = utilityAction;
+                utilityActionButton.utilityToUse = utilityAction;
                 utilityBtn.transform.SetParent(utilitySpacer, false);
                 attackButtons.Add(utilityBtn);
             }
@@ -729,6 +728,7 @@ public class BattleController : MonoBehaviour
 
     public void UtilityInput()
     {
+        ResetAttackPanels();
         utilityPanel.SetActive(true);
     }
 
@@ -738,8 +738,8 @@ public class BattleController : MonoBehaviour
         heroChoice.agentGO = heroesToManage[0];
         heroChoice.chosenAttack = _chosenUtility;
 
-        utilityPanel.SetActive(false);
-        if (_chosenUtility.partyTargeting)
+        //utilityPanel.SetActive(false);
+        if (heroChoice.chosenAttack.partyTargeting)
         {
             heroSelectPanel.SetActive(true);
         }
