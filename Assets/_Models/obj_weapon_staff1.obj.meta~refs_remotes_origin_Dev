@@ -1,17 +1,17 @@
 fileFormatVersion: 2
-guid: ba3e0e29b659a2e4b9fe636e6cbd8e9e
-timeCreated: 1492044548
+guid: b565a0596ab42a54aa248a221ce47a93
+timeCreated: 1495215484
 licenseType: Pro
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: //RootNode
-    100002: polySurface2
-    400000: //RootNode
-    400002: polySurface2
-    2300000: polySurface2
-    3300000: polySurface2
-    4300000: polySurface2
+    100000: obj_weap_staff1
+    100002: //RootNode
+    400000: obj_weap_staff1
+    400002: //RootNode
+    2300000: obj_weap_staff1
+    3300000: obj_weap_staff1
+    4300000: obj_weap_staff1
   materials:
     importMaterials: 1
     materialName: 0
