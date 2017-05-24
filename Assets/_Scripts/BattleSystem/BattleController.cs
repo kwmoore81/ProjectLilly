@@ -77,7 +77,6 @@ public class BattleController : MonoBehaviour
     public GameObject endGamePanel;
 
     [Header("UI Panel Spacers")]
-    public Transform spacer;
     public Transform actionSpacer;
     public Transform earthSpacer;
     public Transform fireSpacer;
@@ -151,8 +150,6 @@ public class BattleController : MonoBehaviour
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
         endGamePanel.SetActive(false);
-
-        EnemySelectionButtons();
 
         startDelayTimer = startDelay;
         endDelayTimer = endDelay;
@@ -228,13 +225,11 @@ public class BattleController : MonoBehaviour
         int randomSpawn1;
         randomSpawn1 = Random.Range(0, upperRowEnemies.Count);
         upperRowEnemies[randomSpawn1].SetActive(true);
-        //upperRowEnemies[randomSpawn1].tag = "Enemy";
 
         // Spawn random lower row enemy
         int randomSpawn2;
         randomSpawn2 = Random.Range(0, lowerRowEnemies.Count);
         lowerRowEnemies[randomSpawn2].SetActive(true);
-        //lowerRowEnemies[randomSpawn2].tag = "Enemy";
     }
 
     void CheckActionState()
@@ -364,33 +359,6 @@ public class BattleController : MonoBehaviour
             actionState = ActionState.WAITING;
             deadHeroes.AddRange(GameObject.FindGameObjectsWithTag("DeadHero"));
             deadEnemies.AddRange(GameObject.FindGameObjectsWithTag("DeadEnemy"));
-        }
-    }
-
-    public void EnemySelectionButtons()
-    {
-        // Cleanup buttons and button list
-        foreach (GameObject enemyBTN in enemyButtonList)
-        {
-            Destroy(enemyBTN);
-        }
-        enemyButtonList.Clear();
-
-        // Create enemy buttons
-        foreach (GameObject enemy in enemiesInBattle)
-        {
-            GameObject newButton = Instantiate(enemyButton) as GameObject;
-            EnemySelectButton button = newButton.GetComponent<EnemySelectButton>();
-
-            EnemyController currentEnemy = enemy.GetComponent<EnemyController>();
-
-            Text buttonText = newButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
-            buttonText.text = currentEnemy.name;
-
-            button.enemyPrefab = enemy;
-
-            newButton.transform.SetParent(spacer);
-            enemyButtonList.Add(newButton);
         }
     }
 
@@ -562,7 +530,7 @@ public class BattleController : MonoBehaviour
         }
 
         // Create fire spell buttons
-        if (heroesToManage[0].GetComponent<HeroController>().hero.fireSpells.Count > 1)
+        if (heroesToManage[0].GetComponent<HeroController>().hero.fireSpells.Count > 0)
         {
             // Magic Button
             GameObject magicButton = Instantiate(actionButton) as GameObject;
@@ -586,7 +554,7 @@ public class BattleController : MonoBehaviour
         }
 
         // Create water spell buttons
-        if (heroesToManage[0].GetComponent<HeroController>().hero.waterSpells.Count > 1)
+        if (heroesToManage[0].GetComponent<HeroController>().hero.waterSpells.Count > 0)
         {
             // Magic Button
             GameObject magicButton = Instantiate(actionButton) as GameObject;
@@ -610,7 +578,7 @@ public class BattleController : MonoBehaviour
         }
 
         // Create earth spell buttons
-        if (heroesToManage[0].GetComponent<HeroController>().hero.earthSpells.Count > 1)
+        if (heroesToManage[0].GetComponent<HeroController>().hero.earthSpells.Count > 0)
         {
             // Magic Button
             GameObject magicButton = Instantiate(actionButton) as GameObject;
@@ -634,15 +602,15 @@ public class BattleController : MonoBehaviour
         }
 
         // Create utility buttons
-        if (heroesToManage[0].GetComponent<HeroController>().hero.utility.Count > 1)
+        if (heroesToManage[0].GetComponent<HeroController>().hero.utility.Count > 0)
         {
             // Magic Button
-            GameObject utilityButton = Instantiate(actionButton) as GameObject;
-            Text utilityButtonText = utilityButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
-            utilityButtonText.text = "Earth Spells";
-            utilityButton.GetComponent<Button>().onClick.AddListener(() => MagicInput("Earth"));
-            utilityButton.transform.SetParent(actionSpacer, false);
-            attackButtons.Add(utilityButton);
+            GameObject utilButton = Instantiate(actionButton) as GameObject;
+            Text utilityButtonText = utilButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
+            utilityButtonText.text = "Utility";
+            utilButton.GetComponent<Button>().onClick.AddListener(() => UtilityInput());
+            utilButton.transform.SetParent(actionSpacer, false);
+            attackButtons.Add(utilButton);
 
             // Utility Buttons
             foreach (AttackData utilityAction in heroesToManage[0].GetComponent<HeroController>().hero.utility)
@@ -651,8 +619,7 @@ public class BattleController : MonoBehaviour
                 Text utilityActionButtonText = utilityBtn.transform.FindChild("Text").gameObject.GetComponent<Text>();
                 utilityActionButtonText.text = utilityAction.attackName;
                 UtilityButton utilityActionButton = utilityBtn.GetComponent<UtilityButton>();
-                // Fix this line
-                //utilityActionButton.blah = utilityAction;
+                utilityActionButton.utilityToUse = utilityAction;
                 utilityBtn.transform.SetParent(utilitySpacer, false);
                 attackButtons.Add(utilityBtn);
             }
@@ -729,6 +696,7 @@ public class BattleController : MonoBehaviour
 
     public void UtilityInput()
     {
+        ResetAttackPanels();
         utilityPanel.SetActive(true);
     }
 
@@ -738,8 +706,8 @@ public class BattleController : MonoBehaviour
         heroChoice.agentGO = heroesToManage[0];
         heroChoice.chosenAttack = _chosenUtility;
 
-        utilityPanel.SetActive(false);
-        if (_chosenUtility.partyTargeting)
+        //utilityPanel.SetActive(false);
+        if (heroChoice.chosenAttack.partyTargeting)
         {
             heroSelectPanel.SetActive(true);
         }
