@@ -6,8 +6,12 @@ public class HeroPanelInfo : MonoBehaviour
 {
     public Text heroName;
     public Text heroHP;
-    public Text heroMP;
+    public Text heroResource;
+    public Text heroFireCharges;
+    public Text heroWaterCharges;
+    public Text heroEarthCharges;
     public Image ATB_Bar;
     public Image HP_Bar;
-    public Image MP_Bar;
+    public Image Resource_Bar;
+    public Image statusIcon;
 }

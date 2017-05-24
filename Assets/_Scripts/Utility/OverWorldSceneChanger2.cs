@@ -2,65 +2,76 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OverWorldSceneChanger2 : MonoBehaviour {
+public class OverWorldSceneChanger2 : MonoBehaviour
+{
 
-    public GameObject overworld1;
-    public GameObject overworld2;
-    
-    public GameObject DataBankObj;
-    private DataBank databank;
+    public GameObject overworldScene;
+    public GameObject battleScene;
 
-    public int gabiCurrentHealth;
-    public int gabiCurrentResolve;
+    public GameObject overworldMaster;
+    private OverworldSceneChanger1 overWorldSceneChanger1;
 
-    public int arvandusCurrentHealth;
-    public int arvanusCurrentStamina;
+    public GameObject DataBase;
+    private CharacterStatsDB characterStatsDB;
 
-    public int quinnCurrentHealth;
+    public float gabiCurrentHealth;
+    public float gabiCurrentResolve;
+
+    public float arvandusCurrentHealth;
+    public float arvanusCurrentStamina;
+
+    public float quinnCurrentHealth;
     public int quinnCurrentFire;
     public int quinnCurrentEarth;
     public int quinnCurrentWater;
 
-    public int currentAreaCorruption;
+    public float currentAreaCorruption;
 
     void Start()
     {
-        databank = DataBankObj.GetComponent<DataBank>();                 
+        characterStatsDB = DataBase.GetComponent<CharacterStatsDB>();
+        overWorldSceneChanger1 = overworldMaster.GetComponent<OverworldSceneChanger1>();
+        Cursor.visible = true;
     }
 
     public void SceneChange()
-    {     
-            overworld1.gameObject.SetActive(true);
-            overworld2.gameObject.SetActive(false);              
+    {
+        overworldScene.gameObject.SetActive(true);
+        characterStatsDB.SendData2();
+        overWorldSceneChanger1.UpdateFromBank();
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Destroy(overWorldSceneChanger1.battleSceneTemp);
     }
 
     public void UpdateFromBank()
     {
-        gabiCurrentHealth = databank.gabiCurrentHealth;
-        gabiCurrentResolve = databank.gabiCurrentResolve;
+        gabiCurrentHealth = characterStatsDB.gabiCurrentHealth;
+        gabiCurrentResolve = characterStatsDB.gabiCurrentResolve;
 
-        arvandusCurrentHealth = databank.arvandusCurrentHealth;
-        arvanusCurrentStamina = databank.arvanusCurrentStamina;
+        arvandusCurrentHealth = characterStatsDB.arvandusCurrentHealth;
+        arvanusCurrentStamina = characterStatsDB.arvandusCurrentStamina;
 
-        quinnCurrentHealth = databank.quinnCurrentHealth;
-        quinnCurrentFire = databank.quinnCurrentFire;
-        quinnCurrentEarth = databank.quinnCurrentEarth;
-        quinnCurrentWater = databank.quinnCurrentWater;
+        quinnCurrentHealth = characterStatsDB.quinnCurrentHealth;
+        quinnCurrentFire = characterStatsDB.quinnCurrentFire;
+        quinnCurrentEarth = characterStatsDB.quinnCurrentEarth;
+        quinnCurrentWater = characterStatsDB.quinnCurrentWater;
 
-        currentAreaCorruption = databank.currentAreaCorruption;
+        currentAreaCorruption = characterStatsDB.currentAreaCorruption;
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (overworld2.gameObject.activeInHierarchy == true && overworld1.gameObject.activeInHierarchy == false)
-            {
-                databank.UpdateBank(gabiCurrentHealth, gabiCurrentResolve, arvandusCurrentHealth, arvanusCurrentStamina, quinnCurrentHealth, quinnCurrentFire, quinnCurrentEarth, quinnCurrentWater, currentAreaCorruption);              
-                SceneChange();
-            }
-        }
-    }
+        //    if (Input.GetKeyDown(KeyCode.Tab))
+        //    {
+        //        if (battleScene.gameObject.activeInHierarchy == true && overworldScene.gameObject.activeInHierarchy == false)
+        //        {
+        //            characterStatsDB.SendData2();
+        //            SceneChange();
+        //        }
+        //    }
+        //}
 
+    }
 }
 

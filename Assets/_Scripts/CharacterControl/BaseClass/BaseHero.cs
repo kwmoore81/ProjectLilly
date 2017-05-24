@@ -7,14 +7,27 @@ public class BaseHero: BaseClass
 {
     public BaseHero()
     {
-        BaseStrength = 7;
-        BaseAgility = 8;
-        BaseEndurance = 8;
-        BaseIntellect = 6;
+        baseStrength = 7;
+        baseAgility = 8;
+        baseResilience = 8;
+        baseMind = 6;
+        baseSpirit = 5;
+        baseHealth = 100;
 
-        BaseHP = 100;
-        BaseMP = 50;
+        BaseSpeed = CurrentAgility;
+        BaseAccuracy = CurrentAgility + CurrentMind;
+        BaseEvasion = CurrentAgility + CurrentSpirit;
+
+        BaseAttackPower = CurrentStrength; //+ EquippedWeapon.PhysicalPower
+        BaseMagicPower = CurrentMind; //+ EquippedWeapon.MagicPower
+        BasePhysicalDefense = CurrentResilience; //+ CombinedEquipment.PhysicalDefense
+        BaseMagicDefense = CurrentSpirit; //+ CombinedEquipment.MagicDefense
     }
 
-    public List<BaseAttack> magicAttacks = new List<BaseAttack>();
+    public List<AttackData> attacks = new List<AttackData>();
+    public List<AttackData> fireSpells = new List<AttackData>();
+    public List<AttackData> waterSpells = new List<AttackData>();
+    public List<AttackData> earthSpells = new List<AttackData>();
+    public List<AttackData> utility = new List<AttackData>();
+    public List<AttackData> defend = new List<AttackData>();
 }

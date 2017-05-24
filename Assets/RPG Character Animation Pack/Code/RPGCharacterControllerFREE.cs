@@ -50,8 +50,11 @@ public class RPGCharacterControllerFREE : MonoBehaviour
 	float moveSpeed;
 	public float runSpeed = 6f;
 	float rotationSpeed = 40f;
-  
-	float x;
+    public float movementCounter = 0;
+    public float maxMovmentCounter = 0;
+    public bool isMoving;
+
+    float x;
 	float z;
 	float dv;
 	float dh;
@@ -71,7 +74,7 @@ public class RPGCharacterControllerFREE : MonoBehaviour
 	bool isBlocking = false;
 	public float knockbackMultiplier = 1f;
 	bool isKnockback;
-
+    
 	#endregion
 
 	#region Initialization
@@ -93,11 +96,11 @@ public class RPGCharacterControllerFREE : MonoBehaviour
 		//make sure there is animator on character
 		if(animator)
 		{
-			if(canMove && !isBlocking && !isDead)
-			{
-				CameraRelativeMovement();
-			} 
-			Rolling();
+            if (canMove && !isBlocking && !isDead)
+            {
+                CameraRelativeMovement();
+            }
+            Rolling();
 			Jumping();
 			if(Input.GetButtonDown("LightHit") && canAction && isGrounded && !isBlocking)
 			{
@@ -165,7 +168,7 @@ public class RPGCharacterControllerFREE : MonoBehaviour
 		CheckForGrounded();
 		//apply gravity force
 		rb.AddForce(0, gravity, 0, ForceMode.Acceleration);
-		AirControl();
+		//AirControl();
 		//check if character can move
 		if(canMove && !isBlocking)
 		{
@@ -182,7 +185,12 @@ public class RPGCharacterControllerFREE : MonoBehaviour
 		{
 			isFalling = false;
 		}
-	}
+        if (Input.GetButton("Vertical") || Input.GetButton("Horizontal"))
+        {
+            movementCounter = movementCounter + 0.1f;
+        }
+
+    }
 
 	//get velocity of rigid body and pass the value to the animator to control the animations
 	void LateUpdate()
@@ -196,54 +204,65 @@ public class RPGCharacterControllerFREE : MonoBehaviour
 		//if character is alive and can move, set our animator
 		if(!isDead && canMove)
 		{
+            
 			if(moveSpeed > 0)
 			{
 				animator.SetBool("Moving", true);
+                isMoving = true;
 			}
 			else
 			{
 				animator.SetBool("Moving", false);
+                isMoving = false;
 			}
-		}
-	}
-	
-	#endregion
-
-	#region UpdateMovement
-
-	void CameraRelativeMovement(){
-		float inputDashVertical = Input.GetAxisRaw("DashVertical");
-		float inputDashHorizontal = Input.GetAxisRaw("DashHorizontal");
-		float inputHorizontal = Input.GetAxisRaw("Horizontal");
-		float inputVertical = Input.GetAxisRaw("Vertical");
-
-		//converts control input vectors into camera facing vectors
-		Transform cameraTransform = sceneCamera.transform;
-		//Forward vector relative to the camera along the x-z plane   
-		Vector3 forward = cameraTransform.TransformDirection(Vector3.forward);
-		forward.y = 0;
-		forward = forward.normalized;
-		//Right vector relative to the camera always orthogonal to the forward vector
-		Vector3 right = new Vector3(forward.z, 0, -forward.x);
-		//directional inputs
-		dv = inputDashVertical;
-		dh = inputDashHorizontal;
-		if(!isRolling)
-		{
-			targetDashDirection = dh * right + dv * -forward;
-		}
-		x = inputHorizontal;
-		z = inputVertical;
-		inputVec = x * right + z * forward;
+            
+        }
 	}
 
-	//rotate character towards direction moved
-	void RotateTowardsMovementDir()
+    #endregion
+
+    #region UpdateMovement
+
+    void CameraRelativeMovement()
+    {
+        float inputDashVertical = Input.GetAxisRaw("DashVertical");
+        float inputDashHorizontal = Input.GetAxisRaw("DashHorizontal");
+        float inputHorizontal = Input.GetAxisRaw("Horizontal");
+        float inputVertical = Input.GetAxisRaw("Vertical");
+
+        //converts control input vectors into camera facing vectors
+        Transform cameraTransform = sceneCamera.transform;
+        //Forward vector relative to the camera along the x-z plane   
+        Vector3 forward = cameraTransform.TransformDirection(Vector3.forward);
+        forward.y = 0;
+        forward = forward.normalized;
+        //Right vector relative to the camera always orthogonal to the forward vector
+        Vector3 right = new Vector3(forward.z, 0, -forward.x);
+        //directional inputs
+        dv = inputDashVertical;
+        dh = inputDashHorizontal;
+        if (!isRolling)
+        {
+            targetDashDirection = dh * right + dv * -forward;
+        }
+        x = inputHorizontal;
+        z = inputVertical;
+        inputVec = x * right + z * forward;
+    }
+
+    //rotate character towards direction moved
+    void RotateTowardsMovementDir()
 	{
 		if(inputVec != Vector3.zero && !isStrafing && !isRolling && !isBlocking)
 		{
 			transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(inputVec), Time.deltaTime * rotationSpeed);
-		}
+            //isMoving = true;
+            //maxMovmentCounter = maxMovmentCounter + 0.1f;
+        }
+        //else
+        //{
+        //    isMoving = false;
+        //}
 	}
 
 	float UpdateMovement()
@@ -255,18 +274,18 @@ public class RPGCharacterControllerFREE : MonoBehaviour
 			//reduce input for diagonal movement
 			if(motion.magnitude > 1)
 			{
-				motion.Normalize();
+				motion.Normalize();             
 			}
 			if(canMove && !isBlocking)
 			{
 				//set speed by walking / running
 				if(isStrafing)
 				{
-					newVelocity = motion * walkSpeed;
+					newVelocity = motion * walkSpeed;                  
 				}
 				else
 				{
-					newVelocity = motion * runSpeed;
+					newVelocity = motion * runSpeed;                    
 				}
 				//if rolling use rolling speed and direction
 				if(isRolling)
@@ -343,29 +362,29 @@ public class RPGCharacterControllerFREE : MonoBehaviour
 				//StartCoroutine(_Jump());
 			}
 		}
-		else
-		{    
-			canDoubleJump = true;
-			canJump = false;
-			if(isFalling)
-			{
-				//set the animation back to falling
-				animator.SetInteger("Jumping", 2);
-				//prevent from going into land animation while in air
-				if(!startFall)
-				{
-					animator.SetTrigger("JumpTrigger");
-					startFall = true;
-				}
-			}
-			if(canDoubleJump && doublejumping && Input.GetButtonDown("Jump") && !doublejumped && isFalling)
-			{
-				// Apply the current movement to launch velocity
-				rb.velocity += doublejumpSpeed * Vector3.up;
-				animator.SetInteger("Jumping", 3);
-				doublejumped = true;
-			}
-		}
+		//else
+		//{    
+		//	canDoubleJump = true;
+		//	canJump = false;
+		//	if(isFalling)
+		//	{
+		//		//set the animation back to falling
+		//		animator.SetInteger("Jumping", 2);
+		//		//prevent from going into land animation while in air
+		//		if(!startFall)
+		//		{
+		//			animator.SetTrigger("JumpTrigger");
+		//			startFall = true;
+		//		}
+		//	}
+		//	if(canDoubleJump && doublejumping && Input.GetButtonDown("Jump") && !doublejumped && isFalling)
+		//	{
+		//		// Apply the current movement to launch velocity
+		//		rb.velocity += doublejumpSpeed * Vector3.up;
+		//		animator.SetInteger("Jumping", 3);
+		//		doublejumped = true;
+		//	}
+		//}
 	}
 
 	IEnumerator _Jump()

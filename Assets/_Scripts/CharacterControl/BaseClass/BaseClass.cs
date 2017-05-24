@@ -4,49 +4,80 @@ using System.Collections.Generic;
 
 public class BaseClass
 {
-    private string characterName;
-    private string characterDescription;
+    // Character info (public)
+    public string characterName;
+    public string characterDescription;
 
-    private int baseStrength;
+    // Basic Attributes (public)
+    public int baseStrength;
+    public int baseAgility;
+    public int baseResilience;
+    public int baseMind;
+    public int baseSpirit;
+
+    // Basic Attributes (private)
     private int currentStrength;
-    private int baseAgility;
     private int currentAgility;
-    private int baseEndurance;
-    private int currentEndurance;
-    private int baseIntellect;
-    private int currentIntellect;
+    private int currentResilience;
+    private int currentMind;
+    private int currentSpirit;
 
-    private float baseHP;
-    private float currentHP;
-    private float baseMP;       // Remove this later once fleshed out in classes
-    private float currentMP;    // Remove this later once fleshed out in classes
+    // Resources (public)
+    public float baseHealth;
+    public float baseEnergy;
+    public int maxFireCharges;
+    public int maxWaterCharges;
+    public int maxEarthCharges;
 
-    private float baseAttack;
-    private float currentAttack;
-    private float baseDefense;
-    private float currentDefense;
+    // Resources (private)
+    private float currentHealth;
+    private float currentEnergy;
+    private int currentFireCharges;
+    private int currentWaterCharges;
+    private int currentEarthCharges;
 
-    public List<BaseAttack> attacks = new List<BaseAttack>();
+    // Secondary Attributes (private)
+    // Speed = Agility
+    private int baseSpeed;
+    private int currentSpeed;
+    // Accuracy = Agility + Mind
+    private int baseAccuracy;
+    private int currentAccuracy;
+    // Evasion = Agility + (Resilience or Spirit?)
+    private int baseEvasion;
+    private int currentEvasion;
+    // Attack Power = Strength + Weapon Base Physical Power
+    private int baseAttackPower;
+    private int currentAttackPower;
+    // Magic Power = Mind + Weapon Base Magic Power
+    private int baseMagicPower;
+    private int currentMagicPower;
+    // Physical Defense = Resilience + Combined Armor Base Physical Defense
+    private int basePhysicalDefense;
+    private int currentPhysicalDefense;
+    // Magic Defense = Spirit + Combined Armor Base Magic Defense
+    private int baseMagicDefense;
+    private int currentMagicDefense;
 
-    // Name and description
-    public string CharacterName
-    {
-        get { return characterName; }
-        set { characterName = value; }
-    }
+    //// Name and description
+    //public string CharacterName
+    //{
+    //    get { return characterName; }
+    //    set { characterName = value; }
+    //}
 
-    public string CharacterDescription
-    {
-        get { return characterDescription; }
-        set { characterDescription = value; }
-    }
+    //public string CharacterDescription
+    //{
+    //    get { return characterDescription; }
+    //    set { characterDescription = value; }
+    //}
 
-    // Basic attributes
-    public int BaseStrength
-    {
-        get { return baseStrength; }
-        set { baseStrength = value; }
-    }
+    // Basic attributes (private)
+    //public int BaseStrength
+    //{
+    //    get { return baseStrength; }
+    //    set { baseStrength = value; }
+    //}
 
     public int CurrentStrength
     {
@@ -54,11 +85,11 @@ public class BaseClass
         set { currentStrength = value; }
     }
 
-    public int BaseAgility
-    {
-        get { return baseAgility; }
-        set { baseAgility = value; }
-    }
+    //public int BaseAgility
+    //{
+    //    get { return baseAgility; }
+    //    set { baseAgility = value; }
+    //}
 
     public int CurrentAgility
     {
@@ -66,76 +97,186 @@ public class BaseClass
         set { currentAgility = value; }
     }
 
-    public int BaseEndurance
-    {
-        get { return baseEndurance; }
-        set { baseEndurance = value; }
-    }
+    //public int BaseResilience
+    //{
+    //    get { return baseResilience; }
+    //    set { baseResilience = value; }
+    //}
 
-    public int CurrentEndurance
+    public int CurrentResilience
     {
-        get { return currentEndurance; }
-        set { currentEndurance = value; }
+        get { return currentResilience; }
+        set { currentResilience = value; }
     }
     
-    public int BaseIntellect
+    //public int BaseMind
+    //{
+    //    get { return baseMind; }
+    //    set { baseMind = value; }
+    //}
+
+    public int CurrentMind
     {
-        get { return baseIntellect; }
-        set { baseIntellect = value; }
+        get { return currentMind; }
+        set { currentMind = value; }
     }
 
-    public int CurrentIntellect
+    //public int BaseSpirit
+    //{
+    //    get { return baseSpirit; }
+    //    set { baseSpirit = value; }
+    //}
+
+    public int CurrentSpirit
     {
-        get { return currentIntellect; }
-        set { currentIntellect = value; }
+        get { return currentSpirit; }
+        set { currentSpirit = value; }
     }
 
-    // Health, attack and defense
-    public float BaseHP
+    // Resources (private)
+    //public int BaseHealth
+    //{
+    //    get { return baseHealth; }
+    //    set { baseHealth = value; }
+    //}
+
+    public float CurrentHealth
     {
-        get { return baseHP; }
-        set { baseHP = value; }
+        get { return currentHealth; }
+        set { currentHealth = value; }
     }
 
-    public float CurrentHP
+    //public int BaseEnergy
+    //{
+    //    get { return baseEnergy; }
+    //    set { baseEnergy = value; }
+    //}
+
+    public float CurrentEnergy
     {
-        get { return currentHP; }
-        set { currentHP = value; }
+        get { return currentEnergy; }
+        set { currentEnergy = value; }
     }
 
-    public float BaseMP
+    //public int MaxFireCharges
+    //{
+    //    get { return maxFireCharges; }
+    //    set { maxFireCharges = value; }
+    //}
+
+    public int CurrentFireCharges
     {
-        get { return baseMP; }
-        set { baseMP = value; }
+        get { return currentFireCharges; }
+        set { currentFireCharges = value; }
     }
 
-    public float CurrentMP
+    //public int MaxWaterCharges
+    //{
+    //    get { return maxWaterCharges; }
+    //    set { maxWaterCharges = value; }
+    //}
+
+    public int CurrentWaterCharges
     {
-        get { return currentMP; }
-        set { currentMP = value; }
+        get { return currentWaterCharges; }
+        set { currentWaterCharges = value; }
     }
 
-    public float BaseAttack
+    //public int MaxEarthCharges
+    //{
+    //    get { return maxEarthCharges; }
+    //    set { maxEarthCharges = value; }
+    //}
+
+    public int CurrentEarthCharges
     {
-        get { return baseAttack; }
-        set { baseAttack = value; }
+        get { return currentEarthCharges; }
+        set { currentEarthCharges = value; }
     }
 
-    public float CurrentAttack
+    // Speed, accuracy, and evasion
+    public int BaseSpeed
     {
-        get { return currentAttack; }
-        set { currentAttack = value; }
+        get { return baseSpeed; }
+        set { baseSpeed = value; }
     }
 
-    public float BaseDefense
+    public int CurrentSpeed
     {
-        get { return baseDefense; }
-        set { baseDefense = value; }
+        get { return currentSpeed; }
+        set { currentSpeed = value; }
     }
 
-    public float CurrentDefense
+    public int BaseAccuracy
     {
-        get { return currentDefense; }
-        set { currentDefense = value; }
+        get { return baseAccuracy; }
+        set { baseAccuracy = value; }
+    }
+
+    public int CurrentAccuracy
+    {
+        get { return currentAccuracy; }
+        set { currentAccuracy = value; }
+    }
+
+    public int BaseEvasion
+    {
+        get { return baseEvasion; }
+        set { baseEvasion = value; }
+    }
+
+    public int CurrentEvasion
+    {
+        get { return currentEvasion; }
+        set { currentEvasion = value; }
+    }
+
+    // Attack and Defense
+    public int BaseMagicPower
+    {
+        get { return baseMagicPower; }
+        set { baseMagicPower = value; }
+    }
+
+    public int CurrentMagicPower
+    {
+        get { return currentMagicPower; }
+        set { currentMagicPower = value; }
+    }
+
+    public int BaseAttackPower
+    {
+        get { return baseAttackPower; }
+        set { baseAttackPower = value; }
+    }
+
+    public int CurrentAttackPower
+    {
+        get { return currentAttackPower; }
+        set { currentAttackPower = value; }
+    }
+
+    public int BasePhysicalDefense
+    {
+        get { return basePhysicalDefense; }
+        set { basePhysicalDefense = value; }
+    }
+
+    public int CurrentPhysicalDefense
+    {
+        get { return currentPhysicalDefense; }
+        set { currentPhysicalDefense = value; }
+    }
+
+    public int BaseMagicDefense
+    {
+        get { return baseMagicDefense; }
+        set { baseMagicDefense = value; }
+    }
+
+    public int CurrentMagicDefense
+    {
+        get { return currentMagicDefense; }
+        set { currentMagicDefense = value; }
     }
 }

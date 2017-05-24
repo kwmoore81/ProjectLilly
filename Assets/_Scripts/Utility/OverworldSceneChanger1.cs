@@ -3,63 +3,171 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class OverworldSceneChanger1 : MonoBehaviour {
+    
+    public GameObject overworldScene;
+    public GameObject battleScene;
+    public GameObject battleSceneTemp;
+    public GameObject ForestBattlePrefab;
+    public GameObject BossBattlePrefab;    
 
-    public GameObject overworld1;
-    public GameObject overworld2;
-   
-    public GameObject DataBankObj;
-    private DataBank databank;
+    public GameObject battleMaster;
+    private OverWorldSceneChanger2 overWorldSceneChanger2;
 
-    public int gabiCurrentHealth;
-    public int gabiCurrentResolve;
+    public GameObject DataBase;
+    private CharacterStatsDB characterStatsDB;
 
-    public int arvandusCurrentHealth;
-    public int arvanusCurrentStamina;
+    public GameObject thirdPersonControllerOBJ;
+    private vThirdPersonController thirdPersonController;
 
-    public int quinnCurrentHealth;
+    public GameObject transition_Canvas;
+    private CameraBlurTest cameraBlur;
+
+    Animator animator;  
+    
+    public float gabiCurrentHealth;
+    public float gabiCurrentResolve;
+    private float gabiHealthMax = 960.0f;
+    private float gabiResolveMax = 100;
+
+    public float arvandusCurrentHealth;
+    public float arvanusCurrentStamina;
+    private float arvandusHealthMax = 520.0f;
+    private float arvandusStaminaMax = 100;
+
+    public float quinnCurrentHealth;
     public int quinnCurrentFire;
     public int quinnCurrentEarth;
     public int quinnCurrentWater;
+    private float quinnHealthMax = 410.0f;
+    private int quinnFireMax = 5;
+    private int quinnEarthMax = 5;
+    private int quinnWaterMax = 5;
 
-    public int currentAreaCorruption;
+    public float currentAreaCorruption;
+    public float characterMovementCounter;
+    float randValue;
+    public float encounterChance = 0.60f;
+    public float encounterBuffer;
+    public float maxTimeBeforeEncounter;
+
+    public bool battleToggle = true;
+    public Vector3 playerLastPos;
+    public Vector3 playerCurrentPos;
+    float _time = 0;
+    public float movementCounter = 0;
+    public float maxMovmentCounter = 0;
 
     void Start()
     {
-        databank = DataBankObj.GetComponent<DataBank>();
+        characterStatsDB = DataBase.GetComponent<CharacterStatsDB>();
+        thirdPersonController = thirdPersonControllerOBJ.GetComponent<vThirdPersonController>();
+        animator = thirdPersonControllerOBJ.GetComponent<Animator>();
+        overWorldSceneChanger2 = battleMaster.GetComponent<OverWorldSceneChanger2>();
+        cameraBlur = transition_Canvas.GetComponent<CameraBlurTest>();
     }
 
     public void SceneChange()
-    {             
-            overworld2.gameObject.SetActive(true);
-            overworld1.gameObject.SetActive(false);   
+    {
+            StartCoroutine(cameraBlur.FadeIn(cameraBlur.currentAlpha, cameraBlur.lerpSpeed));                      
+    }
+
+    public void DelayedSceenChange()
+    {
+        overworldScene.gameObject.SetActive(false);
+        battleSceneTemp = Object.Instantiate(ForestBattlePrefab, battleScene.transform);
+        overWorldSceneChanger2.UpdateFromBank();
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
+    public void BossSceneChange()
+    {
+        battleSceneTemp = Object.Instantiate(BossBattlePrefab, battleScene.transform);
+        overWorldSceneChanger2.UpdateFromBank();
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        overworldScene.gameObject.SetActive(false);
     }
 
     public void UpdateFromBank()
     {
-        gabiCurrentHealth = databank.gabiCurrentHealth;
-        gabiCurrentResolve = databank.gabiCurrentResolve;
+        gabiCurrentHealth = characterStatsDB.gabiCurrentHealth;
+        gabiCurrentResolve = characterStatsDB.gabiCurrentResolve;
 
-        arvandusCurrentHealth = databank.arvandusCurrentHealth;
-        arvanusCurrentStamina = databank.arvanusCurrentStamina;
+        arvandusCurrentHealth = characterStatsDB.arvandusCurrentHealth;
+        arvanusCurrentStamina = characterStatsDB.arvandusCurrentStamina;
 
-        quinnCurrentHealth = databank.quinnCurrentHealth;
-        quinnCurrentFire = databank.quinnCurrentFire;
-        quinnCurrentEarth = databank.quinnCurrentEarth;
-        quinnCurrentWater = databank.quinnCurrentWater;
+        quinnCurrentHealth = characterStatsDB.quinnCurrentHealth;
+        quinnCurrentFire = characterStatsDB.quinnCurrentFire;
+        quinnCurrentEarth = characterStatsDB.quinnCurrentEarth;
+        quinnCurrentWater = characterStatsDB.quinnCurrentWater;
 
-        currentAreaCorruption = databank.currentAreaCorruption;             
+        currentAreaCorruption = characterStatsDB.currentAreaCorruption;             
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (battleToggle)
         {
-            if (overworld2.gameObject.activeInHierarchy == false && overworld1.gameObject.activeInHierarchy == true)
+            if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
             {
-                databank.UpdateBank(gabiCurrentHealth, gabiCurrentResolve, arvandusCurrentHealth, arvanusCurrentStamina, quinnCurrentHealth, quinnCurrentFire, quinnCurrentEarth, quinnCurrentWater, currentAreaCorruption);             
-                SceneChange();
+
+                movementCounter += Time.deltaTime;
+                maxMovmentCounter += Time.deltaTime;
+
+                if (movementCounter >= encounterBuffer)
+                {
+                    movementCounter = 0;
+                    randValue = Random.value;
+                    if (randValue < encounterChance)
+                    {
+                        maxMovmentCounter = 0;
+                        characterStatsDB.SendData1();
+                        SceneChange();
+                    }
+                    else if (maxMovmentCounter >= maxTimeBeforeEncounter)
+                    {
+                        maxMovmentCounter = 0;
+                        characterStatsDB.SendData1();
+                        SceneChange();
+                    }
+                }
             }
+            else if (_time < 2f)
+            {
+
+                _time = 0;
+            }
+            else if (_time < 2f)
+            {
+                _time += Time.deltaTime;
+            }
+
+            playerLastPos = playerCurrentPos;
+
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            characterStatsDB.SendData1();
+            SceneChange();
         }
     }
 
+    public void HealAll()
+    {
+        gabiCurrentHealth = gabiHealthMax;
+        quinnCurrentHealth = quinnHealthMax;
+        arvandusCurrentHealth = arvandusHealthMax;
+    }
+
+    public void ResourceRestore()
+    {
+        gabiCurrentResolve = gabiResolveMax;
+        arvanusCurrentStamina = arvandusStaminaMax;
+        quinnCurrentWater = quinnWaterMax;
+        quinnCurrentFire = quinnFireMax;
+        quinnCurrentEarth = quinnEarthMax;
+
+    }
 }
