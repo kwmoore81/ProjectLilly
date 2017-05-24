@@ -66,10 +66,10 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
 
     void InitilizeStats()
     {
-        heroControl.hero.baseHealth = 410;
-        heroControl.hero.CurrentHealth = heroControl.hero.baseHealth;
+        //heroControl.hero.baseHealth = 410;
+        //heroControl.hero.CurrentHealth = heroControl.hero.baseHealth;
 
-        //heroControl.hero.CurrentHealth = sceneChanger.quinnCurrentHealth;
+        heroControl.hero.CurrentHealth = sceneChanger.quinnCurrentHealth;
         heroControl.hero.CurrentWaterCharges = sceneChanger.quinnCurrentWater;
         heroControl.hero.CurrentFireCharges = sceneChanger.quinnCurrentFire;
         heroControl.hero.CurrentEarthCharges = sceneChanger.quinnCurrentEarth;
@@ -85,9 +85,9 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
 
     public void ReadStats()
     {
-        heroControl.hero.CurrentHealth = heroControl.hero.baseHealth;
+        //heroControl.hero.CurrentHealth = heroControl.hero.baseHealth;
 
-        //heroControl.hero.CurrentHealth = sceneChanger.quinnCurrentHealth;
+        heroControl.hero.CurrentHealth = sceneChanger.quinnCurrentHealth;
         heroControl.hero.CurrentWaterCharges = sceneChanger.quinnCurrentWater;
         heroControl.hero.CurrentFireCharges = sceneChanger.quinnCurrentFire;
         heroControl.hero.CurrentEarthCharges = sceneChanger.quinnCurrentEarth;

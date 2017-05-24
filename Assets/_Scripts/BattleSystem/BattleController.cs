@@ -77,7 +77,6 @@ public class BattleController : MonoBehaviour
     public GameObject endGamePanel;
 
     [Header("UI Panel Spacers")]
-    public Transform spacer;
     public Transform actionSpacer;
     public Transform earthSpacer;
     public Transform fireSpacer;
@@ -151,8 +150,6 @@ public class BattleController : MonoBehaviour
         victoryPanel.SetActive(false);
         defeatPanel.SetActive(false);
         endGamePanel.SetActive(false);
-
-        EnemySelectionButtons();
 
         startDelayTimer = startDelay;
         endDelayTimer = endDelay;
@@ -228,13 +225,11 @@ public class BattleController : MonoBehaviour
         int randomSpawn1;
         randomSpawn1 = Random.Range(0, upperRowEnemies.Count);
         upperRowEnemies[randomSpawn1].SetActive(true);
-        //upperRowEnemies[randomSpawn1].tag = "Enemy";
 
         // Spawn random lower row enemy
         int randomSpawn2;
         randomSpawn2 = Random.Range(0, lowerRowEnemies.Count);
         lowerRowEnemies[randomSpawn2].SetActive(true);
-        //lowerRowEnemies[randomSpawn2].tag = "Enemy";
     }
 
     void CheckActionState()
@@ -364,33 +359,6 @@ public class BattleController : MonoBehaviour
             actionState = ActionState.WAITING;
             deadHeroes.AddRange(GameObject.FindGameObjectsWithTag("DeadHero"));
             deadEnemies.AddRange(GameObject.FindGameObjectsWithTag("DeadEnemy"));
-        }
-    }
-
-    public void EnemySelectionButtons()
-    {
-        // Cleanup buttons and button list
-        foreach (GameObject enemyBTN in enemyButtonList)
-        {
-            Destroy(enemyBTN);
-        }
-        enemyButtonList.Clear();
-
-        // Create enemy buttons
-        foreach (GameObject enemy in enemiesInBattle)
-        {
-            GameObject newButton = Instantiate(enemyButton) as GameObject;
-            EnemySelectButton button = newButton.GetComponent<EnemySelectButton>();
-
-            EnemyController currentEnemy = enemy.GetComponent<EnemyController>();
-
-            Text buttonText = newButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
-            buttonText.text = currentEnemy.name;
-
-            button.enemyPrefab = enemy;
-
-            newButton.transform.SetParent(spacer);
-            enemyButtonList.Add(newButton);
         }
     }
 
@@ -637,12 +605,12 @@ public class BattleController : MonoBehaviour
         if (heroesToManage[0].GetComponent<HeroController>().hero.utility.Count > 0)
         {
             // Magic Button
-            GameObject utilityButton = Instantiate(actionButton) as GameObject;
-            Text utilityButtonText = utilityButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
+            GameObject utilButton = Instantiate(actionButton) as GameObject;
+            Text utilityButtonText = utilButton.transform.FindChild("Text").gameObject.GetComponent<Text>();
             utilityButtonText.text = "Utility";
-            utilityButton.GetComponent<Button>().onClick.AddListener(() => UtilityInput());
-            utilityButton.transform.SetParent(actionSpacer, false);
-            attackButtons.Add(utilityButton);
+            utilButton.GetComponent<Button>().onClick.AddListener(() => UtilityInput());
+            utilButton.transform.SetParent(actionSpacer, false);
+            attackButtons.Add(utilButton);
 
             // Utility Buttons
             foreach (AttackData utilityAction in heroesToManage[0].GetComponent<HeroController>().hero.utility)

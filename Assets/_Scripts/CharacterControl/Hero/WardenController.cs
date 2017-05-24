@@ -74,12 +74,12 @@ public class WardenController : MonoBehaviour, IHeroActionControl
 
     void InitilizeStats()
     {
-        heroControl.hero.baseHealth = 960;
+        //heroControl.hero.baseHealth = 960;
         heroControl.hero.baseEnergy = 100;
 
-        heroControl.hero.CurrentHealth = heroControl.hero.baseHealth;
+        //heroControl.hero.CurrentHealth = heroControl.hero.baseHealth;
 
-        //heroControl.hero.CurrentHealth = sceneChanger.gabiCurrentHealth;
+        heroControl.hero.CurrentHealth = sceneChanger.gabiCurrentHealth;
         heroControl.hero.CurrentEnergy = sceneChanger.gabiCurrentResolve;
     }
 
@@ -91,9 +91,9 @@ public class WardenController : MonoBehaviour, IHeroActionControl
 
     public void ReadStats()
     {
-        heroControl.hero.CurrentHealth = heroControl.hero.baseHealth;
+        //heroControl.hero.CurrentHealth = heroControl.hero.baseHealth;
 
-        //heroControl.hero.CurrentHealth = sceneChanger.gabiCurrentHealth;
+        heroControl.hero.CurrentHealth = sceneChanger.gabiCurrentHealth;
         heroControl.hero.CurrentEnergy = sceneChanger.gabiCurrentResolve;
     }
 
@@ -241,9 +241,32 @@ public class WardenController : MonoBehaviour, IHeroActionControl
 
     private IEnumerator PerformUtility(AttackData _chosenAttack, Vector3 _targetPosition)
     {
-        // TODO: Fill this in later
+        if (actionStarted)
+        {
+            yield break;
+        }
 
-        yield return null;
+        actionStarted = true;
+
+        animator.SetTrigger(_chosenAttack.attackAnimation);
+
+        yield return new WaitForSeconds(_chosenAttack.attackWaitTime);
+
+        if (!_chosenAttack.partyTargeting)
+        {
+            Vector3 targetHieghtOffset = new Vector3(0, 2.2f, 0);
+            _targetPosition += targetHieghtOffset;
+        }
+
+        Quaternion spellRotation = Quaternion.LookRotation(_targetPosition);
+        GameObject tempSpell = Instantiate(_chosenAttack.projectile, _targetPosition, spellRotation) as GameObject;
+
+        yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
+
+        Destroy(tempSpell);
+
+        actionStarted = false;
+        heroControl.EndAction();
     }
 
     private IEnumerator PerformDefend(AttackData _chosenAttack, Vector3 _targetPosition)
