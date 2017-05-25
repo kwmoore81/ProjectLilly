@@ -66,31 +66,35 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
 
     void InitilizeStats()
     {
-        //heroControl.hero.baseHealth = 410;
-        //heroControl.hero.CurrentHealth = heroControl.hero.baseHealth;
+        heroControl.hero.baseHealth = 410;
+        heroControl.hero.CurrentHealth = heroControl.hero.baseHealth;
 
-        heroControl.hero.CurrentHealth = sceneChanger.quinnCurrentHealth;
-        heroControl.hero.CurrentWaterCharges = sceneChanger.quinnCurrentWater;
-        heroControl.hero.CurrentFireCharges = sceneChanger.quinnCurrentFire;
-        heroControl.hero.CurrentEarthCharges = sceneChanger.quinnCurrentEarth;
+        heroControl.hero.CurrentWaterCharges = heroControl.hero.maxEarthCharges;
+        heroControl.hero.CurrentFireCharges = heroControl.hero.maxFireCharges;
+        heroControl.hero.CurrentEarthCharges = heroControl.hero.maxWaterCharges;
+
+        //heroControl.hero.CurrentHealth = sceneChanger.quinnCurrentHealth;
+        //heroControl.hero.CurrentWaterCharges = sceneChanger.quinnCurrentWater;
+        //heroControl.hero.CurrentFireCharges = sceneChanger.quinnCurrentFire;
+        //heroControl.hero.CurrentEarthCharges = sceneChanger.quinnCurrentEarth;
     }
 
     public void WriteStats()
     {
-        sceneChanger.quinnCurrentHealth = heroControl.hero.CurrentHealth;
-        sceneChanger.quinnCurrentWater = heroControl.hero.CurrentWaterCharges;
-        sceneChanger.quinnCurrentFire = heroControl.hero.CurrentFireCharges;
-        sceneChanger.quinnCurrentEarth = heroControl.hero.CurrentEarthCharges;
+        //sceneChanger.quinnCurrentHealth = heroControl.hero.CurrentHealth;
+        //sceneChanger.quinnCurrentWater = heroControl.hero.CurrentWaterCharges;
+        //sceneChanger.quinnCurrentFire = heroControl.hero.CurrentFireCharges;
+        //sceneChanger.quinnCurrentEarth = heroControl.hero.CurrentEarthCharges;
     }
 
     public void ReadStats()
     {
-        //heroControl.hero.CurrentHealth = heroControl.hero.baseHealth;
+        heroControl.hero.CurrentHealth = heroControl.hero.baseHealth;
 
-        heroControl.hero.CurrentHealth = sceneChanger.quinnCurrentHealth;
-        heroControl.hero.CurrentWaterCharges = sceneChanger.quinnCurrentWater;
-        heroControl.hero.CurrentFireCharges = sceneChanger.quinnCurrentFire;
-        heroControl.hero.CurrentEarthCharges = sceneChanger.quinnCurrentEarth;
+        //heroControl.hero.CurrentHealth = sceneChanger.quinnCurrentHealth;
+        //heroControl.hero.CurrentWaterCharges = sceneChanger.quinnCurrentWater;
+        //heroControl.hero.CurrentFireCharges = sceneChanger.quinnCurrentFire;
+        //heroControl.hero.CurrentEarthCharges = sceneChanger.quinnCurrentEarth;
     }
 
     public void DrawWeapon()
