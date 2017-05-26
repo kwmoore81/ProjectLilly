@@ -21,6 +21,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
 
     public GameObject transition_Canvas;
     private CameraBlurTest cameraBlur;
+    
 
     Animator animator;  
     
@@ -56,6 +57,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     float _time = 0;
     public float movementCounter = 0;
     public float maxMovmentCounter = 0;
+    bool takeScreenShot = false;
 
     void Start()
     {
@@ -67,8 +69,8 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     }
 
     public void SceneChange()
-    {
-            StartCoroutine(cameraBlur.FadeIn(cameraBlur.currentAlpha, cameraBlur.lerpSpeed));                      
+    {           
+         StartCoroutine(cameraBlur.FadeIn(cameraBlur.currentAlpha, cameraBlur.lerpSpeed));                      
     }
 
     public void DelayedSceenChange()
@@ -80,6 +82,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
         Cursor.lockState = CursorLockMode.None;
     }
 
+    
     public void BossSceneChange()
     {
         battleSceneTemp = Object.Instantiate(BossBattlePrefab, battleScene.transform);
