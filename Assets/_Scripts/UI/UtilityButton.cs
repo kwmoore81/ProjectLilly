@@ -3,10 +3,10 @@ using System.Collections;
 
 public class UtilityButton : MonoBehaviour
 {
-    public AttackData utility;
+    public AttackData utilityToUse;
 
     public void doUtility()
     {
-        GameObject.Find("BattleManager").GetComponent<BattleController>().SetUtilityInput(utility);
+        GameObject.Find("BattleManager").GetComponent<BattleController>().SetUtilityInput(utilityToUse);
     }
 }
