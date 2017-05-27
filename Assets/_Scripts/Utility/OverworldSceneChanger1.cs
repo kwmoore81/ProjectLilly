@@ -70,7 +70,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
 
     public void SceneChange()
     {           
-         StartCoroutine(cameraBlur.FadeIn(cameraBlur.currentAlpha, cameraBlur.lerpSpeed));                      
+         StartCoroutine(cameraBlur.FadeIn(cameraBlur.targetAlpha, cameraBlur.lerpSpeed));                      
     }
 
     public void DelayedSceenChange()
