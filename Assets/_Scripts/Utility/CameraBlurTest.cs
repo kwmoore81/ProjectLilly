@@ -4,79 +4,51 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class CameraBlurTest : MonoBehaviour {
-
-    //public GameObject backGround;
+   
     private Image image;
-    public float lerpSpeed = 1.0f;   
-    public float currentAlpha = 1.0f;
-    public float RotationSpeed = 10.0f;
-
-    public GameObject thirdPersonController;
-    Animator animator;
-    Rigidbody rb;
-
+    public float lerpSpeed = 2.0f;   
+    public float targetAlpha = 0.0f;
+    public float delayTime = 0.5f;
+     
     public GameObject SC1;
     private OverworldSceneChanger1 overWorldSceaneChanger1;
-
-    public GameObject thirdPersonCamera;
-    private v3rdPersonCamera vthirdPersonCamera;
-
+    
+    public GameObject thirdPersonCamera;   
+    private Screenshot screenshotScript;
+   
     // Use this for initialization
     void Start()
     {
-        image = GetComponentInChildren<Image>();
-        animator = thirdPersonController.GetComponent<Animator>();
-        rb = thirdPersonController.GetComponent<Rigidbody>();
-        overWorldSceaneChanger1 = SC1.GetComponent<OverworldSceneChanger1>();
-        vthirdPersonCamera = thirdPersonCamera.GetComponent<v3rdPersonCamera>();
+        image = GetComponentInChildren<Image>();               
+        overWorldSceaneChanger1 = SC1.GetComponent<OverworldSceneChanger1>();       
+        screenshotScript = thirdPersonCamera.GetComponent<Screenshot>();
+
     }
 
-    // Update is called once per frame
-    void Update ()
+    public IEnumerator FadeIn(float targetAlpha, float lerpSpeed)
     {
-        image.transform.Rotate(Vector3.back * (RotationSpeed * Time.deltaTime));    
-	if (Input.GetKeyDown(KeyCode.M))
-        {        
-            StartCoroutine(FadeIn(currentAlpha, lerpSpeed));          
-        }    
-	}
+        image.sprite = Sprite.Create(screenshotScript.screenShot, new Rect(0, 0, screenshotScript.screenShot.width, screenshotScript.screenShot.height), Vector2.zero, 100);
 
-    public IEnumerator FadeIn(float currentAlpha, float lerpSpeed)
-    {
-        image.color = new Color(255, 255, 255, 0);
-        float Alpha = image.color.a;
-
-        animator.enabled = false;
-        rb.constraints = RigidbodyConstraints.FreezeAll;
-        vthirdPersonCamera.lockCamera = true;
-
-        for (float i = 0.0f; i < 1.0f; i += Time.deltaTime / lerpSpeed)
-        {
-            Color newColor = new Color(255, 255, 255, Mathf.Lerp(Alpha, currentAlpha, i));
-            image.color = newColor;
-
-            yield return null;
-        }
-
-        animator.enabled = true;
-       
-        rb.constraints = RigidbodyConstraints.FreezeRotation;
-        vthirdPersonCamera.lockCamera = false;
+        image.color = new Color(255, 255, 255, 255);
         
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(delayTime);
 
         overWorldSceaneChanger1.DelayedSceenChange();
+                       
+            // fade from full to clear in DURATION seconds
+            while (targetAlpha < lerpSpeed)
+            {
+                targetAlpha += Time.deltaTime;  // tick accumulator
+                float alpha = Mathf.Lerp(1.0f, 0.0f, targetAlpha / lerpSpeed);
 
-        Alpha = image.color.a;
+                Color finalColor = image.color;
+                finalColor.a = alpha;
 
-        for (float j = 0.0f; j < 1.0f; j += Time.deltaTime / 1.0f)
-        {
-            Color newColor = new Color(255, 255, 255, Mathf.Lerp(Alpha, currentAlpha - 1.0f, j));
-            image.color = newColor;
+                image.color = finalColor;
 
-            yield return null;
-        }
-
+                yield return null;
+            }
+        
         image.color = new Color(255, 255, 255, 0);
         yield return null;
     }
