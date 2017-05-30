@@ -141,7 +141,8 @@ public class HeroController : MonoBehaviour
             targetPosition = transform.position;
             heroActionControl.RestoreInput(battleControl.activeAgentList[0].chosenAttack, targetPosition);
         }
-        else if (battleControl.activeAgentList[0].chosenAttack.attackType == AttackData.AttackType.BUFF || battleControl.activeAgentList[0].chosenAttack.attackType == AttackData.AttackType.DEBUFF)
+        else if (battleControl.activeAgentList[0].chosenAttack.attackType == AttackData.AttackType.HEAL || battleControl.activeAgentList[0].chosenAttack.attackType == AttackData.AttackType.BUFF || 
+                 battleControl.activeAgentList[0].chosenAttack.attackType == AttackData.AttackType.DEBUFF)
         {
             targetPosition = new Vector3(enemyToAttack.transform.position.x, transform.position.y, enemyToAttack.transform.position.z);
             heroActionControl.AttackInput(battleControl.activeAgentList[0].chosenAttack, targetPosition);

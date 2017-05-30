@@ -180,6 +180,7 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         animator.SetTrigger("Death1Trigger");
     }
 
+    // Coroutine for attacks with moving spell effects
     private IEnumerator PerformMagicAttack(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         if (actionStarted)
@@ -214,6 +215,7 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         heroControl.EndAction();
     }
 
+    // Coroutine for melee attacks
     private IEnumerator PerformMeleeAttack(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         if (actionStarted)
@@ -264,6 +266,7 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         heroControl.EndAction();
     }
 
+    // Coroutine for self targeting channel spell
     private IEnumerator PerformChannel(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         if (actionStarted)
@@ -308,7 +311,7 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, (moveSpeed * 1.25f) * Time.deltaTime));
     }
 
-    // TODO: Setup stance animation function
+    // Coroutine for non moving spell casting
     private IEnumerator PerformUtility(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         if (actionStarted)
