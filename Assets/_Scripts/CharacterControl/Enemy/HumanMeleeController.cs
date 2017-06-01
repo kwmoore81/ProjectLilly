@@ -179,6 +179,16 @@ public class HumanMeleeController : MonoBehaviour
         animator.SetTrigger("Revive1Trigger");
     }
 
+    public void ThreatTracking()
+    {
+
+    }
+
+    public void TargetSelection()
+    {
+
+    }
+
     // TODO: Setup RecieveAttack() function
     public void AttackInput(AttackData _chosenAttack, Vector3 _targetPosition)
     {

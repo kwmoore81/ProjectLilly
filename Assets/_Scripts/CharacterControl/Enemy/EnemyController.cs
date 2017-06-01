@@ -327,7 +327,7 @@ public class EnemyController : MonoBehaviour
             enemyActionControl.DeathReaction();
 
             // Update area corruption
-            battleControl.corruptionMeter.GetComponent<CorruptionMeter>().RaiseCorruption(enemy.startingCorruption);
+            battleControl.corruptionMeter.GetComponent<CorruptionMeter>().RaiseCorruption(enemy.baseHealth / 2);
 
             // Check if all enemies are dead and set isAlive to false;
             battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;

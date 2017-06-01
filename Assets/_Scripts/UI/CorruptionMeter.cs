@@ -64,7 +64,7 @@ public class CorruptionMeter : MonoBehaviour
         if (newCorruption < currentCorruption)
         {
             currentCorruption -= barSpeed * Time.deltaTime;
-            float corruption_FillPercentage = (currentCorruption) / maxCorruption;
+            float corruption_FillPercentage = currentCorruption / maxCorruption;
             corruption_Bar.transform.localScale = new Vector3(Mathf.Clamp(corruption_FillPercentage, 0, 1),
                              corruption_Bar.transform.localScale.y, corruption_Bar.transform.localScale.z);
         }

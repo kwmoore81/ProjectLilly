@@ -74,27 +74,28 @@ public class WardenController : MonoBehaviour, IHeroActionControl
 
     void InitilizeStats()
     {
-        //heroControl.hero.baseHealth = 960;
+        heroControl.hero.baseHealth = 960;
         heroControl.hero.baseEnergy = 100;
 
-        //heroControl.hero.CurrentHealth = heroControl.hero.baseHealth;
+        heroControl.hero.CurrentHealth = heroControl.hero.baseHealth;
+        heroControl.hero.CurrentEnergy = heroControl.hero.baseEnergy;
 
-        heroControl.hero.CurrentHealth = sceneChanger.gabiCurrentHealth;
-        heroControl.hero.CurrentEnergy = sceneChanger.gabiCurrentResolve;
+        //heroControl.hero.CurrentHealth = sceneChanger.gabiCurrentHealth;
+        //heroControl.hero.CurrentEnergy = sceneChanger.gabiCurrentResolve;
     }
 
     public void WriteStats()
     {
-        sceneChanger.gabiCurrentHealth = heroControl.hero.CurrentHealth;
-        sceneChanger.gabiCurrentResolve = heroControl.hero.CurrentEnergy;
+        //sceneChanger.gabiCurrentHealth = heroControl.hero.CurrentHealth;
+        //sceneChanger.gabiCurrentResolve = heroControl.hero.CurrentEnergy;
     }
 
     public void ReadStats()
     {
-        //heroControl.hero.CurrentHealth = heroControl.hero.baseHealth;
+        heroControl.hero.CurrentHealth = heroControl.hero.baseHealth;
 
-        heroControl.hero.CurrentHealth = sceneChanger.gabiCurrentHealth;
-        heroControl.hero.CurrentEnergy = sceneChanger.gabiCurrentResolve;
+        //heroControl.hero.CurrentHealth = sceneChanger.gabiCurrentHealth;
+        //heroControl.hero.CurrentEnergy = sceneChanger.gabiCurrentResolve;
     }
 
     public void DrawWeapon()
