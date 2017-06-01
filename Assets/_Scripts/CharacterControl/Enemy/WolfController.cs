@@ -49,7 +49,17 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
         //animator.SetTrigger("Revive1Trigger");
     }
 
-    // TODO: Setup RecieveAttack() function
+    public void ThreatTracking()
+    {
+
+    }
+
+    public void TargetSelection()
+    {
+
+    }
+
+    // Receive attack data and run the appropriate coroutine
     public void AttackInput(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         StartCoroutine(PerformAttack(_chosenAttack, _targetPosition));
@@ -60,16 +70,14 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
         StartCoroutine(PerformMagicAttack(_chosenAttack, _targetPosition));
     }
 
-    // TODO: Setup RecieveItemUse() function
     public void ItemUseInput(int _itemID)
     {
-        // Probably won't have item use on the wolf, but the interface needs it.
+        // Nothing happening here, but the interface needs it.
     }
 
-    // TODO: Setup Defend() function
     public void DefendInput()
     {
-
+        // Nothing happening here, but the interface needs it.
     }
 
     public void HitReaction()

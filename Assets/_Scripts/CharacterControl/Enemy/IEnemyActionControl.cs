@@ -6,6 +6,8 @@ public interface IEnemyActionControl
 
     void DrawWeapon();
     void Revive();
+    void ThreatTracking();
+    void TargetSelection();
     void AttackInput(AttackData _chosenAttack, Vector3 _targetPosition);
     void MagicInput(AttackData _chosenAttack, Vector3 _targetPosition);
     void ItemUseInput(int _itemID);
