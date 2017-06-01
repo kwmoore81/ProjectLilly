@@ -127,7 +127,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         }
     }
 
-    // TODO: Setup RecieveAttack() function
+
     public void AttackInput(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         //animator.SetBool("Blocking", false);
@@ -172,8 +172,11 @@ public class WardenController : MonoBehaviour, IHeroActionControl
             animator.SetTrigger("GetHit" + (hitNumber + 1).ToString() + "Trigger");
         }
 
-        // TODO: Add resolve gain on hit
-        
+        // Add resolve gain on hit
+        if (battleControl.activeAgentList[0].chosenAttack.attackType == AttackData.AttackType.MELEE)
+        {
+            AddResolve(20);
+        }
     }
 
     public void DeathReaction()
@@ -181,6 +184,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         animator.SetTrigger("Death1Trigger");
     }
 
+    // Coroutine for handling melee attacks
     private IEnumerator PerformMeleeAttack(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         if (actionStarted)
@@ -240,6 +244,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         heroControl.EndAction();
     }
 
+    // Coroutine for handling untility actions such as buff and debuff
     private IEnumerator PerformUtility(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         if (actionStarted)
@@ -270,6 +275,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         heroControl.EndAction();
     }
 
+    // Coroutine for handling defend actions
     private IEnumerator PerformDefend(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         if (actionStarted)
@@ -285,10 +291,13 @@ public class WardenController : MonoBehaviour, IHeroActionControl
 
         yield return new WaitForSeconds(.5f);
 
+        AddResolve(battleControl.activeAgentList[0].chosenAttack.energyRestore);
+
         actionStarted = false;
         heroControl.EndAction();
     }
 
+    // Used to check if the attack element matches the enemy element
     private bool CheckTerrainElementParity()
     {
         string primaryElement = battleControl.terrainElementPrimary.ToString();
@@ -300,9 +309,9 @@ public class WardenController : MonoBehaviour, IHeroActionControl
     }
 
     // Add resolve based on damage taken from enemy attack
-    public void AddResolve(int _damage)
+    public void AddResolve(int _resolveGain)
     {
-        heroControl.hero.CurrentEnergy += _damage;
+        heroControl.hero.CurrentEnergy += _resolveGain;
     }
 
     private bool MoveTowardTarget(Vector3 target)
@@ -313,36 +322,6 @@ public class WardenController : MonoBehaviour, IHeroActionControl
     private bool MoveTowardStart(Vector3 target)
     {
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, (moveSpeed * 1.25f) * Time.deltaTime));
-    }
-
-    // TODO: Setup attack animation function
-    private void BowShootingAnim()
-    {
-
-    }
-
-    // TODO: Setup stance animation function
-    private void UtilityAnim()
-    {
-
-    }
-
-    // TODO: Setup item use animation function
-    private void ItemUseAnim()
-    {
-
-    }
-
-    // TODO: Setup hit animation function
-    private void HitReactionAnim()
-    {
-
-    }
-
-    // TODO: Setup defend animation function
-    private void DefendAnim()
-    {
-
     }
 
     public void HeroDeathAnim()
