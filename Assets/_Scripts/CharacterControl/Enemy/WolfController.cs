@@ -6,6 +6,7 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
 {
     protected Animator animator;
     EnemyController enemyControl;
+    BattleController battleControl;
     public GameObject enemyButton;
 
     // Variables for performing timed actions
@@ -19,6 +20,7 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
     {
         animator = GetComponentInChildren<Animator>();
         enemyControl = GetComponent<EnemyController>();
+        battleControl = GameObject.Find("BattleManager").GetComponent<BattleController>();
         startPosition = transform.position;
         enemyButton.GetComponent<EnemySelectButton>().enemyPrefab = gameObject;
 
@@ -95,9 +97,13 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
         animator.SetTrigger("death");
     }
 
+    // Coroutine for handling melee attacks
     private IEnumerator PerformAttack(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         _targetPosition = new Vector3(_targetPosition.x + _chosenAttack.targetOffset, _targetPosition.y, _targetPosition.z);
+        Vector3 attackerPosition = battleControl.activeAgentList[0].agentGO.transform.position;
+        float targetDistance = Vector3.Distance(attackerPosition, _targetPosition);
+        float leapDistance = 7f;
 
         if (actionStarted)
         {
@@ -112,12 +118,17 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
 
         if (_chosenAttack.moveDuringAttack)
         {
-            while (MoveTowardTarget(_targetPosition))
+            while (MoveTowardTarget(_targetPosition) && targetDistance > leapDistance)
             {
+                attackerPosition = battleControl.activeAgentList[0].agentGO.transform.position;
+                targetDistance = Vector3.Distance(attackerPosition, _targetPosition);
+
                 yield return null;
             }
 
             animator.SetTrigger(_chosenAttack.attackAnimation);
+
+            yield return new WaitForSeconds(.12f);
 
             while (MoveTowardTarget(_targetPosition))
             {
@@ -141,7 +152,7 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
         yield return new WaitForSeconds(_chosenAttack.attackWaitTime);
 
         animator.SetTrigger("run");
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(.4f);
 
         // Move enemy back to starting position
         while (MoveTowardStart(startPosition))
@@ -157,6 +168,7 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
         enemyControl.EndAction();
     }
 
+    // Coroutine for handling attack spellcasting
     private IEnumerator PerformMagicAttack(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         if (actionStarted)

@@ -46,6 +46,9 @@ public class HeroController : MonoBehaviour
     public GameObject heroPanel;
     private Transform heroPanelSpacer;
 
+    // Weapon draw delay timer
+    private float weaponDrawDelay = .65f;
+    private float weaponDrawTimer;
 
     private bool battleCameraSet = false;
 
@@ -57,6 +60,7 @@ public class HeroController : MonoBehaviour
         UpdateHeroPanel();
 
         ATB_Timer = Random.Range(0, 2.5f);
+        weaponDrawTimer = weaponDrawDelay;
         currentState = HeroState.WAITING;
         battleControl = GameObject.Find("BattleManager").GetComponent<BattleController>();
         cameraControl = GameObject.Find("MainCamera").GetComponent<CameraController>();
@@ -72,7 +76,15 @@ public class HeroController : MonoBehaviour
     {
         if (battleControl.startBattle) CheckState();
 
-        heroActionControl.DrawWeapon();
+        if (weaponDrawTimer <= 0)
+        {
+            heroActionControl.DrawWeapon();
+        }
+        else
+        {
+            weaponDrawTimer -= Time.deltaTime;
+        }
+
     }
 
     void CheckState()
