@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: baadbecaf027b944db154ff4b2c62885
-timeCreated: 1496343495
+guid: 67cef32a938c6174fae03c01ed1c83f7
+timeCreated: 1496362606
 licenseType: Pro
 ModelImporter:
   serializedVersion: 19
@@ -102,60 +102,62 @@ ModelImporter:
     100188: ikHandle2
     100190: left
     100192: mastercontrol
-    100194: Slave_b_back2
-    100196: Slave_b_back3
-    100198: Slave_b_back4
-    100200: Slave_b_back5
-    100202: Slave_b_backtop
-    100204: Slave_b_bear_base
-    100206: Slave_b_bear_face
-    100208: Slave_b_bear_jaw
-    100210: Slave_b_bear_mouth
-    100212: Slave_b_boar_base
-    100214: Slave_b_boar_face
-    100216: Slave_b_boar_face_b_boar_chin
-    100218: Slave_b_boar_jaw
-    100220: Slave_b_boar_jaw_b_boar_chin
-    100222: Slave_b_boar_leg1
-    100224: Slave_b_boar_leg2
-    100226: Slave_b_boar_leg3
-    100228: Slave_b_boar_mouth
-    100230: Slave_b_human_base
-    100232: Slave_b_human_elbow
-    100234: Slave_b_human_head
-    100236: Slave_b_human_shoulder
-    100238: Slave_b_human_wrist
-    100240: Slave_b_l_ankle
-    100242: Slave_b_l_clavicle
-    100244: Slave_b_l_elbow
-    100246: Slave_b_l_knee
-    100248: Slave_b_l_shin
-    100250: Slave_b_l_shoulder
-    100252: Slave_b_l_wrist
-    100254: Slave_b_neck1
-    100256: Slave_b_neck2
-    100258: Slave_b_r_ankle
-    100260: Slave_b_r_clavicle
-    100262: Slave_b_r_elbow
-    100264: Slave_b_r_hand
-    100266: Slave_b_r_knee
-    100268: Slave_b_r_shin
-    100270: Slave_b_r_shoulder
-    100272: Slave_b_r_thumb1
-    100274: Slave_b_r_thumb2
-    100276: Slave_b_r_wrist
-    100278: Slave_b_root
-    100280: Slave_b_tail2
-    100282: Slave_b_tail3
-    100284: Slave_b_tail4
-    100286: Slave_b_tail5
-    100288: Slave_b_wolf_base
-    100290: Slave_b_wolf_face
-    100292: Slave_b_wolf_jaw
-    100294: Slave_b_wolf_leg1
-    100296: Slave_b_wolf_leg2
-    100298: Slave_b_wolf_leg3
-    100300: Slave_b_wolf_mouth
+    100194: pSphere1
+    100196: pSphere2
+    100198: Slave_b_back2
+    100200: Slave_b_back3
+    100202: Slave_b_back4
+    100204: Slave_b_back5
+    100206: Slave_b_backtop
+    100208: Slave_b_bear_base
+    100210: Slave_b_bear_face
+    100212: Slave_b_bear_jaw
+    100214: Slave_b_bear_mouth
+    100216: Slave_b_boar_base
+    100218: Slave_b_boar_face
+    100220: Slave_b_boar_face_b_boar_chin
+    100222: Slave_b_boar_jaw
+    100224: Slave_b_boar_jaw_b_boar_chin
+    100226: Slave_b_boar_leg1
+    100228: Slave_b_boar_leg2
+    100230: Slave_b_boar_leg3
+    100232: Slave_b_boar_mouth
+    100234: Slave_b_human_base
+    100236: Slave_b_human_elbow
+    100238: Slave_b_human_head
+    100240: Slave_b_human_shoulder
+    100242: Slave_b_human_wrist
+    100244: Slave_b_l_ankle
+    100246: Slave_b_l_clavicle
+    100248: Slave_b_l_elbow
+    100250: Slave_b_l_knee
+    100252: Slave_b_l_shin
+    100254: Slave_b_l_shoulder
+    100256: Slave_b_l_wrist
+    100258: Slave_b_neck1
+    100260: Slave_b_neck2
+    100262: Slave_b_r_ankle
+    100264: Slave_b_r_clavicle
+    100266: Slave_b_r_elbow
+    100268: Slave_b_r_hand
+    100270: Slave_b_r_knee
+    100272: Slave_b_r_shin
+    100274: Slave_b_r_shoulder
+    100276: Slave_b_r_thumb1
+    100278: Slave_b_r_thumb2
+    100280: Slave_b_r_wrist
+    100282: Slave_b_root
+    100284: Slave_b_tail2
+    100286: Slave_b_tail3
+    100288: Slave_b_tail4
+    100290: Slave_b_tail5
+    100292: Slave_b_wolf_base
+    100294: Slave_b_wolf_face
+    100296: Slave_b_wolf_jaw
+    100298: Slave_b_wolf_leg1
+    100300: Slave_b_wolf_leg2
+    100302: Slave_b_wolf_leg3
+    100304: Slave_b_wolf_mouth
     400000: b_back1
     400002: b_l_hip
     400004: b_r_hip
@@ -253,61 +255,69 @@ ModelImporter:
     400188: ikHandle2
     400190: left
     400192: mastercontrol
-    400194: Slave_b_back2
-    400196: Slave_b_back3
-    400198: Slave_b_back4
-    400200: Slave_b_back5
-    400202: Slave_b_backtop
-    400204: Slave_b_bear_base
-    400206: Slave_b_bear_face
-    400208: Slave_b_bear_jaw
-    400210: Slave_b_bear_mouth
-    400212: Slave_b_boar_base
-    400214: Slave_b_boar_face
-    400216: Slave_b_boar_face_b_boar_chin
-    400218: Slave_b_boar_jaw
-    400220: Slave_b_boar_jaw_b_boar_chin
-    400222: Slave_b_boar_leg1
-    400224: Slave_b_boar_leg2
-    400226: Slave_b_boar_leg3
-    400228: Slave_b_boar_mouth
-    400230: Slave_b_human_base
-    400232: Slave_b_human_elbow
-    400234: Slave_b_human_head
-    400236: Slave_b_human_shoulder
-    400238: Slave_b_human_wrist
-    400240: Slave_b_l_ankle
-    400242: Slave_b_l_clavicle
-    400244: Slave_b_l_elbow
-    400246: Slave_b_l_knee
-    400248: Slave_b_l_shin
-    400250: Slave_b_l_shoulder
-    400252: Slave_b_l_wrist
-    400254: Slave_b_neck1
-    400256: Slave_b_neck2
-    400258: Slave_b_r_ankle
-    400260: Slave_b_r_clavicle
-    400262: Slave_b_r_elbow
-    400264: Slave_b_r_hand
-    400266: Slave_b_r_knee
-    400268: Slave_b_r_shin
-    400270: Slave_b_r_shoulder
-    400272: Slave_b_r_thumb1
-    400274: Slave_b_r_thumb2
-    400276: Slave_b_r_wrist
-    400278: Slave_b_root
-    400280: Slave_b_tail2
-    400282: Slave_b_tail3
-    400284: Slave_b_tail4
-    400286: Slave_b_tail5
-    400288: Slave_b_wolf_base
-    400290: Slave_b_wolf_face
-    400292: Slave_b_wolf_jaw
-    400294: Slave_b_wolf_leg1
-    400296: Slave_b_wolf_leg2
-    400298: Slave_b_wolf_leg3
-    400300: Slave_b_wolf_mouth
+    400194: pSphere1
+    400196: pSphere2
+    400198: Slave_b_back2
+    400200: Slave_b_back3
+    400202: Slave_b_back4
+    400204: Slave_b_back5
+    400206: Slave_b_backtop
+    400208: Slave_b_bear_base
+    400210: Slave_b_bear_face
+    400212: Slave_b_bear_jaw
+    400214: Slave_b_bear_mouth
+    400216: Slave_b_boar_base
+    400218: Slave_b_boar_face
+    400220: Slave_b_boar_face_b_boar_chin
+    400222: Slave_b_boar_jaw
+    400224: Slave_b_boar_jaw_b_boar_chin
+    400226: Slave_b_boar_leg1
+    400228: Slave_b_boar_leg2
+    400230: Slave_b_boar_leg3
+    400232: Slave_b_boar_mouth
+    400234: Slave_b_human_base
+    400236: Slave_b_human_elbow
+    400238: Slave_b_human_head
+    400240: Slave_b_human_shoulder
+    400242: Slave_b_human_wrist
+    400244: Slave_b_l_ankle
+    400246: Slave_b_l_clavicle
+    400248: Slave_b_l_elbow
+    400250: Slave_b_l_knee
+    400252: Slave_b_l_shin
+    400254: Slave_b_l_shoulder
+    400256: Slave_b_l_wrist
+    400258: Slave_b_neck1
+    400260: Slave_b_neck2
+    400262: Slave_b_r_ankle
+    400264: Slave_b_r_clavicle
+    400266: Slave_b_r_elbow
+    400268: Slave_b_r_hand
+    400270: Slave_b_r_knee
+    400272: Slave_b_r_shin
+    400274: Slave_b_r_shoulder
+    400276: Slave_b_r_thumb1
+    400278: Slave_b_r_thumb2
+    400280: Slave_b_r_wrist
+    400282: Slave_b_root
+    400284: Slave_b_tail2
+    400286: Slave_b_tail3
+    400288: Slave_b_tail4
+    400290: Slave_b_tail5
+    400292: Slave_b_wolf_base
+    400294: Slave_b_wolf_face
+    400296: Slave_b_wolf_jaw
+    400298: Slave_b_wolf_leg1
+    400300: Slave_b_wolf_leg2
+    400302: Slave_b_wolf_leg3
+    400304: Slave_b_wolf_mouth
+    2300000: pSphere1
+    2300002: pSphere2
+    3300000: pSphere1
+    3300002: pSphere2
     4300000: boss_bitch
+    4300002: pSphere1
+    4300004: pSphere2
     7400000: Chimera_Hit2
     9500000: //RootNode
     13700000: boss_bitch
@@ -336,7 +346,7 @@ ModelImporter:
       name: Chimera_Hit2
       takeName: Take 001
       firstFrame: 1
-      lastFrame: 80
+      lastFrame: 120
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -543,6 +553,10 @@ ModelImporter:
       - path: mastercontrol/cntrl_everything/cntrl_waist/cntrl_topback
         weight: 1
       - path: mastercontrol/cntrl_everything/cntrl_waist/cntrl_topback/cluster1Handle
+        weight: 1
+      - path: pSphere1
+        weight: 1
+      - path: pSphere2
         weight: 1
       - path: Slave_b_root
         weight: 1

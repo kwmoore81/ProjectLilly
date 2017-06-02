@@ -289,11 +289,32 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
 
         // Restore appropriate element charges
         if (_chosenAttack.fireChargeRestore > 0)
+        {
             heroControl.hero.CurrentFireCharges += _chosenAttack.fireChargeRestore;
+
+            if (heroControl.hero.CurrentFireCharges > heroControl.hero.maxFireCharges)
+            {
+                heroControl.hero.CurrentFireCharges = heroControl.hero.maxFireCharges;
+            }
+        }
         else if (_chosenAttack.waterChargeRestore > 0)
+        {
             heroControl.hero.CurrentWaterCharges += _chosenAttack.waterChargeRestore;
+
+            if (heroControl.hero.CurrentWaterCharges > heroControl.hero.maxWaterCharges)
+            {
+                heroControl.hero.CurrentWaterCharges = heroControl.hero.maxWaterCharges;
+            }
+        }
         else if (_chosenAttack.earthChargeRestore > 0)
+        {
             heroControl.hero.CurrentEarthCharges += _chosenAttack.earthChargeRestore;
+
+            if (heroControl.hero.CurrentEarthCharges > heroControl.hero.maxEarthCharges)
+            {
+                heroControl.hero.CurrentEarthCharges = heroControl.hero.maxEarthCharges;
+            }
+        }
 
         yield return null;
 

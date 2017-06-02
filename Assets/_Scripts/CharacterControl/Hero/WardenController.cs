@@ -127,7 +127,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         }
     }
 
-
+    // Receive attack data and choose appropriate coroutine
     public void AttackInput(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         //animator.SetBool("Blocking", false);
@@ -175,7 +175,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         // Add resolve gain on hit
         if (battleControl.activeAgentList[0].chosenAttack.attackType == AttackData.AttackType.MELEE)
         {
-            AddResolve(20);
+            AddResolve(15);
         }
     }
 
@@ -312,6 +312,11 @@ public class WardenController : MonoBehaviour, IHeroActionControl
     public void AddResolve(int _resolveGain)
     {
         heroControl.hero.CurrentEnergy += _resolveGain;
+
+        if (heroControl.hero.CurrentEnergy > heroControl.hero.baseEnergy)
+        {
+            heroControl.hero.CurrentEnergy = heroControl.hero.baseEnergy;
+        }
     }
 
     private bool MoveTowardTarget(Vector3 target)

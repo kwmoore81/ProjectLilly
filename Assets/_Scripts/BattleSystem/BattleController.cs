@@ -99,7 +99,7 @@ public class BattleController : MonoBehaviour
 
     // Battle start delay
     public bool startBattle = false;
-    private float startDelay = 3.25f;
+    private float startDelay = 5f;
     private float startDelayTimer;
     public bool pauseBattle = false;
 
