@@ -112,6 +112,7 @@ public class HeroController : MonoBehaviour
         {
             // TODO: Add Speed stat to ATB fill rate
             // TODO: Add ambush condition
+
             ATB_Timer += Time.deltaTime;
             float ATB_FillPercentage = ATB_Timer / ATB_MaxDelay;
             ATB_Bar.transform.localScale = new Vector3(Mathf.Clamp(ATB_FillPercentage, 0, 1), ATB_Bar.transform.localScale.y, ATB_Bar.transform.localScale.z);
@@ -195,19 +196,39 @@ public class HeroController : MonoBehaviour
             if (battleControl.activeAgentList[0].chosenAttack.damageType == AttackData.DamageType.FIRE)
             {
                 hero.CurrentFireCharges -= battleControl.activeAgentList[0].chosenAttack.chargeCost;
+
+                if (hero.CurrentFireCharges < 0)
+                {
+                    hero.CurrentFireCharges = 0;
+                }
             }
             else if (battleControl.activeAgentList[0].chosenAttack.damageType == AttackData.DamageType.WATER)
             {
                 hero.CurrentWaterCharges -= battleControl.activeAgentList[0].chosenAttack.chargeCost;
+
+                if (hero.CurrentWaterCharges < 0)
+                {
+                    hero.CurrentWaterCharges = 0;
+                }
             }
             else if (battleControl.activeAgentList[0].chosenAttack.damageType == AttackData.DamageType.EARTH)
             {
                 hero.CurrentEarthCharges -= battleControl.activeAgentList[0].chosenAttack.chargeCost;
+
+                if (hero.CurrentEarthCharges < 0)
+                {
+                    hero.CurrentEarthCharges = 0;
+                }
             }
         }
         else
         {
             hero.CurrentEnergy -= battleControl.activeAgentList[0].chosenAttack.energyCost;
+
+            if (hero.CurrentEnergy < 0)
+            {
+                hero.CurrentEnergy = 0;
+            }
         }
 
         UpdateHeroPanel();
@@ -239,6 +260,7 @@ public class HeroController : MonoBehaviour
     public void TakeHealing(int _healing)
     {
         hero.CurrentHealth += _healing;
+        
         if (hero.CurrentHealth > hero.baseHealth)
         {
             hero.CurrentHealth = hero.baseHealth;
