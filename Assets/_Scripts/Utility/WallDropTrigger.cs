@@ -26,6 +26,7 @@ public class WallDropTrigger : MonoBehaviour {
         if (other.tag == "Player" && SC1.currentAreaCorruption <= corrutionThreshold)
         {
             droptrigger = true;
+            SC1.battleToggle = false;
         }
     }
 }
