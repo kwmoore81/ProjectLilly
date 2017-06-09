@@ -763,10 +763,7 @@ public class BattleController : MonoBehaviour
 
             // Write current stats to database
             overWorldSceneChanger2.currentAreaCorruption = corruptionMeter.GetComponent<CorruptionMeter>().currentCorruption;
-            //for (int i = 0; 0 < deadHeroes.Count; i++)
-            //{
-            //    deadHeroes[i].GetComponent<HeroController>().EndBattleRevive();
-            //}
+
             for (int i = 0; i < heroesInBattle.Count; i++)
             {
                 heroesInBattle[i].GetComponent<HeroController>().heroActionControl.WriteStats();
@@ -792,10 +789,6 @@ public class BattleController : MonoBehaviour
             // Write current stats to database
             overWorldSceneChanger2.currentAreaCorruption = corruptionMeter.GetComponent<CorruptionMeter>().currentCorruption;
 
-            //for (int i = 0; 0 < deadHeroes.Count; i++)
-            //{
-            //    deadHeroes[i].GetComponent<HeroController>().EndBattleRevive();
-            //}
             for (int i = 0; 0 < heroesInBattle.Count; i++)
             {
                 heroesInBattle[i].GetComponent<HeroController>().heroActionControl.WriteStats();
