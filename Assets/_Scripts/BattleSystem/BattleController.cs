@@ -70,6 +70,7 @@ public class BattleController : MonoBehaviour
     public GameObject waterPanel;
     public GameObject attackPanel;
     public GameObject utilityPanel;
+    public GameObject failedActionPanel;
     public GameObject enemySelectPanel;
     public GameObject heroSelectPanel;
     public GameObject corruptionMeter;
@@ -146,6 +147,7 @@ public class BattleController : MonoBehaviour
         earthPanel.SetActive(false);
         waterPanel.SetActive(false);
         utilityPanel.SetActive(false);
+        failedActionPanel.SetActive(false);
         enemySelectPanel.SetActive(false);
         heroSelectPanel.SetActive(false);
         victoryPanel.SetActive(false);
@@ -289,7 +291,7 @@ public class BattleController : MonoBehaviour
             heroesToManage[0].transform.FindChild("Selector").gameObject.SetActive(true);
             heroChoice = new TurnOrderHandler();
 
-            // Hero panel animation
+            // TODO: Hero panel animation
 
             actionPanel.SetActive(true);
             CreateActionButtons();
@@ -332,11 +334,13 @@ public class BattleController : MonoBehaviour
         actionState = ActionState.PERFORMACTION;
     }
 
+    // Send hero and enemy choices to the active agent list
     public void ActionCollector(TurnOrderHandler _agentInfo)
     {
         activeAgentList.Add(_agentInfo);
     }
 
+    // Add dead characters to the appropriate list and check if there are any left alive
     void CheckForDead()
     {
         deadEnemies.AddRange(GameObject.FindGameObjectsWithTag("DeadEnemy"));
@@ -362,6 +366,7 @@ public class BattleController : MonoBehaviour
             deadEnemies.AddRange(GameObject.FindGameObjectsWithTag("DeadEnemy"));
         }
     }
+
 
     public void ActionInput()
     {
@@ -410,6 +415,7 @@ public class BattleController : MonoBehaviour
         waterPanel.SetActive(false);
         attackPanel.SetActive(false);
         utilityPanel.SetActive(false);
+        failedActionPanel.SetActive(false);
     }
 
     void ClearAttackPanel()
@@ -422,6 +428,7 @@ public class BattleController : MonoBehaviour
         waterPanel.SetActive(false);
         attackPanel.SetActive(false);
         utilityPanel.SetActive(false);
+        failedActionPanel.SetActive(false);
 
         foreach (GameObject attackButton in attackButtons)
         {
@@ -503,6 +510,16 @@ public class BattleController : MonoBehaviour
         }
     }
     
+    public IEnumerator FailedActionNotification(string _resourceType)
+    {
+        Text failedActionText = failedActionPanel.transform.FindChild("text").gameObject.GetComponent<Text>();
+        failedActionText.text = _resourceType;
+        failedActionPanel.SetActive(true);
+        yield return new WaitForSeconds(3);
+
+        failedActionPanel.SetActive(false);
+        yield return null;
+    }
 
     // Create action buttons
     void CreateActionButtons()
