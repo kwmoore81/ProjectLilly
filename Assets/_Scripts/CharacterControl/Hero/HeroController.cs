@@ -27,7 +27,7 @@ public class HeroController : MonoBehaviour
     private float ATB_MaxDelay = 5;
     private float ResourceBarTimer = 0;
     private float ResourceBarMaxDelay = 1;
-    private float barSpeed = 20;
+    private float barSpeed = 45;
     private float newHealth;
     private float newEnergy;
     private Image ATB_Bar;
@@ -57,7 +57,7 @@ public class HeroController : MonoBehaviour
         // Create panel and add info
         heroPanelSpacer = GameObject.Find("BattleCanvas").transform.FindChild("HeroPanel").transform.FindChild("HeroPanelSpacer");
         CreateHeroPanel();
-        UpdateHeroPanel();
+        //UpdateHeroPanel();
 
         ATB_Timer = Random.Range(0, 2.5f);
         weaponDrawTimer = weaponDrawDelay;
@@ -69,7 +69,7 @@ public class HeroController : MonoBehaviour
         heroActionControl = gameObject.GetComponent<IHeroActionControl>();
 
         heroActionControl.HeroAwake();
-        UpdateHeroPanel();
+        InitializeHeroPanel();
     }
 
     void Update()
@@ -114,6 +114,8 @@ public class HeroController : MonoBehaviour
         }
     }
 
+
+    // Increase active time battlesystem meter and trigger hero action control when full
     void UpdateATB()
     {
         if (ATB_Timer >= ATB_MaxDelay)
@@ -137,6 +139,7 @@ public class HeroController : MonoBehaviour
         currentState = HeroState.IDLE;
     }
 
+    // Set the target position (enemy / party / self) and perform action
     private void PerformAction()
     {
         // Set battle camera type
@@ -148,7 +151,6 @@ public class HeroController : MonoBehaviour
 
         Vector3 targetPosition;
 
-        // Set the target position (enemy / party / self) and perform action
         if (battleControl.activeAgentList[0].chosenAttack.attackType == AttackData.AttackType.RESTORE)
         {
             targetPosition = transform.position;
@@ -167,6 +169,7 @@ public class HeroController : MonoBehaviour
         }
     }
 
+    // Perform wrapup actions and reset ATB after the hero has performed an action
     public void EndAction()
     {
         // Handle resource management
@@ -193,6 +196,7 @@ public class HeroController : MonoBehaviour
         battleCameraSet = false;
     }
 
+    // Perform wrapup after a simple hero action
     public void EndSimpleAction()
     {
         battleControl.HeroInputDone();
@@ -201,6 +205,7 @@ public class HeroController : MonoBehaviour
         battleControl.actionState = BattleController.ActionState.WAITING;
     }
 
+    // Get action cost from hero's chosen action and updtate the appropriate meter
     public void ApplyActionCost()
     {
         if (battleControl.activeAgentList[0].chosenAttack.chargeCost > 0)
@@ -246,57 +251,66 @@ public class HeroController : MonoBehaviour
         UpdateHeroPanel();
     }
 
+    // Update the current health value and meter
     public void TakeDamage(int _damage)
     {
+        float newHealth;
+
         if (isBlocking)
         {
-            hero.CurrentHealth -= _damage / 2;
+            newHealth = hero.CurrentHealth - _damage / 2;
         }
         else
         {
-            hero.CurrentHealth -= _damage;
+            newHealth = hero.CurrentHealth - _damage;
         }
 
         // Play hit animation
         heroActionControl.HitReaction();
 
-        if (hero.CurrentHealth <= 0)
+        if (newHealth <= 0)
         {
-            hero.CurrentHealth = 0;
+            newHealth = 0;
             currentState = HeroState.DEAD;
         }
 
-        UpdateHeroPanel();
+        StartCoroutine(LowerHealthBar(newHealth));
     }
 
+    // Update the current health value and UI meter
     public void TakeHealing(int _healing)
     {
-        hero.CurrentHealth += _healing;
+        float newHealth = hero.CurrentHealth + _healing;
         
-        if (hero.CurrentHealth > hero.baseHealth)
+        if (newHealth > hero.baseHealth)
         {
-            hero.CurrentHealth = hero.baseHealth;
+            newHealth = hero.baseHealth;
         }
+
+        StartCoroutine(RaiseHealthBar(newHealth));
     }
 
+    // Update the corruption/element value and UI meter
     public void DoCleansing()
     {
         int calculatedDamage = hero.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
         enemyToAttack.GetComponent<EnemyController>().TakeCleansing(calculatedDamage);
     }
 
+    // Send chosen attack damage to the target so they can process taken damage
     public void DoDamage()
     {
         int calculatedDamage = hero.CurrentAttackPower + battleControl.activeAgentList[0].chosenAttack.attackDamage;
         enemyToAttack.GetComponent<EnemyController>().TakeDamage(calculatedDamage);
     }
 
+    // Send chosen heal action value to the target so they can process the healing done
     public void DoHealing()
     {
         enemyToAttack.GetComponent<HeroController>().TakeHealing(battleControl.activeAgentList[0].chosenAttack.healthChange);
-        UpdateHeroPanel();
     }
 
+    // Peform hero death clean up and play the death animation
     void HeroDeath()
     {
         if (!isAlive)
@@ -342,6 +356,7 @@ public class HeroController : MonoBehaviour
         }
     }
 
+    // At the end of battle, bring dead heroes back to life with one hit point
     public void EndBattleRevive()
     {
         hero.CurrentHealth = 1;
@@ -349,6 +364,7 @@ public class HeroController : MonoBehaviour
         battleControl.heroesInBattle.Add(this.gameObject);
     }
 
+    // Initial setup of the hero UI panel info
     void CreateHeroPanel()
     {
         panelInfo = heroPanel.GetComponent<HeroPanelInfo>();
@@ -361,16 +377,16 @@ public class HeroController : MonoBehaviour
         HP_Bar = panelInfo.HP_Bar;
         Resource_Bar = panelInfo.Resource_Bar;
     }
-
-    public void UpdateHeroPanel()
-    // TODO: Modify to accomodate different class info
+    
+    // Initial setup of hero panel values and bars
+    public void InitializeHeroPanel()
     {
-        // Update HP bar and text
+        // Setup HP bar and text
         float HP_FillPercentage = hero.CurrentHealth / hero.baseHealth;
         HP_Bar.transform.localScale = new Vector3(Mathf.Clamp(HP_FillPercentage, 0, 1), HP_Bar.transform.localScale.y, HP_Bar.transform.localScale.z);
         panelInfo.heroHP.text = "HP: " + hero.CurrentHealth + " / " + hero.baseHealth;
 
-        //Update energy bar and text
+        // Setup energy bar and text
         if (hero.baseEnergy > 0)
         {
             float Resource_FillPercentage = hero.CurrentEnergy / hero.baseEnergy;
@@ -378,6 +394,18 @@ public class HeroController : MonoBehaviour
             panelInfo.heroResource.text = "Energy: " + hero.CurrentEnergy + " / " + hero.baseEnergy;
         }
 
+        // Setup elemental charges
+        if (hero.maxEarthCharges > 0)
+        {
+            panelInfo.heroFireCharges.text = "Fire: " + hero.CurrentFireCharges + " / " + hero.maxFireCharges;
+            panelInfo.heroWaterCharges.text = "Water: " + hero.CurrentWaterCharges + " / " + hero.maxWaterCharges;
+            panelInfo.heroEarthCharges.text = "Earth: " + hero.CurrentEarthCharges + " / " + hero.maxEarthCharges;
+        }
+    }
+
+    // Update the hero UI panel info
+    public void UpdateHeroPanel()
+    {
         // Update elemental charges
         if (hero.maxEarthCharges > 0)
         {
@@ -385,5 +413,103 @@ public class HeroController : MonoBehaviour
             panelInfo.heroWaterCharges.text = "Water: " + hero.CurrentWaterCharges + " / " + hero.maxWaterCharges;
             panelInfo.heroEarthCharges.text = "Earth: " + hero.CurrentEarthCharges + " / " + hero.maxEarthCharges;
         }
+    }
+
+    // Raise health bar and update text
+    private IEnumerator RaiseHealthBar(float _newHealth)
+    {
+        float Heath_FillPercentage;
+
+        panelInfo.heroHP.text = "HP: " + _newHealth + " / " + hero.baseHealth;
+
+        while (_newHealth > hero.CurrentHealth)
+        {
+            hero.CurrentHealth += barSpeed * Time.deltaTime;
+            Heath_FillPercentage = hero.CurrentHealth / hero.baseHealth;
+            HP_Bar.transform.localScale = new Vector3(Mathf.Clamp(Heath_FillPercentage, 0, 1), HP_Bar.transform.localScale.y, HP_Bar.transform.localScale.z);
+
+            yield return null;
+        }
+
+        hero.CurrentHealth = _newHealth;
+        Heath_FillPercentage = hero.CurrentHealth / hero.baseHealth;
+        HP_Bar.transform.localScale = new Vector3(Mathf.Clamp(Heath_FillPercentage, 0, 1), HP_Bar.transform.localScale.y, HP_Bar.transform.localScale.z);
+
+        yield return null;
+    }
+
+    // Lower health bar and update text
+    private IEnumerator LowerHealthBar(float _newHealth)
+    {
+        float Heath_FillPercentage;
+
+        panelInfo.heroHP.text = "HP: " + _newHealth + " / " + hero.baseHealth;
+
+        while (_newHealth < hero.CurrentHealth)
+        {
+            hero.CurrentHealth -= barSpeed * Time.deltaTime;
+            Heath_FillPercentage = hero.CurrentHealth / hero.baseHealth;
+            HP_Bar.transform.localScale = new Vector3(Mathf.Clamp(Heath_FillPercentage, 0, 1), HP_Bar.transform.localScale.y, HP_Bar.transform.localScale.z);
+
+            yield return null;
+        }
+
+        hero.CurrentHealth = _newHealth;
+        Heath_FillPercentage = hero.CurrentHealth / hero.baseHealth;
+        HP_Bar.transform.localScale = new Vector3(Mathf.Clamp(Heath_FillPercentage, 0, 1), HP_Bar.transform.localScale.y, HP_Bar.transform.localScale.z);
+
+        yield return null;
+
+    }
+
+    // Raise resource bar and update text
+    public IEnumerator RaiseResourceBar(float _newEnergy)
+    {
+        float Energy_FillPercentage;
+
+        panelInfo.heroResource.text = "Energy: " + _newEnergy + " / " + hero.baseEnergy;
+
+        while (_newEnergy > hero.CurrentEnergy)
+        {
+            hero.CurrentEnergy += barSpeed * Time.deltaTime;
+            Energy_FillPercentage = hero.CurrentEnergy / hero.baseEnergy;
+            Resource_Bar.transform.localScale = new Vector3(Mathf.Clamp(Energy_FillPercentage, 0, 1), Resource_Bar.transform.localScale.y, Resource_Bar.transform.localScale.z);
+
+            yield return null;
+        }
+
+        hero.CurrentEnergy = _newEnergy;
+        Energy_FillPercentage = hero.CurrentEnergy / hero.baseEnergy;
+        Resource_Bar.transform.localScale = new Vector3(Mathf.Clamp(Energy_FillPercentage, 0, 1), Resource_Bar.transform.localScale.y, Resource_Bar.transform.localScale.z);
+
+        yield return null;
+    }
+
+    // Lower resource bar and update text
+    public IEnumerator LowerResourceBar(float _newEnergy)
+    {
+        float Energy_FillPercentage;
+
+        panelInfo.heroResource.text = "Energy: " + _newEnergy + " / " + hero.baseEnergy;
+
+        while (_newEnergy < hero.CurrentEnergy)
+        {
+            hero.CurrentEnergy -= barSpeed * Time.deltaTime;
+            Energy_FillPercentage = hero.CurrentEnergy / hero.baseEnergy;
+            Resource_Bar.transform.localScale = new Vector3(Mathf.Clamp(Energy_FillPercentage, 0, 1), Resource_Bar.transform.localScale.y, Resource_Bar.transform.localScale.z);
+
+            yield return null;
+        }
+
+        hero.CurrentEnergy = _newEnergy;
+        Energy_FillPercentage = hero.CurrentEnergy / hero.baseEnergy;
+        Resource_Bar.transform.localScale = new Vector3(Mathf.Clamp(Energy_FillPercentage, 0, 1), Resource_Bar.transform.localScale.y, Resource_Bar.transform.localScale.z);
+
+        yield return null;
+    }
+
+    private IEnumerator UpdateChargesUI()
+    {
+        yield return null;
     }
 }

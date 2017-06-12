@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -653,6 +654,7 @@ public class BattleController : MonoBehaviour
         heroChoice.chosenAttack = chosenAttack;
 
         enemySelectPanel.SetActive(true);
+        enemyButtonsControl();
     }
 
     public void MagicInput(string _magicType)
@@ -691,6 +693,7 @@ public class BattleController : MonoBehaviour
         else
         {
             enemySelectPanel.SetActive(true);
+            enemyButtonsControl();
         }
     }
 
@@ -714,6 +717,7 @@ public class BattleController : MonoBehaviour
         else
         {
             enemySelectPanel.SetActive(true);
+            enemyButtonsControl();
         }
     }
 
@@ -732,14 +736,12 @@ public class BattleController : MonoBehaviour
     {
         for (int i = 0; i < enemiesInBattle.Count; i++)
         {
-            if (enemiesInBattle[i].tag == "Enemy")
-            {
-                
-            }
-            else if (enemiesInBattle[i].tag == "DeadEnemy")
-            {
+            enemiesInBattle[i].GetComponent<EnemyController>().enemyActionControl.EnemyPanelButtonOn();
+        }
 
-            }
+        for (int i = 0; i < deadEnemies.Count; i++)
+        {
+            deadEnemies[i].GetComponent<EnemyController>().enemyActionControl.EnemyPanelButtonOff();
         }
     }
 

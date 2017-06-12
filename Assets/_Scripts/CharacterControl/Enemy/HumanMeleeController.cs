@@ -6,6 +6,8 @@ public class HumanMeleeController : MonoBehaviour
 {
     protected Animator animator;
     EnemyController enemyControl;
+    BattleController battleControl;
+    public GameObject enemyButton;
 
     // Variables for weapon draw delay
     private float weaponDrawTimer = 0.0f;
@@ -200,6 +202,11 @@ public class HumanMeleeController : MonoBehaviour
         StartCoroutine(PerformMagicAttack(_chosenAttack, _targetPosition));
     }
 
+    public void FleeInput(GameObject _targetGO)
+    {
+
+    }
+
     // TODO: Setup ReceiveStance() function
     public void StanceInput(int _stanceID)
     {
@@ -344,6 +351,16 @@ public class HumanMeleeController : MonoBehaviour
     public void HeroDeathAnim()
     {
         animator.SetTrigger("Death1Trigger");
+    }
+
+    public void EnemyPanelButtonOn()
+    {
+        enemyButton.SetActive(true);
+    }
+
+    public void EnemyPanelButtonOff()
+    {
+        enemyButton.SetActive(false);
     }
 
     #region _Coroutines

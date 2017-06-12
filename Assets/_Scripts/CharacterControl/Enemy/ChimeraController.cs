@@ -32,20 +32,6 @@ public class ChimeraController : MonoBehaviour, IEnemyActionControl
         // Nothing happening here, but the interface needs it.
     }
 
-    void ClawEffect(bool _trailOn)
-    {
-        //GameObject activeTrail;
-
-        //if (twohandsword.activeSelf == true)
-        //{
-        //    activeTrail = twohandsword.transform.FindChild("Trail").gameObject;
-        //    if (_trailOn)
-        //        activeTrail.SetActive(true);
-        //    else
-        //        activeTrail.SetActive(false);
-        //}
-    }
-
     public void Revive()
     {
         animator.SetTrigger("Revive1Trigger");
@@ -72,6 +58,11 @@ public class ChimeraController : MonoBehaviour, IEnemyActionControl
     public void MagicInput(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         StartCoroutine(PerformMagicAttack(_chosenAttack, _targetPosition));
+    }
+
+    public void FleeInput(GameObject _targetGO)
+    {
+
     }
 
     public void ItemUseInput(int _itemID)
@@ -197,5 +188,15 @@ public class ChimeraController : MonoBehaviour, IEnemyActionControl
     private bool MoveTowardStart(Vector3 target)
     {
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime));
+    }
+
+    public void EnemyPanelButtonOn()
+    {
+        enemyButton.SetActive(true);
+    }
+
+    public void EnemyPanelButtonOff()
+    {
+        enemyButton.SetActive(false);
     }
 }

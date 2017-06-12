@@ -42,7 +42,7 @@ public class EnemyController : MonoBehaviour
     public GameObject enemyPanel;
     private Image HP_Bar;
     private Image corruption_Bar;
-    private float barSpeed = 20;
+    private float barSpeed = 45;
     private float newHealth;
     private Image earth_Icon;
     private Image water_Icon;
@@ -204,39 +204,39 @@ public class EnemyController : MonoBehaviour
 
     public void TakeCleansing(int _damage)
     {
-        enemy.currentCorruption -= _damage;
+        float newCorruption = enemy.currentCorruption - _damage;
 
         // Play hit animation
         enemyActionControl.HitReaction();
 
-        if (enemy.currentCorruption <= 0)
+        if (newCorruption <= 0)
         {
-            enemy.currentCorruption = 0;
+            newCorruption = 0;
             currentState = EnemyState.CLEANSED;
         }
 
-        UpdateEnemyPanel();
+        StartCoroutine(LowerCorruptionBar(newCorruption));
     }
 
     public void TakeDamage(int _damage)
     {
-        enemy.CurrentHealth -= _damage;
+        float newHealth = enemy.CurrentHealth - _damage;
 
         // Play hit animation
         enemyActionControl.HitReaction();
 
-        if (enemy.CurrentHealth <= 20)
+        if (newHealth <= 20)
         {
             enemyActionControl.InjuredReaction();
         }
 
-        if (enemy.CurrentHealth <= 0)
+        if (newHealth <= 0)
         {
-            enemy.CurrentHealth = 0;
+            newHealth = 0;
             currentState = EnemyState.DEAD;
         }
 
-        UpdateEnemyPanel();
+        StartCoroutine(LowerHealthBar(newHealth));
     }
 
     public void DoDamage()
@@ -255,6 +255,7 @@ public class EnemyController : MonoBehaviour
         {
             // TODO: Add animations to leave battle area
             // TODO: Cleanup battle manager agent list
+
             this.gameObject.tag = "DeadEnemy";
             battleControl.enemiesInBattle.Remove(this.gameObject);
 
@@ -275,8 +276,8 @@ public class EnemyController : MonoBehaviour
                 }
             }
 
-            // Play death animation
-            enemyActionControl.DeathReaction();
+            // Play battlefield flee animation
+            enemyActionControl.FleeInput(battleControl.activeAgentList[0].targetGO);
 
             // Update area corruption
             battleControl.corruptionMeter.GetComponent<CorruptionMeter>().LowerCorruption(enemy.startingCorruption);
@@ -286,7 +287,6 @@ public class EnemyController : MonoBehaviour
             isAlive = false;
 
             // Reset enemy buttons and check if battle has been won or lost
-            //battleControl.EnemySelectionButtons();
             battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
         }
     }
@@ -334,7 +334,6 @@ public class EnemyController : MonoBehaviour
             isAlive = false;
 
             // Reset enemy buttons and check if battle has been won or lost
-            //battleControl.EnemySelectionButtons();
             battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
         }
     }
@@ -393,17 +392,103 @@ public class EnemyController : MonoBehaviour
         corruption_Bar.transform.localScale = new Vector3(Mathf.Clamp(CorruptionFillPercentage, 0, 1), corruption_Bar.transform.localScale.y, corruption_Bar.transform.localScale.z);
         panelInfo.corruptionLevel.text = "Corruption: " + Mathf.Round(CorruptionFillPercentage * 100) + "%";
         corruptionParticle.UpdateCorruption(CorruptionFillPercentage);
-
-        // Update element icon
     }
 
-    public void EnemyPanelButtonOn()
+    // Raise health bar and update text
+    private IEnumerator RaiseHealthBar(float _newHealth)
     {
-        panelInfo.GetComponent<Outline>().enabled = true;
+        float Heath_FillPercentage;
+
+        panelInfo.enemyHP.text = "HP: " + _newHealth + " / " + enemy.baseHealth;
+
+        while (_newHealth > enemy.CurrentHealth)
+        {
+            enemy.CurrentHealth += barSpeed * Time.deltaTime;
+            Heath_FillPercentage = enemy.CurrentHealth / enemy.baseHealth;
+            HP_Bar.transform.localScale = new Vector3(Mathf.Clamp(Heath_FillPercentage, 0, 1), HP_Bar.transform.localScale.y, HP_Bar.transform.localScale.z);
+
+            yield return null;
+        }
+
+        enemy.CurrentHealth = _newHealth;
+        Heath_FillPercentage = enemy.CurrentHealth / enemy.baseHealth;
+        HP_Bar.transform.localScale = new Vector3(Mathf.Clamp(Heath_FillPercentage, 0, 1), HP_Bar.transform.localScale.y, HP_Bar.transform.localScale.z);
+
+        yield return null;
     }
 
-    public void EnemyPanelButtonOff()
+    // Lower health bar and update text
+    private IEnumerator LowerHealthBar(float _newHealth)
     {
-        panelInfo.GetComponent<Outline>().enabled = false;
+        float Heath_FillPercentage;
+
+        panelInfo.enemyHP.text = "HP: " + _newHealth + " / " + enemy.baseHealth;
+
+        while (_newHealth < enemy.CurrentHealth)
+        {
+            enemy.CurrentHealth -= barSpeed * Time.deltaTime;
+            Heath_FillPercentage = enemy.CurrentHealth / enemy.baseHealth;
+            HP_Bar.transform.localScale = new Vector3(Mathf.Clamp(Heath_FillPercentage, 0, 1), HP_Bar.transform.localScale.y, HP_Bar.transform.localScale.z);
+
+            yield return null;
+        }
+
+        enemy.CurrentHealth = _newHealth;
+        Heath_FillPercentage = enemy.CurrentHealth / enemy.baseHealth;
+        HP_Bar.transform.localScale = new Vector3(Mathf.Clamp(Heath_FillPercentage, 0, 1), HP_Bar.transform.localScale.y, HP_Bar.transform.localScale.z);
+
+        yield return null;
+    }
+
+    // Raise enemy corruption bar and update text
+    private IEnumerator RaiseCorruptionBar(float _newCorruption)
+    {
+        float CorruptionFillPercentage;
+
+        CorruptionFillPercentage = _newCorruption / enemy.maxCorruption;
+        panelInfo.corruptionLevel.text = "Corruption: " + Mathf.Round(CorruptionFillPercentage * 100) + "%";
+
+        while (_newCorruption > enemy.currentCorruption)
+        {
+            enemy.currentCorruption += barSpeed * Time.deltaTime;
+            CorruptionFillPercentage = enemy.currentCorruption / enemy.maxCorruption;
+            corruption_Bar.transform.localScale = new Vector3(Mathf.Clamp(CorruptionFillPercentage, 0, 1), corruption_Bar.transform.localScale.y, corruption_Bar.transform.localScale.z);
+            corruptionParticle.UpdateCorruption(CorruptionFillPercentage);
+
+            yield return null;
+        }
+
+        enemy.currentCorruption = _newCorruption;
+        CorruptionFillPercentage = enemy.currentCorruption / enemy.maxCorruption;
+        corruption_Bar.transform.localScale = new Vector3(Mathf.Clamp(CorruptionFillPercentage, 0, 1), corruption_Bar.transform.localScale.y, corruption_Bar.transform.localScale.z);
+        corruptionParticle.UpdateCorruption(CorruptionFillPercentage);
+
+        yield return null;
+    }
+
+    // Lower enemy corruption bar and update text
+    private IEnumerator LowerCorruptionBar(float _newCorruption)
+    {
+        float CorruptionFillPercentage;
+
+        CorruptionFillPercentage = _newCorruption / enemy.maxCorruption;
+        panelInfo.corruptionLevel.text = "Corruption: " + Mathf.Round(CorruptionFillPercentage * 100) + "%";
+
+        while (_newCorruption < enemy.currentCorruption)
+        {
+            enemy.currentCorruption -= barSpeed * Time.deltaTime;
+            CorruptionFillPercentage = enemy.currentCorruption / enemy.maxCorruption;
+            corruption_Bar.transform.localScale = new Vector3(Mathf.Clamp(CorruptionFillPercentage, 0, 1), corruption_Bar.transform.localScale.y, corruption_Bar.transform.localScale.z);
+            corruptionParticle.UpdateCorruption(CorruptionFillPercentage);
+
+            yield return null;
+        }
+
+        enemy.currentCorruption = _newCorruption;
+        CorruptionFillPercentage = enemy.currentCorruption / enemy.maxCorruption;
+        corruption_Bar.transform.localScale = new Vector3(Mathf.Clamp(CorruptionFillPercentage, 0, 1), corruption_Bar.transform.localScale.y, corruption_Bar.transform.localScale.z);
+        corruptionParticle.UpdateCorruption(CorruptionFillPercentage);
+
+        yield return null;
     }
 }

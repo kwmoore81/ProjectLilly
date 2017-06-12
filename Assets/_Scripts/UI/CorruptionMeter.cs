@@ -32,6 +32,7 @@ public class CorruptionMeter : MonoBehaviour
         }
 	}
 
+    // Add a set value to the corruption level
     public void RaiseCorruption(float _corruptionChange)
     {
         newCorruption = currentCorruption;
@@ -42,6 +43,7 @@ public class CorruptionMeter : MonoBehaviour
         meterDown = false;
     }
 
+    // Subtract a set value from the corruption level
     public void LowerCorruption(float _corruptionChange)
     {
         newCorruption = currentCorruption;
@@ -52,6 +54,7 @@ public class CorruptionMeter : MonoBehaviour
         meterDown = true;
     }
 
+    // Set the meter to the current value of the corruption level when entering the battle
     private void InitializeCorruptionMeter()
     {
         float corruption_FillPercentage = currentCorruption / maxCorruption;
@@ -59,6 +62,7 @@ public class CorruptionMeter : MonoBehaviour
                          corruption_Bar.transform.localScale.y, corruption_Bar.transform.localScale.z);
     }
 
+    // Makes a smooth transistion of the corruption meter from the old value to current value
     public void LowerCorruptionMeter()
     {
         if (newCorruption < currentCorruption)
@@ -79,6 +83,7 @@ public class CorruptionMeter : MonoBehaviour
         }
     }
 
+    // Makes a smooth transistion of the corruption meter from the old value to current value
     public void RaiseCorruptionMeter()
     {
         if (newCorruption > currentCorruption)
