@@ -98,6 +98,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         //heroControl.hero.CurrentEnergy = sceneChanger.gabiCurrentResolve;
     }
 
+    // At the start of the battle, check the weapon type and select correct weapon draw animation coroutine
     public void DrawWeapon()
     {
         if ((rightWeaponType > 7 && rightWeaponType < 17))
@@ -113,6 +114,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
         }
     }
 
+    // Turns on/off weapon trail effect
     void WeaponEffect(bool _trailOn)
     {
         GameObject activeTrail;
@@ -153,6 +155,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
 
     }
 
+    // Play hit reaction animation.  If it's a melee attack add resolve value.
     public void HitReaction()
     {
         if (animator.GetBool("Blocking"))
@@ -219,6 +222,8 @@ public class WardenController : MonoBehaviour, IHeroActionControl
 
         yield return new WaitForSeconds(.5f);
 
+        LowerResolve(_chosenAttack.energyCost);
+
         animator.SetInteger("Jumping", 1);
         animator.SetTrigger("JumpTrigger");
 
@@ -235,11 +240,7 @@ public class WardenController : MonoBehaviour, IHeroActionControl
 
         animator.SetInteger("Jumping", 0);
 
-        //animator.SetBool("Moving", false);
-
         actionStarted = false;
-
-        heroControl.hero.CurrentEnergy -= _chosenAttack.energyCost;
 
         heroControl.EndAction();
     }
@@ -311,32 +312,47 @@ public class WardenController : MonoBehaviour, IHeroActionControl
     // Add resolve based on damage taken from enemy attack
     public void AddResolve(int _resolveGain)
     {
-        heroControl.hero.CurrentEnergy += _resolveGain;
+        float newResolve = heroControl.hero.CurrentEnergy + _resolveGain;
 
-        if (heroControl.hero.CurrentEnergy > heroControl.hero.baseEnergy)
+        if (newResolve > heroControl.hero.baseEnergy)
         {
-            heroControl.hero.CurrentEnergy = heroControl.hero.baseEnergy;
+            newResolve = heroControl.hero.baseEnergy;
         }
+
+        StartCoroutine(heroControl.RaiseResourceBar(newResolve));
     }
 
+    public void LowerResolve(float _resolveLoss)
+    {
+        float newResolve = heroControl.hero.CurrentEnergy - _resolveLoss;
+
+        if (newResolve < 0)
+        {
+            newResolve = 0;
+        }
+
+        StartCoroutine(heroControl.LowerResourceBar(newResolve));
+    }
+
+    // Move hero toward melee target
     private bool MoveTowardTarget(Vector3 target)
     {
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime));
     }
 
+    // Move hero toward starting position
     private bool MoveTowardStart(Vector3 target)
     {
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, (moveSpeed * 1.25f) * Time.deltaTime));
     }
 
+    // Play death animation
     public void HeroDeathAnim()
     {
         animator.SetTrigger("Death1Trigger");
     }
 
-    //**************************
-    #region _Coroutines
-    //**************************
+    #region _WeaponCoroutines
 
     //for two-hand weapon switching
     void SwitchWeaponTwoHand(int upDown)

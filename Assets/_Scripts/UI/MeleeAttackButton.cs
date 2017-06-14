@@ -3,10 +3,16 @@ using System.Collections;
 
 public class MeleeAttackButton : MonoBehaviour
 {
+    private BattleController battleControl;
     public AttackData meleeAttack;
+
+    void Start()
+    {
+        battleControl = GameObject.Find("BattleManager").GetComponent<BattleController>();
+    }
 
     public void doMeleeAttack()
     {
-        GameObject.Find("BattleManager").GetComponent<BattleController>().MeleeInput(meleeAttack);
+        battleControl.MeleeInput(meleeAttack);
     }
 }

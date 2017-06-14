@@ -52,9 +52,6 @@ public class AttackData : MonoBehaviour
     public int strengthChange;
     public int speedChange;
     public int defenseChange;
-    //public bool confusion;
-    //public bool blind;
-    //public bool removeDebuff;
 
     [Header ("Attack & Element Enums")]
     public AttackType attackType;

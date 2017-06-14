@@ -32,20 +32,6 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
         // Nothing happening here, but the interface needs it.
     }
 
-    void ClawEffect(bool _trailOn)
-    {
-        //GameObject activeTrail;
-
-        //if (twohandsword.activeSelf == true)
-        //{
-        //    activeTrail = twohandsword.transform.FindChild("Trail").gameObject;
-        //    if (_trailOn)
-        //        activeTrail.SetActive(true);
-        //    else
-        //        activeTrail.SetActive(false);
-        //}
-    }
-
     public void Revive()
     {
         //animator.SetTrigger("Revive1Trigger");
@@ -70,6 +56,11 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
     public void MagicInput(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         StartCoroutine(PerformMagicAttack(_chosenAttack, _targetPosition));
+    }
+
+    public void FleeInput(GameObject _targetGO)
+    {
+        StartCoroutine(PerformFlee(_targetGO));
     }
 
     public void ItemUseInput(int _itemID)
@@ -200,6 +191,45 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
         enemyControl.EndAction();
     }
 
+    // Coroutine for handling cleansed enemy leaving the battlefield
+    private IEnumerator PerformFlee(GameObject _targetGO)
+    {
+        Vector3 targetPosition = new Vector3(transform.position.x + 25, transform.position.y, transform.position.z);
+        Vector3 attackerPosition = battleControl.activeAgentList[0].agentGO.transform.position;
+
+        if (actionStarted)
+        {
+            yield break;
+        }
+
+        actionStarted = true;
+
+        // Pause to let hit reaction animation finish
+        yield return new WaitForSeconds(1.2f);
+
+        // Set running animation trigger
+        animator.SetTrigger("fleeTurn");
+        yield return new WaitForSeconds(.34f);
+
+        animator.SetTrigger("run");
+        yield return new WaitForSeconds(.4f);
+
+        _targetGO.GetComponent<Collider>().enabled = false;
+
+        while (MoveTowardTarget(targetPosition))
+        {
+            yield return null;
+        }
+
+        animator.SetTrigger("idle");
+
+        enemyControl.enemyPanel.SetActive(false);
+        enemyControl.tag = "DeadEnemy";
+        
+        actionStarted = false;
+        enemyControl.EndAction();
+    }
+
     private bool MoveTowardTarget(Vector3 target)
     {
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime));
@@ -208,5 +238,15 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
     private bool MoveTowardStart(Vector3 target)
     {
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime));
+    }
+
+    public void EnemyPanelButtonOn()
+    {
+        enemyButton.SetActive(true);
+    }
+
+    public void EnemyPanelButtonOff()
+    {
+        enemyButton.SetActive(false);
     }
 }
