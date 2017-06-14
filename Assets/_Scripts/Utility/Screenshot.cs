@@ -5,6 +5,7 @@ using UnityEngine;
 public class Screenshot : MonoBehaviour {
    
     public Texture2D screenShot;
+    
 
     // Use this for initialization
     void Start () {
@@ -17,7 +18,7 @@ public class Screenshot : MonoBehaviour {
 	}
     private void OnPostRender()
     {
-        screenShot = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
+        //screenShot = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
         screenShot.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
         screenShot.Apply();
 

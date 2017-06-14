@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 6eabda7bcff3bee44a6d56dac488202f
 timeCreated: 1496351987
+=======
+guid: 4ea22581b6b105f40a9b745dd6ac3945
+timeCreated: 1496350814
+>>>>>>> refs/remotes/origin/Overworld
 licenseType: Pro
 NativeFormatImporter:
   userData: 
