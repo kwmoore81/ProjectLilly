@@ -97,6 +97,7 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         //heroControl.hero.CurrentEarthCharges = sceneChanger.quinnCurrentEarth;
     }
 
+    // At the start of the battle, check the weapon type and select correct weapon draw animation coroutine
     public void DrawWeapon()
     {
         if ((rightWeaponType > 7 && rightWeaponType < 17))
@@ -112,6 +113,7 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         }
     }
 
+    // Turns on/off weapon trail effect
     void WeaponEffect(bool _trailOn)
     {
         GameObject activeTrail;
@@ -146,9 +148,7 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         {
             StartCoroutine(PerformDefend(_chosenAttack, _targetPosition));
         }
-    }
-
-    
+    }  
 
     public void RestoreInput(AttackData _chosenAttack, Vector3 _targetPosition)
     {
@@ -161,18 +161,19 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         heroControl.EndAction();
     }
 
-    // TODO: Setup Defend() function
     public void DefendInput(AttackData _chosenDefend, Vector3 _targetPosition)
     {
         StartCoroutine(PerformDefend(_chosenDefend, _targetPosition));
     }
 
+    // Play hit reaction animation.  If it's a elemental attack add the appropriate charge value.
     public void HitReaction()
     {
-        // TODO: Add variable hit reaction based on damage done and defend state
         int hits = 5;
         int hitNumber = Random.Range(0, hits);
         animator.SetTrigger("GetHit" + (hitNumber + 1).ToString() + "Trigger");
+
+        // TODO: Add element charge if matching element attack is used
     }
 
     public void DeathReaction()
@@ -289,11 +290,32 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
 
         // Restore appropriate element charges
         if (_chosenAttack.fireChargeRestore > 0)
+        {
             heroControl.hero.CurrentFireCharges += _chosenAttack.fireChargeRestore;
+
+            if (heroControl.hero.CurrentFireCharges > heroControl.hero.maxFireCharges)
+            {
+                heroControl.hero.CurrentFireCharges = heroControl.hero.maxFireCharges;
+            }
+        }
         else if (_chosenAttack.waterChargeRestore > 0)
+        {
             heroControl.hero.CurrentWaterCharges += _chosenAttack.waterChargeRestore;
+
+            if (heroControl.hero.CurrentWaterCharges > heroControl.hero.maxWaterCharges)
+            {
+                heroControl.hero.CurrentWaterCharges = heroControl.hero.maxWaterCharges;
+            }
+        }
         else if (_chosenAttack.earthChargeRestore > 0)
+        {
             heroControl.hero.CurrentEarthCharges += _chosenAttack.earthChargeRestore;
+
+            if (heroControl.hero.CurrentEarthCharges > heroControl.hero.maxEarthCharges)
+            {
+                heroControl.hero.CurrentEarthCharges = heroControl.hero.maxEarthCharges;
+            }
+        }
 
         yield return null;
 
@@ -301,11 +323,13 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         heroControl.EndAction();
     }
 
+    // Move hero toward melee target
     private bool MoveTowardTarget(Vector3 target)
     {
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime));
     }
 
+    // Move hero toward starting position
     private bool MoveTowardStart(Vector3 target)
     {
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, (moveSpeed * 1.25f) * Time.deltaTime));
@@ -329,14 +353,16 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         Quaternion spellRotation = Quaternion.LookRotation(_targetPosition);
         GameObject tempSpell = Instantiate(_chosenAttack.projectile, _targetPosition, spellRotation) as GameObject;
 
-        yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
-
-        Destroy(tempSpell);
         if (_chosenAttack.attackType == AttackData.AttackType.HEAL)
         {
             heroControl.DoHealing();
         }
-        else
+
+        yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
+
+        Destroy(tempSpell);
+
+        if (_chosenAttack.attackType == AttackData.AttackType.MELEE)
         {
             heroControl.DoDamage();
         }
@@ -347,7 +373,7 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         heroControl.EndAction();
     }
 
-    // TODO: Setup item use animation function
+    // Coroutine for handling item use animations (not currently in game)
     private IEnumerator PerformItemUse(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         if (actionStarted)
@@ -377,6 +403,7 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         heroControl.EndAction();
     }
 
+    // Coroutine for performing defend animation (Not currently used by this class)
     private IEnumerator PerformDefend(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         if (actionStarted)
@@ -394,6 +421,7 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         heroControl.EndAction();
     }
 
+    // Check if the chosen attack element matches the element affinity of the target
     private bool CheckElementParity(AttackData _chosenAttack)
     {
         string attackElement = _chosenAttack.damageType.ToString();
@@ -420,7 +448,7 @@ public class ElementalistController : MonoBehaviour, IHeroActionControl
         animator.SetTrigger("Death1Trigger");
     }
 
-    #region _Coroutines
+    #region _WeaponCoroutines
 
     //for two-hand weapon switching
     void SwitchWeaponTwoHand(int upDown)

@@ -127,7 +127,7 @@ public class HunterController : MonoBehaviour, IHeroActionControl
 
     }
 
-    public void ActionInput(ActionData _chosenAction, Vector3 _targetPosition)
+    public void ActionInput(AttackData _chosenAction, Vector3 _targetPosition)
     {
 
     }

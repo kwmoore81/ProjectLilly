@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -69,6 +70,7 @@ public class BattleController : MonoBehaviour
     public GameObject waterPanel;
     public GameObject attackPanel;
     public GameObject utilityPanel;
+    public GameObject failedActionPanel;
     public GameObject enemySelectPanel;
     public GameObject heroSelectPanel;
     public GameObject corruptionMeter;
@@ -99,7 +101,7 @@ public class BattleController : MonoBehaviour
 
     // Battle start delay
     public bool startBattle = false;
-    private float startDelay = 3.25f;
+    private float startDelay = 5f;
     private float startDelayTimer;
     public bool pauseBattle = false;
 
@@ -145,6 +147,7 @@ public class BattleController : MonoBehaviour
         earthPanel.SetActive(false);
         waterPanel.SetActive(false);
         utilityPanel.SetActive(false);
+        failedActionPanel.SetActive(false);
         enemySelectPanel.SetActive(false);
         heroSelectPanel.SetActive(false);
         victoryPanel.SetActive(false);
@@ -288,7 +291,7 @@ public class BattleController : MonoBehaviour
             heroesToManage[0].transform.FindChild("Selector").gameObject.SetActive(true);
             heroChoice = new TurnOrderHandler();
 
-            // Hero panel animation
+            // TODO: Hero panel animation
 
             actionPanel.SetActive(true);
             CreateActionButtons();
@@ -331,16 +334,15 @@ public class BattleController : MonoBehaviour
         actionState = ActionState.PERFORMACTION;
     }
 
+    // Send hero and enemy choices to the active agent list
     public void ActionCollector(TurnOrderHandler _agentInfo)
     {
         activeAgentList.Add(_agentInfo);
     }
 
+    // Add dead characters to the appropriate list and check if there are any left alive
     void CheckForDead()
     {
-        deadEnemies.AddRange(GameObject.FindGameObjectsWithTag("DeadEnemy"));
-        deadHeroes.AddRange(GameObject.FindGameObjectsWithTag("DeadHero"));
-
         if (heroesInBattle.Count <= 0)
         {
             actionState = ActionState.LOSE;
@@ -360,6 +362,13 @@ public class BattleController : MonoBehaviour
             deadHeroes.AddRange(GameObject.FindGameObjectsWithTag("DeadHero"));
             deadEnemies.AddRange(GameObject.FindGameObjectsWithTag("DeadEnemy"));
         }
+    }
+
+    // Update the heroesInBattle and enemiesInBattle lists
+    public void UpdateEnemiesInBattleLists()
+    {
+        enemiesInBattle.Clear();
+        enemiesInBattle.AddRange(GameObject.FindGameObjectsWithTag("Enemy"));
     }
 
     public void ActionInput()
@@ -409,6 +418,7 @@ public class BattleController : MonoBehaviour
         waterPanel.SetActive(false);
         attackPanel.SetActive(false);
         utilityPanel.SetActive(false);
+        failedActionPanel.SetActive(false);
     }
 
     void ClearAttackPanel()
@@ -421,6 +431,7 @@ public class BattleController : MonoBehaviour
         waterPanel.SetActive(false);
         attackPanel.SetActive(false);
         utilityPanel.SetActive(false);
+        failedActionPanel.SetActive(false);
 
         foreach (GameObject attackButton in attackButtons)
         {
@@ -502,6 +513,16 @@ public class BattleController : MonoBehaviour
         }
     }
     
+    public IEnumerator FailedActionNotification(string _resourceType)
+    {
+        Text failedActionText = failedActionPanel.transform.FindChild("text").gameObject.GetComponent<Text>();
+        failedActionText.text = _resourceType;
+        failedActionPanel.SetActive(true);
+        yield return new WaitForSeconds(3);
+
+        failedActionPanel.SetActive(false);
+        yield return null;
+    }
 
     // Create action buttons
     void CreateActionButtons()
@@ -653,6 +674,7 @@ public class BattleController : MonoBehaviour
         heroChoice.chosenAttack = chosenAttack;
 
         enemySelectPanel.SetActive(true);
+        enemyButtonsControl();
     }
 
     public void MagicInput(string _magicType)
@@ -691,6 +713,7 @@ public class BattleController : MonoBehaviour
         else
         {
             enemySelectPanel.SetActive(true);
+            enemyButtonsControl();
         }
     }
 
@@ -714,6 +737,7 @@ public class BattleController : MonoBehaviour
         else
         {
             enemySelectPanel.SetActive(true);
+            enemyButtonsControl();
         }
     }
 
@@ -732,14 +756,12 @@ public class BattleController : MonoBehaviour
     {
         for (int i = 0; i < enemiesInBattle.Count; i++)
         {
-            if (enemiesInBattle[i].tag == "Enemy")
-            {
-                
-            }
-            else if (enemiesInBattle[i].tag == "DeadEnemy")
-            {
+            enemiesInBattle[i].GetComponent<EnemyController>().enemyActionControl.EnemyPanelButtonOn();
+        }
 
-            }
+        for (int i = 0; i < deadEnemies.Count; i++)
+        {
+            deadEnemies[i].GetComponent<EnemyController>().enemyActionControl.EnemyPanelButtonOff();
         }
     }
 
@@ -763,10 +785,7 @@ public class BattleController : MonoBehaviour
 
             // Write current stats to database
             overWorldSceneChanger2.currentAreaCorruption = corruptionMeter.GetComponent<CorruptionMeter>().currentCorruption;
-            //for (int i = 0; 0 < deadHeroes.Count; i++)
-            //{
-            //    deadHeroes[i].GetComponent<HeroController>().EndBattleRevive();
-            //}
+
             for (int i = 0; i < heroesInBattle.Count; i++)
             {
                 heroesInBattle[i].GetComponent<HeroController>().heroActionControl.WriteStats();
@@ -792,10 +811,6 @@ public class BattleController : MonoBehaviour
             // Write current stats to database
             overWorldSceneChanger2.currentAreaCorruption = corruptionMeter.GetComponent<CorruptionMeter>().currentCorruption;
 
-            //for (int i = 0; 0 < deadHeroes.Count; i++)
-            //{
-            //    deadHeroes[i].GetComponent<HeroController>().EndBattleRevive();
-            //}
             for (int i = 0; 0 < heroesInBattle.Count; i++)
             {
                 heroesInBattle[i].GetComponent<HeroController>().heroActionControl.WriteStats();

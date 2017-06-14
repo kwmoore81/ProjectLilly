@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: e37da140cb9ca594f9150ea216a05192
-timeCreated: 1495841945
+guid: 665be2b128cee434495e8c4edea83bf6
+timeCreated: 1496362615
 licenseType: Pro
 ModelImporter:
   serializedVersion: 19
@@ -336,7 +336,7 @@ ModelImporter:
       name: Chimera_Attack1
       takeName: Take 001
       firstFrame: 1
-      lastFrame: 75
+      lastFrame: 83
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

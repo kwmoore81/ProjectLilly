@@ -1,7 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
+guid: 689227c240260bd48b0ac4e93452cc47
+folderAsset: yes
+timeCreated: 1496351961
+=======
 guid: d2082c07bc7316f49903a351fa3a8f5c
 folderAsset: yes
 timeCreated: 1496350782
+>>>>>>> refs/remotes/origin/Overworld
 licenseType: Pro
 DefaultImporter:
   userData: 

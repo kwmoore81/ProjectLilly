@@ -6,6 +6,7 @@ public class ChimeraController : MonoBehaviour, IEnemyActionControl
 {
     protected Animator animator;
     EnemyController enemyControl;
+    BattleController battleControl;
     public GameObject enemyButton;
 
     // Variables for performing timed actions
@@ -15,14 +16,15 @@ public class ChimeraController : MonoBehaviour, IEnemyActionControl
 
     private bool isAlive = true;
 
+    public GameObject spellSpawn;
+
     public void EnemyAwake()
     {
         animator = GetComponentInChildren<Animator>();
         enemyControl = GetComponent<EnemyController>();
+        battleControl = GameObject.Find("BattleManager").GetComponent<BattleController>();
         startPosition = transform.position;
         enemyButton.GetComponent<EnemySelectButton>().enemyPrefab = gameObject;
-
-        animator.Play("Wolf Basic Idle", -1, Random.Range(0.0f, 1.0f));
     }
 
     public void DrawWeapon()
@@ -30,23 +32,9 @@ public class ChimeraController : MonoBehaviour, IEnemyActionControl
         // Nothing happening here, but the interface needs it.
     }
 
-    void ClawEffect(bool _trailOn)
-    {
-        //GameObject activeTrail;
-
-        //if (twohandsword.activeSelf == true)
-        //{
-        //    activeTrail = twohandsword.transform.FindChild("Trail").gameObject;
-        //    if (_trailOn)
-        //        activeTrail.SetActive(true);
-        //    else
-        //        activeTrail.SetActive(false);
-        //}
-    }
-
     public void Revive()
     {
-        //animator.SetTrigger("Revive1Trigger");
+        animator.SetTrigger("Revive1Trigger");
     }
 
     public void ThreatTracking()
@@ -59,10 +47,12 @@ public class ChimeraController : MonoBehaviour, IEnemyActionControl
 
     }
 
-    // TODO: Setup RecieveAttack() function
     public void AttackInput(AttackData _chosenAttack, Vector3 _targetPosition)
     {
-        StartCoroutine(PerformAttack(_chosenAttack, _targetPosition));
+        if (_chosenAttack.attackType == AttackData.AttackType.MELEE)
+            StartCoroutine(PerformAttack(_chosenAttack, _targetPosition));
+        else if (_chosenAttack.attackType == AttackData.AttackType.SPELL)
+            StartCoroutine(PerformMagicAttack(_chosenAttack, _targetPosition));
     }
 
     public void MagicInput(AttackData _chosenAttack, Vector3 _targetPosition)
@@ -70,21 +60,32 @@ public class ChimeraController : MonoBehaviour, IEnemyActionControl
         StartCoroutine(PerformMagicAttack(_chosenAttack, _targetPosition));
     }
 
-    // TODO: Setup RecieveItemUse() function
+    public void FleeInput(GameObject _targetGO)
+    {
+
+    }
+
     public void ItemUseInput(int _itemID)
     {
         // Nothing happening here, but the interface needs it.
     }
 
-    // TODO: Setup Defend() function
     public void DefendInput()
     {
-
+        // Nothing happening here, but the interface needs it.
     }
 
+    // Play the appropriate hit reaction depending on if its a spell or melee attack
     public void HitReaction()
     {
-        animator.SetTrigger("hit");
+        if (battleControl.activeAgentList[0].chosenAttack.attackType == AttackData.AttackType.SPELL)
+        {
+            animator.SetTrigger("Hit2Trigger");
+        }
+        else
+        {
+            animator.SetTrigger("Hit1Trigger");
+        }
     }
 
     public void InjuredReaction()
@@ -97,6 +98,7 @@ public class ChimeraController : MonoBehaviour, IEnemyActionControl
         animator.SetTrigger("death");
     }
 
+    // Coroutine for handling melee attack actions and animations
     private IEnumerator PerformAttack(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         _targetPosition = new Vector3(_targetPosition.x + _chosenAttack.targetOffset, _targetPosition.y, _targetPosition.z);
@@ -108,32 +110,19 @@ public class ChimeraController : MonoBehaviour, IEnemyActionControl
 
         actionStarted = true;
 
-        // Set running animation trigger
-        animator.SetTrigger("run");
-        yield return new WaitForSeconds(.1f);
+        // Handle attack animations and movement
+        animator.SetTrigger(_chosenAttack.attackAnimation);
+        yield return new WaitForSeconds(_chosenAttack.attackWaitTime);
 
-        if (_chosenAttack.moveDuringAttack)
+        while (MoveTowardTarget(_targetPosition))
         {
-            while (MoveTowardTarget(_targetPosition))
-            {
-                yield return null;
-            }
-
-            animator.SetTrigger(_chosenAttack.attackAnimation);
-
-            while (MoveTowardTarget(_targetPosition))
-            {
-                yield return null;
-            }
+            yield return null;
         }
-        else
-        {
-            while (MoveTowardTarget(_targetPosition))
-            {
-                yield return null;
-            }
+        animator.SetTrigger(_chosenAttack.attackAnimation);
 
-            animator.SetTrigger(_chosenAttack.attackAnimation);
+        while (MoveTowardTarget(_targetPosition))
+        {
+            yield return null;
         }
 
         yield return new WaitForSeconds(_chosenAttack.damageWaitTime);
@@ -159,6 +148,7 @@ public class ChimeraController : MonoBehaviour, IEnemyActionControl
         enemyControl.EndAction();
     }
 
+    // Coroutine for handling spellcast actions and animations
     private IEnumerator PerformMagicAttack(AttackData _chosenAttack, Vector3 _targetPosition)
     {
         if (actionStarted)
@@ -198,5 +188,15 @@ public class ChimeraController : MonoBehaviour, IEnemyActionControl
     private bool MoveTowardStart(Vector3 target)
     {
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime));
+    }
+
+    public void EnemyPanelButtonOn()
+    {
+        enemyButton.SetActive(true);
+    }
+
+    public void EnemyPanelButtonOff()
+    {
+        enemyButton.SetActive(false);
     }
 }
