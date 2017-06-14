@@ -343,9 +343,6 @@ public class BattleController : MonoBehaviour
     // Add dead characters to the appropriate list and check if there are any left alive
     void CheckForDead()
     {
-        deadEnemies.AddRange(GameObject.FindGameObjectsWithTag("DeadEnemy"));
-        deadHeroes.AddRange(GameObject.FindGameObjectsWithTag("DeadHero"));
-
         if (heroesInBattle.Count <= 0)
         {
             actionState = ActionState.LOSE;
@@ -367,6 +364,12 @@ public class BattleController : MonoBehaviour
         }
     }
 
+    // Update the heroesInBattle and enemiesInBattle lists
+    public void UpdateEnemiesInBattleLists()
+    {
+        enemiesInBattle.Clear();
+        enemiesInBattle.AddRange(GameObject.FindGameObjectsWithTag("Enemy"));
+    }
 
     public void ActionInput()
     {

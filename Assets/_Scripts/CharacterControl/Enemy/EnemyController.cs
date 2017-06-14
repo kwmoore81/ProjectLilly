@@ -265,14 +265,17 @@ public class EnemyController : MonoBehaviour
             // Remove from active agent list
             for (int i = 0; i < battleControl.activeAgentList.Count; i++)
             {
-                if (battleControl.activeAgentList[i].agentGO == this.gameObject)
+                if (i != 0)
                 {
-                    battleControl.activeAgentList.Remove(battleControl.activeAgentList[i]);
-                }
+                    if (battleControl.activeAgentList[i].agentGO == this.gameObject)
+                    {
+                        battleControl.activeAgentList.Remove(battleControl.activeAgentList[i]);
+                    }
 
-                if (battleControl.activeAgentList[i].targetGO == this.gameObject)
-                {
-                    battleControl.activeAgentList[i].targetGO = battleControl.enemiesInBattle[Random.Range(0, battleControl.enemiesInBattle.Count)];
+                    if (battleControl.activeAgentList[i].targetGO == this.gameObject)
+                    {
+                        battleControl.activeAgentList[i].targetGO = battleControl.enemiesInBattle[Random.Range(0, battleControl.enemiesInBattle.Count)];
+                    }
                 }
             }
 
@@ -286,8 +289,8 @@ public class EnemyController : MonoBehaviour
             battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
             isAlive = false;
 
-            // Reset enemy buttons and check if battle has been won or lost
-            battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
+            // Reset InBattle lists
+            battleControl.UpdateEnemiesInBattleLists();
         }
     }
 
@@ -311,14 +314,17 @@ public class EnemyController : MonoBehaviour
             {
                 for (int i = 0; i < battleControl.activeAgentList.Count; i++)
                 {
-                    if (battleControl.activeAgentList[i].agentGO == this.gameObject)
+                    if (i != 0)
                     {
-                        battleControl.activeAgentList.Remove(battleControl.activeAgentList[i]);
-                    }
+                        if (battleControl.activeAgentList[i].agentGO == this.gameObject)
+                        {
+                            battleControl.activeAgentList.Remove(battleControl.activeAgentList[i]);
+                        }
 
-                    if (battleControl.activeAgentList[i].targetGO == this.gameObject)
-                    {
-                        battleControl.activeAgentList[i].targetGO = battleControl.enemiesInBattle[Random.Range(0, battleControl.enemiesInBattle.Count)];
+                        if (battleControl.activeAgentList[i].targetGO == this.gameObject)
+                        {
+                            battleControl.activeAgentList[i].targetGO = battleControl.enemiesInBattle[Random.Range(0, battleControl.enemiesInBattle.Count)];
+                        }
                     }
                 }
             }
@@ -333,8 +339,8 @@ public class EnemyController : MonoBehaviour
             battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
             isAlive = false;
 
-            // Reset enemy buttons and check if battle has been won or lost
-            battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
+            // Reset InBattle lists
+            battleControl.UpdateEnemiesInBattleLists();
         }
     }
 

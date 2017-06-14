@@ -334,14 +334,17 @@ public class HeroController : MonoBehaviour
             {
                 for (int i = 0; i < battleControl.activeAgentList.Count; i++)
                 {
-                    if (battleControl.activeAgentList[i].agentGO == this.gameObject)
+                    if (i != 0)
                     {
-                        battleControl.activeAgentList.Remove(battleControl.activeAgentList[i]);
-                    }
+                        if (battleControl.activeAgentList[i].agentGO == this.gameObject)
+                        {
+                            battleControl.activeAgentList.Remove(battleControl.activeAgentList[i]);
+                        }
 
-                    if (battleControl.activeAgentList[i].targetGO == this.gameObject)
-                    {
-                        battleControl.activeAgentList[i].targetGO = battleControl.heroesInBattle[Random.Range(0, battleControl.heroesInBattle.Count)];
+                        if (battleControl.activeAgentList[i].targetGO == this.gameObject)
+                        {
+                            battleControl.activeAgentList[i].targetGO = battleControl.heroesInBattle[Random.Range(0, battleControl.heroesInBattle.Count)];
+                        }
                     }
                 }
             }
