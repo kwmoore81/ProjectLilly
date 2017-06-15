@@ -253,14 +253,14 @@ public class EnemyController : MonoBehaviour
         }
         else
         {
-            // TODO: Add animations to leave battle area
-            // TODO: Cleanup battle manager agent list
-
             this.gameObject.tag = "DeadEnemy";
             battleControl.enemiesInBattle.Remove(this.gameObject);
 
             // Disable enemy selector
             selector.SetActive(false);
+
+            // Play battlefield flee animation
+            enemyActionControl.FleeInput(battleControl.activeAgentList[0].targetGO);
 
             // Remove from active agent list
             for (int i = 0; i < battleControl.activeAgentList.Count; i++)
@@ -279,18 +279,12 @@ public class EnemyController : MonoBehaviour
                 }
             }
 
-            // Play battlefield flee animation
-            enemyActionControl.FleeInput(battleControl.activeAgentList[0].targetGO);
-
             // Update area corruption
             battleControl.corruptionMeter.GetComponent<CorruptionMeter>().LowerCorruption(enemy.startingCorruption);
 
             // Check if all enemies are dead and set isAlive to false;
             battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
             isAlive = false;
-
-            // Reset InBattle lists
-            battleControl.UpdateEnemiesInBattleLists();
         }
     }
 
@@ -338,9 +332,6 @@ public class EnemyController : MonoBehaviour
             // Check if all enemies are dead and set isAlive to false;
             battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
             isAlive = false;
-
-            // Reset InBattle lists
-            battleControl.UpdateEnemiesInBattleLists();
         }
     }
 
