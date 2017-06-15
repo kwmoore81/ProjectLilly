@@ -181,6 +181,11 @@ public class EnemyController : MonoBehaviour
 
     public void EndAction()
     {
+        if (gameObject.CompareTag("DeadEnemy"))
+        {
+            // Hack to prevent iterators from calling function when dead.
+            return;
+        }
         // Remove from the active agent list
         battleControl.activeAgentList.RemoveAt(0);
 
@@ -262,6 +267,9 @@ public class EnemyController : MonoBehaviour
             // Disable enemy selector
             selector.SetActive(false);
 
+            // Play battlefield flee animation
+            enemyActionControl.FleeInput(battleControl.activeAgentList[0].targetGO);
+
             // Remove from active agent list
             for (int i = 0; i < battleControl.activeAgentList.Count; i++)
             {
@@ -278,9 +286,6 @@ public class EnemyController : MonoBehaviour
                     }
                 }
             }
-
-            // Play battlefield flee animation
-            enemyActionControl.FleeInput(battleControl.activeAgentList[0].targetGO);
 
             // Update area corruption
             battleControl.corruptionMeter.GetComponent<CorruptionMeter>().LowerCorruption(enemy.startingCorruption);
