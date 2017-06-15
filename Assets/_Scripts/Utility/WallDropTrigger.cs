@@ -15,11 +15,6 @@ public class WallDropTrigger : MonoBehaviour {
         SC1 = overWorldMaster.GetComponent<OverworldSceneChanger1>();
         characterStatsDB = DataBase.GetComponent<CharacterStatsDB>();
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
     void OnTriggerEnter(Collider other)
     {

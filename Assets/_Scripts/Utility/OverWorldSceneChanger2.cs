@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.PostProcessing;
 
 public class OverWorldSceneChanger2 : MonoBehaviour
 {
@@ -13,6 +14,13 @@ public class OverWorldSceneChanger2 : MonoBehaviour
 
     public GameObject DataBase;
     private CharacterStatsDB characterStatsDB;
+
+    public GameObject ThirdPersonCamera;
+    private VolumetricFog volumetricFog;
+    public PostProcessingBehaviour postProcessingBehavior;
+
+    public GameObject fogTrigger;
+    private FogTriggerScript fogTriggerScript;
 
     public float gabiCurrentHealth;
     public float gabiCurrentResolve;
@@ -31,7 +39,9 @@ public class OverWorldSceneChanger2 : MonoBehaviour
     {
         characterStatsDB = DataBase.GetComponent<CharacterStatsDB>();
         overWorldSceneChanger1 = overworldMaster.GetComponent<OverworldSceneChanger1>();
+        volumetricFog = ThirdPersonCamera.GetComponent<VolumetricFog>();
         Cursor.visible = true;
+        fogTriggerScript = fogTrigger.GetComponent<FogTriggerScript>();
     }
 
     public void SceneChange()
@@ -42,6 +52,19 @@ public class OverWorldSceneChanger2 : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         Destroy(overWorldSceneChanger1.battleSceneTemp);
+
+        postProcessingBehavior.enabled = true;
+
+        if (fogTriggerScript.fogActive == true)
+        {
+            volumetricFog.enabled = true;
+        }
+        else
+        {
+            volumetricFog.enabled = false;
+        }
+
+        
     }
 
     public void UpdateFromBank()
