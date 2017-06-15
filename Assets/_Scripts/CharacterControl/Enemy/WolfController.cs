@@ -195,7 +195,7 @@ public class WolfController : MonoBehaviour, IEnemyActionControl
     private IEnumerator PerformFlee(GameObject _targetGO)
     {
         Vector3 targetPosition = new Vector3(transform.position.x + 25, transform.position.y, transform.position.z);
-        Vector3 attackerPosition = battleControl.activeAgentList[0].agentGO.transform.position;
+        Vector3 attackerPosition = /*battleControl.activeAgentList[0].agentGO.*/transform.position;
 
         if (actionStarted)
         {
