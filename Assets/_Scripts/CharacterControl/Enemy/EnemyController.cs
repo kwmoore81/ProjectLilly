@@ -151,9 +151,6 @@ public class EnemyController : MonoBehaviour
                 enemyAttack.chosenAttack = enemy.earthSpells[0];
         }
 
-        //enemyAttack.chosenAttack = enemy.attacks[randomChoice];
-        //Debug.Log(this.gameObject.name + " has chosen " + enemyAttack.chosenAttack.attackName + " and does " + enemyAttack.chosenAttack.attackDamage + " damage.");
-
         battleControl.ActionCollector(enemyAttack);
     }
 

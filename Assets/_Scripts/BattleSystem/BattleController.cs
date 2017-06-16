@@ -51,6 +51,9 @@ public class BattleController : MonoBehaviour
     public Animator animPanelGabi;
     public Animator animPanelQuinn;
     public Animator animPanelArvandus;
+    //public Animator animButtonGabi;
+    //public Animator animButtonQuinn;
+    //public Animator animButtonArvandus;
 
     [Header("Battle Control Lists")]
     public List<TurnOrderHandler> activeAgentList = new List<TurnOrderHandler>();
@@ -119,6 +122,7 @@ public class BattleController : MonoBehaviour
     [HideInInspector]
     public bool battleResultWait = false;
 
+    // Animation control variables
     public bool gabiTurn = false;
     public bool quinnTurn = false;
     public bool arvandusTurn = false;
@@ -203,12 +207,6 @@ public class BattleController : MonoBehaviour
                 startDelayTimer -= Time.deltaTime;
             }
         }
-
-        if (heroPanelActive)
-        {
-            if (heroPanelOn) ExpandHeroPanels();
-            else ContractHeroPanels();
-        }
     }
 
     void SpawnEnemies()
@@ -246,17 +244,15 @@ public class BattleController : MonoBehaviour
                 ReceiveAction();
                 break;
             case (ActionState.PERFORMACTION):
-                // Idle
+                // Idle state
                 break;
             case (ActionState.CHECKFORDEAD):
                 CheckForDead();
                 break;
             case (ActionState.WIN):
-                //Debug.Log("You win!");
                 WinBattle();
                 break;
             case (ActionState.LOSE):
-                //Debug.Log("You lose!");
                 LoseBattle();
                 break;
         }
@@ -291,7 +287,7 @@ public class BattleController : MonoBehaviour
             heroesToManage[0].transform.FindChild("Selector").gameObject.SetActive(true);
             heroChoice = new TurnOrderHandler();
 
-            // TODO: Hero panel animation
+            ActivateHeroPanels();
 
             actionPanel.SetActive(true);
             CreateActionButtons();
@@ -303,8 +299,6 @@ public class BattleController : MonoBehaviour
     void ReceiveAction()
     {
         GameObject agent = GameObject.Find(activeAgentList[0].activeAgent);
-
-        //agent = activeAgentList[0].agentGO;
 
         if (agent.transform.tag == "Enemy")
         {
@@ -372,6 +366,8 @@ public class BattleController : MonoBehaviour
 
         if (heroChoice.chosenAttack.partyTargeting)
         {
+            ContractHeroPanels();
+            ForceWaitTime(1);
             heroSelectPanel.SetActive(true);
         }
         else
@@ -398,6 +394,10 @@ public class BattleController : MonoBehaviour
         ClearAttackPanel();
 
         heroesToManage[0].transform.FindChild("Selector").gameObject.SetActive(false);
+
+        ContractHeroPanels();
+        ForceWaitTime(1);
+
         heroesToManage.RemoveAt(0);
         heroInput = HeroUI.ACTIVATE;
     }
@@ -435,18 +435,22 @@ public class BattleController : MonoBehaviour
 
     void ActivateHeroPanels()
     {
-        if (activeAgentList[0].agentGO.GetComponent<HeroController>().name == "Gabi")
+        if (heroesToManage[0].gameObject.GetComponent<HeroController>().name == "Gabi")
         {
             gabiTurn = true;
         }
-        else if (activeAgentList[0].agentGO.GetComponent<HeroController>().name == "Quinn")
+        else if (heroesToManage[0].gameObject.GetComponent<HeroController>().name == "Quinn")
         {
             quinnTurn = true;
         }
-        else if (activeAgentList[0].agentGO.GetComponent<HeroController>().name == "Arvandus")
+        else if (heroesToManage[0].gameObject.GetComponent<HeroController>().name == "Arvandus")
         {
             arvandusTurn = true;
         }
+
+        expandTriggered = false;
+        contractTriggered = false;
+        ExpandHeroPanels();
     }
 
     void ExpandHeroPanels()
@@ -456,12 +460,15 @@ public class BattleController : MonoBehaviour
             if (gabiTurn)
             {
                 animPanelGabi.SetTrigger("expand");
+                //animButtonGabi.SetTrigger("expand");
                 expandTriggered = true;
             }
             else if (quinnTurn)
             {
                 animPanelGabi.SetTrigger("gabiUp");
                 animPanelQuinn.SetTrigger("expand");
+                //animButtonGabi.SetTrigger("gabiUp");
+                //animButtonQuinn.SetTrigger("expand");
                 expandTriggered = true;
             }
             else if (arvandusTurn)
@@ -469,9 +476,11 @@ public class BattleController : MonoBehaviour
                 animPanelGabi.SetTrigger("gabiUp");
                 animPanelQuinn.SetTrigger("quinnUp");
                 animPanelArvandus.SetTrigger("expand");
+                //animButtonGabi.SetTrigger("gabiUp");
+                //animButtonQuinn.SetTrigger("quinnUp");
+                //animButtonArvandus.SetTrigger("expand");
                 expandTriggered = true;
             }
-            contractTriggered = false;
         }
     }
 
@@ -482,6 +491,7 @@ public class BattleController : MonoBehaviour
             if (gabiTurn)
             {
                 animPanelGabi.SetTrigger("minimize");
+                //animButtonGabi.SetTrigger("minimize");
                 contractTriggered = true;
                 gabiTurn = false;
             }
@@ -489,6 +499,8 @@ public class BattleController : MonoBehaviour
             {
                 animPanelGabi.SetTrigger("gabiDown");
                 animPanelQuinn.SetTrigger("minimize");
+                //animButtonGabi.SetTrigger("gabiDown");
+                //animButtonQuinn.SetTrigger("minimize");
                 contractTriggered = true;
                 quinnTurn = false;
             }
@@ -497,12 +509,12 @@ public class BattleController : MonoBehaviour
                 animPanelGabi.SetTrigger("gabiDown");
                 animPanelQuinn.SetTrigger("quinnDown");
                 animPanelArvandus.SetTrigger("minimize");
+                //animButtonGabi.SetTrigger("gabiDown");
+                //animButtonQuinn.SetTrigger("quinnDown");
+                //animButtonArvandus.SetTrigger("minimize");
                 contractTriggered = true;
                 arvandusTurn = false;
             }
-
-            heroPanelActive = false;
-            expandTriggered = false;
         }
     }
     
@@ -701,6 +713,8 @@ public class BattleController : MonoBehaviour
         }
         else if (heroChoice.chosenAttack.partyTargeting)
         {
+            ContractHeroPanels();
+            ForceWaitTime(.25f);
             heroSelectPanel.SetActive(true);
         }
         else
@@ -725,6 +739,8 @@ public class BattleController : MonoBehaviour
         //utilityPanel.SetActive(false);
         if (heroChoice.chosenAttack.partyTargeting)
         {
+            ContractHeroPanels();
+            ForceWaitTime(1);
             heroSelectPanel.SetActive(true);
         }
         else
@@ -810,6 +826,14 @@ public class BattleController : MonoBehaviour
             }
 
             overWorldSceneChanger2.SceneChange();
+        }
+    }
+
+    void ForceWaitTime(float _timer)
+    {
+        while (_timer > 0)
+        {
+            _timer -= Time.deltaTime;
         }
     }
 }
