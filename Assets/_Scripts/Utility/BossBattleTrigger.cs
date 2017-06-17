@@ -8,23 +8,22 @@ public class BossBattleTrigger : MonoBehaviour {
     private OverworldSceneChanger1 SC1;
     public GameObject DataBase;
     private CharacterStatsDB characterStatsDB;
+    public bool bossTriggered = false;
 
     // Use this for initialization
-    void Start () {
+    void Start ()
+    {
         SC1 = overWorldMaster.GetComponent<OverworldSceneChanger1>();
         characterStatsDB = DataBase.GetComponent<CharacterStatsDB>();
     }
-	
-	// Update is called once per frame
-	void Update () {
 		
-	}
     void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player")
         {
             characterStatsDB.SendData1();
-            SC1.BossSceneChange();
+            bossTriggered = true;
+            SC1.SceneChange();
         }
     }
 }

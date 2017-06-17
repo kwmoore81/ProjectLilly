@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.PostProcessing;
 
 public class OverworldSceneChanger1 : MonoBehaviour {
     
@@ -15,12 +16,17 @@ public class OverworldSceneChanger1 : MonoBehaviour {
 
     public GameObject DataBase;
     private CharacterStatsDB characterStatsDB;
+    private PauseGame pauseGame;
 
     public GameObject thirdPersonControllerOBJ;
     private vThirdPersonController thirdPersonController;
 
     public GameObject transition_Canvas;
     private CameraBlurTest cameraBlur;
+
+    public GameObject ThirdPersonCamera;
+    private VolumetricFog volumetricFog;
+    public PostProcessingBehaviour postProcessingBehavior;
     
 
     Animator animator;  
@@ -66,15 +72,20 @@ public class OverworldSceneChanger1 : MonoBehaviour {
         animator = thirdPersonControllerOBJ.GetComponent<Animator>();
         overWorldSceneChanger2 = battleMaster.GetComponent<OverWorldSceneChanger2>();
         cameraBlur = transition_Canvas.GetComponent<CameraBlurTest>();
+        volumetricFog = ThirdPersonCamera.GetComponent<VolumetricFog>();
+        pauseGame = DataBase.GetComponent<PauseGame>();
     }
 
     public void SceneChange()
-    {           
-         StartCoroutine(cameraBlur.FadeIn(cameraBlur.targetAlpha, cameraBlur.lerpSpeed));                      
+    {       
+        volumetricFog.enabled = false;
+        postProcessingBehavior.enabled = false;
+        StartCoroutine(cameraBlur.FadeIn(cameraBlur.targetAlpha, cameraBlur.lerpSpeed));                      
     }
 
     public void DelayedSceenChange()
     {
+        pauseGame.inBattle = true; 
         overworldScene.gameObject.SetActive(false);
         battleSceneTemp = Object.Instantiate(ForestBattlePrefab, battleScene.transform);
         overWorldSceneChanger2.UpdateFromBank();
@@ -85,6 +96,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     
     public void BossSceneChange()
     {
+        pauseGame.inBattle = true;
         battleSceneTemp = Object.Instantiate(BossBattlePrefab, battleScene.transform);
         overWorldSceneChanger2.UpdateFromBank();
         Cursor.visible = true;
@@ -154,6 +166,15 @@ public class OverworldSceneChanger1 : MonoBehaviour {
         {
             characterStatsDB.SendData1();
             SceneChange();
+        }
+
+        if (Input.GetKeyDown(KeyCode.B) && battleToggle == false)
+        {
+            battleToggle = true;
+        }
+        else if (Input.GetKeyDown(KeyCode.B) && battleToggle == true)
+        {
+            battleToggle = false;
         }
     }
 
