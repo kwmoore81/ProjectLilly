@@ -364,13 +364,6 @@ public class BattleController : MonoBehaviour
         }
     }
 
-    // Update the heroesInBattle and enemiesInBattle lists
-    public void UpdateEnemiesInBattleLists()
-    {
-        enemiesInBattle.Clear();
-        enemiesInBattle.AddRange(GameObject.FindGameObjectsWithTag("Enemy"));
-    }
-
     public void ActionInput()
     {
         heroChoice.activeAgent = heroesToManage[0].name;

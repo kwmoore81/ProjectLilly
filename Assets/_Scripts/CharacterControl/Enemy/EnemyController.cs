@@ -258,9 +258,6 @@ public class EnemyController : MonoBehaviour
         }
         else
         {
-            // TODO: Add animations to leave battle area
-            // TODO: Cleanup battle manager agent list
-
             this.gameObject.tag = "DeadEnemy";
             battleControl.enemiesInBattle.Remove(this.gameObject);
 
@@ -293,9 +290,6 @@ public class EnemyController : MonoBehaviour
             // Check if all enemies are dead and set isAlive to false;
             battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
             isAlive = false;
-
-            // Reset InBattle lists
-            battleControl.UpdateEnemiesInBattleLists();
         }
     }
 
@@ -343,9 +337,6 @@ public class EnemyController : MonoBehaviour
             // Check if all enemies are dead and set isAlive to false;
             battleControl.actionState = BattleController.ActionState.CHECKFORDEAD;
             isAlive = false;
-
-            // Reset InBattle lists
-            battleControl.UpdateEnemiesInBattleLists();
         }
     }
 
