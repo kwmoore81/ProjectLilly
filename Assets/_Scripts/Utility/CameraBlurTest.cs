@@ -12,6 +12,9 @@ public class CameraBlurTest : MonoBehaviour {
      
     public GameObject SC1;
     private OverworldSceneChanger1 overWorldSceaneChanger1;
+
+    public GameObject BossTrigger;
+    private BossBattleTrigger bossBattleTrigger;
     
     public GameObject thirdPersonCamera;   
     private Screenshot screenshotScript;
@@ -22,6 +25,7 @@ public class CameraBlurTest : MonoBehaviour {
         image = GetComponentInChildren<Image>();               
         overWorldSceaneChanger1 = SC1.GetComponent<OverworldSceneChanger1>();       
         screenshotScript = thirdPersonCamera.GetComponent<Screenshot>();
+        bossBattleTrigger = BossTrigger.GetComponent<BossBattleTrigger>();
 
     }
 
@@ -33,7 +37,14 @@ public class CameraBlurTest : MonoBehaviour {
         
         yield return new WaitForSeconds(delayTime);
 
-        overWorldSceaneChanger1.DelayedSceenChange();
+        if (bossBattleTrigger.bossTriggered == false)
+        {
+            overWorldSceaneChanger1.DelayedSceenChange();
+        }
+        else
+        {
+            overWorldSceaneChanger1.BossSceneChange();
+        }
                        
             // fade from full to clear in DURATION seconds
             while (targetAlpha < lerpSpeed)

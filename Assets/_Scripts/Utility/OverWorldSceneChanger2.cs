@@ -14,6 +14,7 @@ public class OverWorldSceneChanger2 : MonoBehaviour
 
     public GameObject DataBase;
     private CharacterStatsDB characterStatsDB;
+    private PauseGame pauseGame;
 
     public GameObject ThirdPersonCamera;
     private VolumetricFog volumetricFog;
@@ -42,10 +43,12 @@ public class OverWorldSceneChanger2 : MonoBehaviour
         volumetricFog = ThirdPersonCamera.GetComponent<VolumetricFog>();
         Cursor.visible = true;
         fogTriggerScript = fogTrigger.GetComponent<FogTriggerScript>();
+        pauseGame = DataBase.GetComponent<PauseGame>();
     }
 
     public void SceneChange()
     {
+        pauseGame.inBattle = false;
         overworldScene.gameObject.SetActive(true);
         characterStatsDB.SendData2();
         overWorldSceneChanger1.UpdateFromBank();

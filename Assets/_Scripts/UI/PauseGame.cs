@@ -4,6 +4,7 @@ using System.Collections;
 public class PauseGame : MonoBehaviour {
 
     public Transform canvas;
+    public bool inBattle = false;
       
     public void pause()
     {
@@ -13,6 +14,13 @@ public class PauseGame : MonoBehaviour {
             Cursor.lockState = CursorLockMode.None;
             canvas.gameObject.SetActive(true);
             Time.timeScale = 0;
+        }
+        else if (canvas.gameObject.activeInHierarchy == true && inBattle == true)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            canvas.gameObject.SetActive(false);
+            Time.timeScale = 1;
         }
         else
         {

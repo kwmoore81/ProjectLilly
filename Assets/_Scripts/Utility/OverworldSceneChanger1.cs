@@ -16,6 +16,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
 
     public GameObject DataBase;
     private CharacterStatsDB characterStatsDB;
+    private PauseGame pauseGame;
 
     public GameObject thirdPersonControllerOBJ;
     private vThirdPersonController thirdPersonController;
@@ -72,6 +73,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
         overWorldSceneChanger2 = battleMaster.GetComponent<OverWorldSceneChanger2>();
         cameraBlur = transition_Canvas.GetComponent<CameraBlurTest>();
         volumetricFog = ThirdPersonCamera.GetComponent<VolumetricFog>();
+        pauseGame = DataBase.GetComponent<PauseGame>();
     }
 
     public void SceneChange()
@@ -82,7 +84,8 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     }
 
     public void DelayedSceenChange()
-    {       
+    {
+        pauseGame.inBattle = true; 
         overworldScene.gameObject.SetActive(false);
         battleSceneTemp = Object.Instantiate(ForestBattlePrefab, battleScene.transform);
         overWorldSceneChanger2.UpdateFromBank();
@@ -93,6 +96,7 @@ public class OverworldSceneChanger1 : MonoBehaviour {
     
     public void BossSceneChange()
     {
+        pauseGame.inBattle = true;
         battleSceneTemp = Object.Instantiate(BossBattlePrefab, battleScene.transform);
         overWorldSceneChanger2.UpdateFromBank();
         Cursor.visible = true;
@@ -162,6 +166,15 @@ public class OverworldSceneChanger1 : MonoBehaviour {
         {
             characterStatsDB.SendData1();
             SceneChange();
+        }
+
+        if (Input.GetKeyDown(KeyCode.B) && battleToggle == false)
+        {
+            battleToggle = true;
+        }
+        else if (Input.GetKeyDown(KeyCode.B) && battleToggle == true)
+        {
+            battleToggle = false;
         }
     }
 
